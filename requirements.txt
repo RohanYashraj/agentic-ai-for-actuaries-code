@@ -1,0 +1,11 @@
+# Agentic AI for Actuaries — companion code dependencies.
+# Tested against the versions noted; pins follow the book's CODE-08(5)
+# version-pinning discipline: agno>=2.0,<3.0.
+agno>=2.6,<3.0            # tested with 2.6.22
+google-genai>=2.0         # Gemini SDK (Agno's model backend here)
+pandas>=2.2               # triangles, policy and member datasets
+pypdf>=5.0                # Ch 13 submission PDF reading
+chromadb>=1.0             # Ch 12 vector knowledge store
+python-dotenv>=1.0        # .env loading in common/config.py
+sqlalchemy>=2.0           # required by agno.db.sqlite
+fastapi>=0.110            # required by agno.workflow

@@ -1,0 +1,34 @@
+{
+  "SNAP-FY2025-Q2": {
+    "close_date": "2025-06-30",
+    "scr_market_risk_usd_m": 412.6,
+    "scr_life_uw_risk_usd_m": 188.3,
+    "scr_nonlife_uw_risk_usd_m": 276.9,
+    "scr_health_uw_risk_usd_m": 74.1,
+    "scr_default_risk_usd_m": 41.8,
+    "scr_operational_risk_usd_m": 66.4,
+    "parameter_versions": {
+      "market": "MKT-2025.2",
+      "life": "LIFE-2025.1",
+      "non_life": "NL-2025.2",
+      "health": "HLT-2025.1"
+    },
+    "prior_cycle_close_date": "2025-03-31"
+  },
+  "SNAP-FY2025-Q1": {
+    "close_date": "2025-03-31",
+    "scr_market_risk_usd_m": 405.1,
+    "scr_life_uw_risk_usd_m": 186.0,
+    "scr_nonlife_uw_risk_usd_m": 255.4,
+    "scr_health_uw_risk_usd_m": 73.2,
+    "scr_default_risk_usd_m": 40.9,
+    "scr_operational_risk_usd_m": 65.7,
+    "parameter_versions": {
+      "market": "MKT-2025.1",
+      "life": "LIFE-2025.1",
+      "non_life": "NL-2025.1",
+      "health": "HLT-2025.1"
+    },
+    "prior_cycle_close_date": "2024-12-31"
+  }
+}

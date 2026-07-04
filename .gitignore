@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.env
+venv/
+.venv/
+# runtime artefacts the examples create
+*.db
+xs_index/
+ch11_multi_agent_workflows/reserving_output.json
+ch14_reserving_reflexion/prior_cycle_record.json

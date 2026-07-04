@@ -1,0 +1,5 @@
+Meridian Re — Term Life India Experience Study, FY2024 Q1.
+Actual-to-expected mortality on IALM 2012-14 ULP base: 0.96 overall.
+Smoker segment A/E 1.04, driven by ages 45-54. Non-smoker A/E 0.93.
+Lapse experience: 8.7% annualised in policy year 2, above the 7.5% assumption; concentrated in monthly-premium business.
+Recommendation: hold the 0.95 adjustment factor; revisit smoker loading at the FY2024 year-end study.

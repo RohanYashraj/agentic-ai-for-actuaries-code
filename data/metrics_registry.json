@@ -1,0 +1,41 @@
+{
+  "registry_version": "MON-REG-2025.3",
+  "agents": {
+    "data_quality_agent": {
+      "thresholds": {
+        "tool_error_rate": 0.02,
+        "avg_tool_calls_per_run": 8,
+        "p95_latency_seconds": 45,
+        "escalation_rate": 0.15,
+        "output_schema_failures": 0,
+        "cost_per_run_usd": 0.05
+      },
+      "metrics_7d": {
+        "tool_error_rate": 0.011,
+        "avg_tool_calls_per_run": 6.2,
+        "p95_latency_seconds": 31,
+        "escalation_rate": 0.09,
+        "output_schema_failures": 0,
+        "cost_per_run_usd": 0.021
+      }
+    },
+    "reserving_agent": {
+      "thresholds": {
+        "tool_error_rate": 0.02,
+        "avg_tool_calls_per_run": 8,
+        "p95_latency_seconds": 90,
+        "escalation_rate": 0.2,
+        "output_schema_failures": 0,
+        "cost_per_run_usd": 0.12
+      },
+      "metrics_7d": {
+        "tool_error_rate": 0.034,
+        "avg_tool_calls_per_run": 7.8,
+        "p95_latency_seconds": 112,
+        "escalation_rate": 0.22,
+        "output_schema_failures": 1,
+        "cost_per_run_usd": 0.096
+      }
+    }
+  }
+}

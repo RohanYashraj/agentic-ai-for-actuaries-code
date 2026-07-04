@@ -1,0 +1,5 @@
+Meridian Re — Term Life India Experience Study, FY2024 Q2.
+Actual-to-expected mortality 0.95 overall, consistent with Q1.
+Smoker segment A/E eased to 1.01. Lapse in policy year 2 at 8.2%.
+Data note: 312 policies re-mapped from whole_life to term_life after the Q2 admin-system migration; prior-quarter comparatives restated.
+Recommendation: maintain adjustment factor 0.95 (study TL_EXP_2023 remains the governing study until year-end).
