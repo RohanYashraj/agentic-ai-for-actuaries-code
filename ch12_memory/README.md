@@ -8,7 +8,10 @@
 ⚠ API compatibility: the printed listings use `from agno.memory import
 Memory`, removed in later Agno 2.x releases. These scripts use the
 current equivalent `Agent(db=SqliteDb(...), enable_user_memories=True)`
-— behaviour is unchanged. See ERRATA in the root README.
+— behaviour is unchanged. See ERRATA in the root README. ChromaDb
+defaults to an OpenAI embedder; the repo passes `GeminiEmbedder()`
+explicitly so the example runs on the same GOOGLE_API_KEY as the rest
+of the book.
 
 `02_vector_knowledge.py` indexes the synthetic experience study archive
 in `../data/xs_reports/fy2024/` into a local ChromaDB collection

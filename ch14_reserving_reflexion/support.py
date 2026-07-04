@@ -214,6 +214,14 @@ def build_reserving_review_workflow(include_cape_cod: bool = True):
         tools=tools,
         tool_call_limit=10,
         markdown=True,
+        instructions=(
+            "Run the reserving methods with the tools you have been "
+            "given (fetch_triangle, fit_chain_ladder, "
+            "apply_bornhuetter_ferguson, reconcile_methods, and "
+            "cape_cod if available) and report the estimates and the "
+            "reconciliation. Only call these tools; do not invent "
+            "others."
+        ),
     )
     return Workflow(
         name="ReservingReviewWorkflow",

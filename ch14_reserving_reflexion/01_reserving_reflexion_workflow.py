@@ -35,10 +35,13 @@ reconciliation_agent = Agent(
     tool_call_limit=10,
     markdown=True,
     instructions=(
-        "Compare next-cycle actual development against prior cycle's "
-        "LDF expectations. Surface deviations exceeding the firm's "
-        "1.5 percent tolerance. Do not revise reserves; route "
-        "deviations to the reserving actuary's review queue."
+        "First call retrieve_prior_cycle to get the prior cycle's LDF "
+        "expectations. Then take the observed 12-24 development factor "
+        "from the reserving step's output and call "
+        "reconcile_against_developed_losses to compare actual against "
+        "expected. Surface deviations exceeding the firm's 1.5 percent "
+        "tolerance. Do not revise reserves; route deviations to the "
+        "reserving actuary's review queue."
     ),
 )
 
@@ -51,9 +54,14 @@ reserving_reflexion_workflow = Workflow(
 )
 
 if __name__ == "__main__":
+    # The input names no tools: it is passed verbatim to the inner
+    # workflow's agents, which do not have the reconciliation tools —
+    # naming those here makes the inner agents attempt calls to
+    # functions they don't own ("Function ... not found"). The evaluate
+    # step's tool sequence lives in the reconciliation agent's
+    # instructions instead.
     reserving_reflexion_workflow.print_response(
-        "Run the FY2024 Q3 motor India reserving cycle, then reconcile the "
-        "observed 12-24 development factor against the prior cycle's "
-        "expectation from retrieve_prior_cycle.",
-        markdown=True,
+        "Run the FY2024 Q3 motor India reserving cycle and report the "
+        "reserve estimates, development factors, and reconciliation.",
+        markdown=True,stream=True
     )

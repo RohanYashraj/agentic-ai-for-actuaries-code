@@ -162,9 +162,14 @@ DATA_QUALITY_CSV = os.path.join(DATA_DIR, "meridian_motor_india_triangle_clean.c
 _dq_triangle_df = pd.read_csv(DATA_QUALITY_CSV)
 
 
-def check_triangle_quality() -> dict:
-    """Scan the motor India triangle for missing values, negative case
+def check_triangle_quality(
+    triangle_table: str = "meridian_claims.triangle_motor_india",
+) -> dict:
+    """Scan the named triangle for missing values, negative case
     reserves, and reported-below-paid inconsistencies.
+
+    Args:
+        triangle_table: fully qualified triangle table name.
     """
     loss_columns = ["paid_loss_usd", "reported_loss_usd", "case_reserve_usd"]
     return {
@@ -184,4 +189,13 @@ data_quality_agent = Agent(
     tools=[check_triangle_quality],
     tool_call_limit=5,
     markdown=True,
+    # Scope guard: this is step one of a fixed workflow. Without it,
+    # a broad run instruction ("run the reserving cycle") tempts the
+    # model to invent reserving tools it does not have.
+    instructions=(
+        "You are the data quality step of a fixed reserving workflow. "
+        "Call check_triangle_quality and report the findings. Do not "
+        "attempt reserving calculations — later steps own them. Only "
+        "call the tools you have been given."
+    ),
 )
