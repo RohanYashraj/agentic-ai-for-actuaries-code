@@ -108,6 +108,12 @@ the printed code (and why).
 - **Paths are adjusted** to point at the shared `data/` directory.
 - **Runs are wrapped in `if __name__ == "__main__":`** where a listing
   ends with an agent run, so listings can also be imported as modules.
+- **Agent output is rendered, not raw.** Every agent is constructed
+  with `markdown=True`, and agent/workflow runs use `print_response()`
+  (with `markdown=True` on workflow calls) instead of the
+  `.run()` + `print(result.content)` some listings print — same loop,
+  same result, better terminal rendering. Direct tool tests still
+  print their structured dicts unchanged.
 - **Agent narration will vary between runs.** Tool results are
   deterministic; the model's prose around them is not. The book says
   the same in Chapter 9.
