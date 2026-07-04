@@ -40,5 +40,6 @@ life_valuation_agent = Agent(
 if __name__ == "__main__":
     life_valuation_agent.print_response(
         "What did the FY2024 experience studies say about smoker mortality "
-        "on term life India, and what did they recommend?"
+        "on term life India, and what did they recommend?",
+        stream=True,
     )

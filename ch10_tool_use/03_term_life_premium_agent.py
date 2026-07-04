@@ -113,5 +113,6 @@ term_life_agent = Agent(
 if __name__ == "__main__":
     term_life_agent.print_response(
         "Compute the net annual level premium for a 10-year term policy on a "
-        "35-year-old male non-smoker, INR 50,00,000 sum assured, 6% discount rate."
+        "35-year-old male non-smoker, INR 50,00,000 sum assured, 6% discount rate.",
+        stream=True,
     )

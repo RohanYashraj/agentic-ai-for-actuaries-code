@@ -58,5 +58,6 @@ capital_impact_agent = Agent(
 if __name__ == "__main__":
     capital_impact_agent.print_response(
         "Assess the capital impact of EIOPA-BoS-25-142 on motor_india and "
-        "commercial_property against snapshot SNAP-FY2025-Q2."
+        "commercial_property against snapshot SNAP-FY2025-Q2.",
+        stream=True,
     )

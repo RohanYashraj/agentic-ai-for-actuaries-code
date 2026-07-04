@@ -62,4 +62,5 @@ if __name__ == "__main__":
         "Process submission ../data/submissions/MR-CHI-2025-Q3-018.pdf "
         "(reference MR-CHI-2025-Q3-018) and produce a draft recommendation.",
         markdown=True,
+        stream=True,
     )

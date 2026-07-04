@@ -29,10 +29,12 @@ if __name__ == "__main__":
     # First run: give the agent something worth remembering.
     life_valuation_agent.print_response(
         "Remember: the FY2024 Q3 experience adjustment factor for term life "
-        "India is 0.95, per study TL_EXP_2023."
+        "India is 0.95, per study TL_EXP_2023.",
+        stream=True,
     )
     # Second run — a NEW process would recall this from the .db file.
     life_valuation_agent.print_response(
         "What adjustment factor applies to term life India this cycle, and "
-        "which study governs it?"
+        "which study governs it?",
+        stream=True,
     )

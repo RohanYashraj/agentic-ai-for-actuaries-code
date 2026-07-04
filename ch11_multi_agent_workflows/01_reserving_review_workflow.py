@@ -80,4 +80,5 @@ if __name__ == "__main__":
             "regulatory_basis": "IRDAI",
         }),
         markdown=True,
+        stream=True,
     )

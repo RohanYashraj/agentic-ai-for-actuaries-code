@@ -57,5 +57,6 @@ valuation_agent = Agent(
 if __name__ == "__main__":
     valuation_agent.print_response(
         "Run the funding valuation for scheme UKDB-MER-001 effective "
-        "2025-03-31 and summarise the sensitivity panel for the Scheme Actuary.", string=True,
+        "2025-03-31 and summarise the sensitivity panel for the Scheme Actuary.",
+        stream=True,
     )

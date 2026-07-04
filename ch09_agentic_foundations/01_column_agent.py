@@ -32,4 +32,4 @@ column_agent = Agent(
 
 # Run the agent on a goal. print_response runs the full loop and prints the answer.
 agent_goal = "Explain what the column 'payment_currency' means in the motor triangle."
-column_agent.print_response(agent_goal)
+column_agent.print_response(agent_goal, stream=True)

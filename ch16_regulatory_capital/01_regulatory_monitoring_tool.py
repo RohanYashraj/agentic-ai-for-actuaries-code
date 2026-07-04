@@ -81,5 +81,6 @@ monitoring_agent = Agent(
 if __name__ == "__main__":
     monitoring_agent.print_response(
         "Check EIOPA for publications in the last 7 days and summarise "
-        "anything relevant to long-term guarantee business."
+        "anything relevant to long-term guarantee business.",
+        stream=True,
     )

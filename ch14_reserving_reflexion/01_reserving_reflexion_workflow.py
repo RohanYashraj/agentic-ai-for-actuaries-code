@@ -63,5 +63,6 @@ if __name__ == "__main__":
     reserving_reflexion_workflow.print_response(
         "Run the FY2024 Q3 motor India reserving cycle and report the "
         "reserve estimates, development factors, and reconciliation.",
-        markdown=True,stream=True
+        markdown=True,
+        stream=True,
     )
