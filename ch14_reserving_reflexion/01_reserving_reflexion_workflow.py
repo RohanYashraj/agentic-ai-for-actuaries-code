@@ -44,7 +44,7 @@ reconciliation_agent = Agent(
 reserving_reflexion_workflow = Workflow(
     name="ReservingReflexion",
     steps=[
-        Step(name="act", agent=inner_workflow),
+        Step(name="act", workflow=inner_workflow),
         Step(name="evaluate", agent=reconciliation_agent),
     ],
 )

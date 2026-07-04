@@ -6,7 +6,8 @@
 | `02_data_quality_agent.py` | Case Study "Building a Data Quality Agent" | Yes |
 
 The environment setup commands from §9.5 are reproduced in the root
-README. Run from this folder: `python 01_column_agent.py`.
+README. Run from this folder:
+`uv run --env-file ../.env python 01_column_agent.py`.
 
 Deviations from print: `02_data_quality_agent.py` reads the triangle
 from `../data/meridian_motor_india_triangle.csv` (the book assumes the

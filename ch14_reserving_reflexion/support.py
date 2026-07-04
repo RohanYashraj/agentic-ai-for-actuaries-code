@@ -6,15 +6,11 @@
 # workflow builder. Didactic implementations — not production code.
 import json
 import os
-import sys
 
 import pandas as pd
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "data")
 DEV_PERIODS = [12, 24, 36, 48, 60, 72]
-
-# Reuse the Chapter 11 reserving toolset for the inner workflow.
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "ch11_multi_agent_workflows"))
 
 # Synthetic earned premium per accident year (matches Ch 11 support).
 EARNED_PREMIUM = {ay: 12_000_000 * (1.06 ** (ay - 2018)) for ay in range(2018, 2024)}
@@ -191,10 +187,9 @@ def draft_deviation_paragraph(reasoning_trace: dict, reflexion_output: dict,
 def build_reserving_review_workflow(include_cape_cod: bool = True):
     """Rebuild the Chapter 11 inner workflow, optionally adding Cape Cod."""
     from agno.workflow import Workflow, Step
-    import importlib
-    ch11_support = importlib.import_module("support")  # resolved via sys.path? see note
-    # Import the Chapter 11 module explicitly to avoid name collision
-    # with this file (both are named support.py).
+    # Import the Chapter 11 module explicitly by path — a plain
+    # `import support` would collide with this file (both are named
+    # support.py).
     import importlib.util
     ch11_path = os.path.join(os.path.dirname(__file__), "..",
                              "ch11_multi_agent_workflows", "support.py")

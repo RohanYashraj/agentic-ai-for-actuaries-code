@@ -1,4 +1,7 @@
 # Agentic AI for Actuaries — companion code dependencies.
+# The repo is managed with uv (see pyproject.toml / uv.lock; run
+# `uv sync`). This file mirrors pyproject.toml for readers following
+# the printed Chapter 9 §9.5 venv + pip steps.
 # Tested against the versions noted; pins follow the book's CODE-08(5)
 # version-pinning discipline: agno>=2.0,<3.0.
 agno>=2.6,<3.0            # tested with 2.6.22

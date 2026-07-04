@@ -3,7 +3,7 @@
 # Repo notes:
 #   - The ./xs_reports/fy2024/ archive ships in the repo's data directory;
 #     the path below points there.
-#   - ChromaDb requires the `chromadb` package (in requirements.txt).
+#   - ChromaDb requires the `chromadb` package (a project dependency).
 #   - add_content is synchronous here; indexing runs once at build.
 import os
 

@@ -4,7 +4,7 @@
 #   - _retrieve_from_source lives in support.py (synthetic, offline).
 #   - The printed listing's header pins agno==1.0.6 / google-genai==0.8.0 /
 #     pinecone-client==4.1.2; the repo pins agno 2.x per the root
-#     requirements.txt. See ERRATA in the root README.
+#     pyproject.toml. See ERRATA in the root README.
 from datetime import datetime, timezone
 
 from agno.agent import Agent
