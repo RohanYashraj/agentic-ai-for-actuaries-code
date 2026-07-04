@@ -3,6 +3,7 @@
 | Script | Book listing | Needs API key |
 |---|---|---|
 | `01_monitoring_dashboard.py` | §17.5 monitoring_dashboard tool | No (direct tool test) |
+| `02_governance_agent.py` | — (repo demo, not a printed listing) | Yes |
 
 `support.py` supplies read_thresholds / read_metrics /
 check_against_thresholds / aggregate_status over
@@ -27,4 +28,14 @@ escalation breaches).
 
 ```bash
 uv run python 01_monitoring_dashboard.py
+```
+
+### `02_governance_agent.py`
+Repo demo (not a printed listing): a simple governance agent that
+imports the `monitoring_dashboard` tool from `01_monitoring_dashboard.py`,
+checks `reserving_agent`'s 7-day status, and summarises the threshold
+breaches with an escalation recommendation.
+
+```bash
+uv run --env-file ../.env python 02_governance_agent.py
 ```

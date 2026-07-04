@@ -2,7 +2,8 @@
 # Book reference: Chapter 17, §17.5 "Monitoring and Observability"
 # Repo note: read_thresholds, read_metrics, check_against_thresholds and
 # aggregate_status live in support.py; the registry ships in
-# data/metrics_registry.json.
+# data/metrics_registry.json. For an agent exercising this tool, see
+# 02_governance_agent.py.
 from agno.tools import tool
 
 from support import (

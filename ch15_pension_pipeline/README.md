@@ -5,6 +5,7 @@
 | `01_pension_valuation.py` | pension_valuation.py | Yes (tool testable without) |
 | `02_quality_gate.py` | quality_gate.py | No (direct tool test) |
 | `03_member_communication.py` | draft_member_communication.py | No (direct tool test) |
+| `04_ingestion_agent.py` | — (repo demo, not a printed listing) | Yes |
 
 `support.py` supplies the assumption-basis object (with the `.shift()`
 sensitivity mechanics the listing uses), annuity-certain approximations
@@ -46,4 +47,14 @@ statement prose with member-visible citations for every figure.
 
 ```bash
 uv run python 03_member_communication.py
+```
+
+### `04_ingestion_agent.py`
+Repo demo (not a printed listing): a simple ingestion agent that
+imports the `quality_gate` tool from `02_quality_gate.py`, runs the
+gate on scheme UKDB-MER-001's member file, and reports pass / route to
+manual review in plain language.
+
+```bash
+uv run --env-file ../.env python 04_ingestion_agent.py
 ```

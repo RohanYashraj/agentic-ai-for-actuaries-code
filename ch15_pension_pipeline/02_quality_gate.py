@@ -1,6 +1,7 @@
 # quality_gate.py — ingestion stage of the fixed-sequence pipeline.
 # Book reference: Chapter 15, "Architecture"
-# Repo note: the four validators live in support.py.
+# Repo note: the four validators live in support.py. For an agent
+# exercising this tool, see 04_ingestion_agent.py.
 import os
 
 from agno.tools import tool

@@ -4,6 +4,7 @@
 |---|---|---|
 | `tools_reserving.py` | meridian_re/tools/reserving.py (Cape Cod tool) | No (direct tool test) |
 | `tools_commentary.py` | meridian_re/tools/commentary.py | No (direct tool test) |
+| `02_commentary_agent.py` | — (repo demo, not a printed listing) | Yes |
 | `01_reserving_reflexion_workflow.py` | meridian_re/workflows/reserving_reflexion.py | Yes |
 
 ⚠ API compatibility: the printed workflow uses `Memory(db=SqliteDb(...))`;
@@ -42,6 +43,16 @@ reconciliation result.
 
 ```bash
 uv run python tools_commentary.py
+```
+
+### `02_commentary_agent.py`
+Repo demo (not a printed listing): a simple commentary agent that
+imports `draft_movement_commentary` from `tools_commentary.py`, receives
+the reconciliation figures in the prompt, and returns the cited
+movement paragraph through the tool.
+
+```bash
+uv run --env-file ../.env python 02_commentary_agent.py
 ```
 
 ### `01_reserving_reflexion_workflow.py`

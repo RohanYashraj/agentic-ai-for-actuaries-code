@@ -1,7 +1,8 @@
 # meridian_re/tools/commentary.py
 # Book reference: Chapter 14, "Code walkthrough"
 # Repo note: draft_deviation_paragraph and draft_stable_paragraph live
-# in support.py.
+# in support.py. For an agent exercising this tool, see
+# 02_commentary_agent.py.
 from agno.tools import tool
 
 from support import draft_deviation_paragraph, draft_stable_paragraph
