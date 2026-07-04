@@ -22,7 +22,7 @@ load_dotenv()
 
 DEFAULT_MODEL_IDS = {
     "google": "gemini-3.1-flash-lite",     # the book's default model
-    "anthropic": "claude-sonnet-4-5",      # placeholder used pre-copy-edit
+    "anthropic": "claude-sonnet-5",
     "openai": "gpt-4o-mini",
 }
 

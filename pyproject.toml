@@ -1,0 +1,32 @@
+# Agentic AI for Actuaries — companion code dependencies.
+# Managed with uv (https://docs.astral.sh/uv/); `uv sync` creates .venv.
+# Pins follow the book's CODE-08(5) version-pinning discipline:
+# agno>=2.0,<3.0.
+[project]
+name = "agentic-ai-for-actuaries-code"
+version = "1.0.0"
+description = "Companion code for Agentic AI for Actuaries (Parts III-V)"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+dependencies = [
+    "agno>=2.6,<3.0",        # tested with 2.6.22
+    "google-genai>=2.0",     # Gemini SDK (Agno's model backend here)
+    "pandas>=2.2",           # triangles, policy and member datasets
+    "pypdf>=5.0",            # Ch 13 submission PDF reading
+    "chromadb>=1.0",         # Ch 12 vector knowledge store
+    "python-dotenv>=1.0",    # .env loading in common/config.py
+    "sqlalchemy>=2.0",       # required by agno.db.sqlite
+    "fastapi>=0.110",        # required by agno.workflow
+]
+
+[project.optional-dependencies]
+# Alternative model providers for common/config.py's get_model().
+# Install with: uv sync --extra anthropic  (or --extra openai)
+anthropic = ["anthropic>=0.40"]
+openai = ["openai>=1.60"]
+
+[tool.uv]
+# Examples are run as scripts (python ch09.../01_column_agent.py);
+# nothing in this repo is built or installed as a package.
+package = false

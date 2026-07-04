@@ -51,10 +51,12 @@ valuation_agent = Agent(
     model=Gemini(id="gemini-3.1-flash-lite"),
     tools=[value_scheme],
     tool_call_limit=3,
+    markdown=True,
 )
 
 if __name__ == "__main__":
     valuation_agent.print_response(
         "Run the funding valuation for scheme UKDB-MER-001 effective "
-        "2025-03-31 and summarise the sensitivity panel for the Scheme Actuary."
+        "2025-03-31 and summarise the sensitivity panel for the Scheme Actuary.",
+        stream=True,
     )

@@ -17,41 +17,53 @@ sufficient for the examples to run — do not use it for real work.
 
 ## Setup
 
-You need Python 3.11 or later and a Google AI Studio API key (free tier
-is sufficient for every example; `gemini-3.1-flash-lite` is the
-cheapest model in the Gemini 3 series).
+You need [uv](https://docs.astral.sh/uv/getting-started/installation/)
+and a Google AI Studio API key (free tier is sufficient for every
+example; `gemini-3.1-flash-lite` is the cheapest model in the Gemini 3
+series). uv installs a suitable Python (3.11+) automatically if none
+is present.
 
 ```bash
-# 1. Clone and enter the repository
+# 1. Install uv (skip if you have it)
+curl -LsSf https://astral.sh/uv/install.sh | sh   # Windows: powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+# 2. Clone and enter the repository
 git clone <repo-url>
 cd agentic-ai-for-actuaries-code
 
-# 2. Create and activate a virtual environment (Chapter 9, §9.5)
-python3.11 -m venv venv
-source venv/bin/activate          # Windows: venv\Scripts\activate
-
-# 3. Install dependencies
-pip install -r requirements.txt
+# 3. Install dependencies (creates .venv from pyproject.toml/uv.lock)
+uv sync
 
 # 4. Set your API key
 cp .env.example .env              # then edit .env and paste your key
-# — or —
-export GOOGLE_API_KEY=your-key    # Windows: set GOOGLE_API_KEY=your-key
 # Get a key at https://aistudio.google.com/apikey
 
 # 5. Confirm the install
-python -c "import agno; print(agno.__version__)"
+uv run python -c "import agno; print(agno.__version__)"
 
 # 6. Run your first agent (Chapter 9)
 cd ch09_agentic_foundations
-python 01_column_agent.py
+uv run --env-file ../.env python 01_column_agent.py
 ```
 
+`uv run` uses the project's `.venv` automatically — no manual
+activation needed. The `--env-file` flag exports the keys in `.env`
+to the script (the chapter scripts match the printed listings, which
+read `GOOGLE_API_KEY` from the environment rather than loading `.env`
+themselves). If you prefer, `export GOOGLE_API_KEY=your-key`
+(Windows: `set GOOGLE_API_KEY=your-key`) and drop the flag, or set
+`UV_ENV_FILE=.env` once per shell.
+
+The book itself (Chapter 9, §9.5) sets the environment up with
+`python -m venv` and `pip install -r requirements.txt`; that still
+works — `requirements.txt` is kept in sync with `pyproject.toml` for
+readers following the printed steps.
+
 The synthetic datasets ship pre-generated in `data/`. To regenerate
-them (deterministic, fixed seed):
+them (deterministic, fixed seed — regeneration is byte-identical):
 
 ```bash
-python data/generate_data.py
+uv run python data/generate_data.py
 ```
 
 ## Model configuration
@@ -65,7 +77,9 @@ model = Gemini(id="gemini-3.1-flash-lite")
 To run the examples against a different provider without editing each
 script, use the factory in `common/config.py` — set `MODEL_PROVIDER`
 and `MODEL_ID` in your `.env` and replace the inline construction with
-`get_model()`. Anthropic Claude and OpenAI backends are wired in.
+`get_model()`. Anthropic Claude and OpenAI backends are wired in;
+install the matching SDK with `uv sync --extra anthropic` or
+`uv sync --extra openai`.
 
 ## Chapter map
 
@@ -94,6 +108,12 @@ the printed code (and why).
 - **Paths are adjusted** to point at the shared `data/` directory.
 - **Runs are wrapped in `if __name__ == "__main__":`** where a listing
   ends with an agent run, so listings can also be imported as modules.
+- **Agent output is rendered, not raw.** Every agent is constructed
+  with `markdown=True`, and agent/workflow runs use `print_response()`
+  (with `markdown=True` on workflow calls) instead of the
+  `.run()` + `print(result.content)` some listings print — same loop,
+  same result, better terminal rendering. Direct tool tests still
+  print their structured dicts unchanged.
 - **Agent narration will vary between runs.** Tool results are
   deterministic; the model's prose around them is not. The book says
   the same in Chapter 9.

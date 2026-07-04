@@ -44,6 +44,7 @@ orsa_drafting_agent = Agent(
     model=Gemini(id="gemini-3.1-flash-lite"),
     tools=[draft_risk_profile_section],
     tool_call_limit=4,
+    markdown=True,
 )
 
 if __name__ == "__main__":

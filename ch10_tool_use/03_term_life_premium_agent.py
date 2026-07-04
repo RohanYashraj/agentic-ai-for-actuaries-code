@@ -107,11 +107,12 @@ term_life_agent = Agent(
         "Return the net annual level premium with the tool calls used.",
     ],
     tool_call_limit=10,
+    markdown=True,
 )
 
 if __name__ == "__main__":
-    result = term_life_agent.run(
+    term_life_agent.print_response(
         "Compute the net annual level premium for a 10-year term policy on a "
-        "35-year-old male non-smoker, INR 50,00,000 sum assured, 6% discount rate."
+        "35-year-old male non-smoker, INR 50,00,000 sum assured, 6% discount rate.",
+        stream=True,
     )
-    print(result.content)

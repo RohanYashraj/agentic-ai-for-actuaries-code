@@ -32,6 +32,12 @@ reserving_agent = Agent(
     tools=[fetch_triangle, fit_chain_ladder,
            apply_bornhuetter_ferguson, reconcile_methods],
     tool_call_limit=8,  # hard cap on tool calls
+    markdown=True,
+    instructions=(
+        "Run the reserving methods with the tools you have been given "
+        "and report the estimates and the reconciliation. Only call "
+        "these tools; do not invent others."
+    ),
 )
 
 # Commentary Agent: drafts memo paragraphs from the Reserving Agent output.
@@ -45,6 +51,7 @@ commentary_agent = Agent(
     ),
     tools=[read_reserving_output, draft_commentary_paragraph],
     tool_call_limit=6,
+    markdown=True,
 )
 
 # Workflow: data quality -> reserving -> commentary, fixed path.
@@ -59,13 +66,19 @@ reserving_review_workflow = Workflow(
 )
 
 if __name__ == "__main__":
-    # Run for FY2024 Q3 motor India.
-    run_response = reserving_review_workflow.run(
-        input={
+    import json
+
+    # Run for FY2024 Q3 motor India. The run parameters are serialised
+    # to a JSON string: without an input schema on the steps, Agno
+    # passes `input` to the first agent as the user message, and a raw
+    # dict fails message validation ("role field required").
+    reserving_review_workflow.print_response(
+        input=json.dumps({
             "as_of_date": "2024-09-30",
             "line_of_business": "motor_india",
             "triangle_table": "meridian_claims.triangle_motor_india",
             "regulatory_basis": "IRDAI",
-        },
+        }),
+        markdown=True,
+        stream=True,
     )
-    print(run_response.content)

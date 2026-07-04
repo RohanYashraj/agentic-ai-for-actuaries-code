@@ -4,7 +4,7 @@
 #   - _retrieve_from_source lives in support.py (synthetic, offline).
 #   - The printed listing's header pins agno==1.0.6 / google-genai==0.8.0 /
 #     pinecone-client==4.1.2; the repo pins agno 2.x per the root
-#     requirements.txt. See ERRATA in the root README.
+#     pyproject.toml. See ERRATA in the root README.
 from datetime import datetime, timezone
 
 from agno.agent import Agent
@@ -75,10 +75,12 @@ monitoring_agent = Agent(
     model=Gemini(id="gemini-3.1-flash-lite"),
     tools=[fetch_regulatory_publications],
     tool_call_limit=8,
+    markdown=True,
 )
 
 if __name__ == "__main__":
     monitoring_agent.print_response(
         "Check EIOPA for publications in the last 7 days and summarise "
-        "anything relevant to long-term guarantee business."
+        "anything relevant to long-term guarantee business.",
+        stream=True,
     )

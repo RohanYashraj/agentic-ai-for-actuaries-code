@@ -48,6 +48,7 @@ commentary_agent = Agent(
     model=Gemini(id="gemini-3.1-flash-lite"),
     tools=[draft_annual_statement],
     tool_call_limit=3,
+    markdown=True,
 )
 
 if __name__ == "__main__":

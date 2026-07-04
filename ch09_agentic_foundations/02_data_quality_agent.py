@@ -74,4 +74,4 @@ if __name__ == "__main__":
         'Scan the motor India triangle for data quality issues '
         'and produce a short report.'
     )
-    data_quality_agent.print_response(agent_goal)
+    data_quality_agent.print_response(agent_goal, stream=True)
