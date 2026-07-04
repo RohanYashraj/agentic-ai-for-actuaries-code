@@ -22,6 +22,7 @@ life_valuation_agent = Agent(
     enable_user_memories=True,       # persistent memory across runs
     user_id="mumbai_life_valuation",
     tool_call_limit=10,
+    markdown=True,
 )
 
 if __name__ == "__main__":

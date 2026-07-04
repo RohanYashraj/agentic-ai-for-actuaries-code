@@ -26,6 +26,7 @@ life_valuation_agent = Agent(
     model=Gemini(id="gemini-3.1-flash-lite"),
     knowledge=prior_study_archive,
     tool_call_limit=10,
+    markdown=True,
 )
 
 if __name__ == "__main__":

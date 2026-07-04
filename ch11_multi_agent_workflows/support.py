@@ -183,4 +183,5 @@ data_quality_agent = Agent(
     description="Scans the motor India triangle for data quality issues before reserving.",
     tools=[check_triangle_quality],
     tool_call_limit=5,
+    markdown=True,
 )

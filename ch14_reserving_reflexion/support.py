@@ -213,6 +213,7 @@ def build_reserving_review_workflow(include_cape_cod: bool = True):
         description="Computes CL, BF, and Cape Cod estimates and reconciles them.",
         tools=tools,
         tool_call_limit=10,
+        markdown=True,
     )
     return Workflow(
         name="ReservingReviewWorkflow",

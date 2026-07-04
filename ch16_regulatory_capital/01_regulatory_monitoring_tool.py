@@ -75,6 +75,7 @@ monitoring_agent = Agent(
     model=Gemini(id="gemini-3.1-flash-lite"),
     tools=[fetch_regulatory_publications],
     tool_call_limit=8,
+    markdown=True,
 )
 
 if __name__ == "__main__":

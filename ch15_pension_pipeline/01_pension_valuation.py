@@ -51,6 +51,7 @@ valuation_agent = Agent(
     model=Gemini(id="gemini-3.1-flash-lite"),
     tools=[value_scheme],
     tool_call_limit=3,
+    markdown=True,
 )
 
 if __name__ == "__main__":

@@ -27,6 +27,7 @@ submission_agent = Agent(
     tools=[extract_cope_attributes, parse_loss_summary],
     tool_call_limit=10,  # bound the agent loop; case-study default
     instructions="Extract COPE attributes and prior loss history.",
+    markdown=True,
 )
 
 market_data_agent = Agent(
@@ -34,6 +35,7 @@ market_data_agent = Agent(
     tools=[query_internal_loss_db, query_marketview_aggregator],
     tool_call_limit=10,
     instructions="Retrieve comparable internal claims and market benchmarks.",
+    markdown=True,
 )
 
 pricing_comparison_agent = Agent(
@@ -41,6 +43,7 @@ pricing_comparison_agent = Agent(
     tools=[fetch_emblem_radar_premium, compare_to_pricing_model],
     tool_call_limit=10,
     instructions="Compare GLM technical premium against comparable-account median.",
+    markdown=True,
 )
 
 # Fixed-path workflow — the sequence is decided in advance, not at runtime
@@ -55,8 +58,8 @@ underwriting_workflow = Workflow(
 
 if __name__ == "__main__":
     # Run the workflow on a single submission
-    run_response = underwriting_workflow.run(
+    underwriting_workflow.print_response(
         "Process submission ../data/submissions/MR-CHI-2025-Q3-018.pdf "
-        "(reference MR-CHI-2025-Q3-018) and produce a draft recommendation."
+        "(reference MR-CHI-2025-Q3-018) and produce a draft recommendation.",
+        markdown=True,
     )
-    print(run_response.content)

@@ -33,6 +33,7 @@ reconciliation_agent = Agent(
     db=SqliteDb(db_file="meridian_reserving_memory.db"),  # was: memory=Memory(db=...)
     enable_user_memories=True,
     tool_call_limit=10,
+    markdown=True,
     instructions=(
         "Compare next-cycle actual development against prior cycle's "
         "LDF expectations. Surface deviations exceeding the firm's "
@@ -50,9 +51,9 @@ reserving_reflexion_workflow = Workflow(
 )
 
 if __name__ == "__main__":
-    run_response = reserving_reflexion_workflow.run(
+    reserving_reflexion_workflow.print_response(
         "Run the FY2024 Q3 motor India reserving cycle, then reconcile the "
         "observed 12-24 development factor against the prior cycle's "
-        "expectation from retrieve_prior_cycle."
+        "expectation from retrieve_prior_cycle.",
+        markdown=True,
     )
-    print(run_response.content)

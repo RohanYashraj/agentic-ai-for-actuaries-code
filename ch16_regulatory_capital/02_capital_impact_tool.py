@@ -52,6 +52,7 @@ capital_impact_agent = Agent(
     model=Gemini(id="gemini-3.1-flash-lite"),
     tools=[assess_capital_impact],
     tool_call_limit=6,
+    markdown=True,
 )
 
 if __name__ == "__main__":
