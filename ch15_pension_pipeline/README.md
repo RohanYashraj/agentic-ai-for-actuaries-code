@@ -12,3 +12,38 @@ of Technical Provisions and the LTFT, the four member-data validators,
 and the member-record / statement-prose helpers. Member data ships at
 `../data/uk_annuity_members.csv`. The valuation is a deliberately
 simple approximation — not a TAS 300-compliant funding valuation.
+
+## Script summaries and how to run
+
+All commands are run from this folder.
+
+### `01_pension_valuation.py`
+The funding valuation tool for a closed UK DB scheme: computes base-case
+Technical Provisions and the Long-Term Funding Target, plus a six-way
+sensitivity panel (discount rate ±100bp, longevity ±25%, inflation
+±50bp). The agent runs the tool and summarises the panel for the Scheme
+Actuary.
+
+```bash
+uv run --env-file ../.env python 01_pension_valuation.py
+```
+
+### `02_quality_gate.py`
+The pipeline's ingestion gate: validates the member-data file for
+parseability, required schema fields, plausible value ranges, and
+duplicate member ids, returning `ok` or `needs_review` with a diagnostic
+naming the failed check. Runs directly against the shipped member file.
+
+```bash
+uv run python 02_quality_gate.py
+```
+
+### `03_member_communication.py`
+Drafts a member's annual annuity statement: reads the member record and
+the scheme valuation output (built by calling the script 01 tool
+directly), computes next year's escalated pension, and returns the
+statement prose with member-visible citations for every figure.
+
+```bash
+uv run python 03_member_communication.py
+```
