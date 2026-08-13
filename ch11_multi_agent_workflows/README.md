@@ -1,5 +1,7 @@
 # Chapter 11 — Multi-Agent Coordination
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/rohanyashraj/agentic-ai-for-actuaries-code/blob/main/notebooks/ch11.ipynb)
+
 | Script | Book listing | Needs API key |
 |---|---|---|
 | `01_reserving_review_workflow.py` | "Code" section: three-agent fixed-path workflow | Yes |

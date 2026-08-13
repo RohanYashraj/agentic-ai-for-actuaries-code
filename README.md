@@ -15,6 +15,15 @@ appears anywhere in this repository. The IALM-style table is a
 Gompertz-shaped synthetic with the same structure as IALM 2012-14 ULP,
 sufficient for the examples to run — do not use it for real work.
 
+## Run in Colab (no install)
+
+Every chapter has a companion notebook in `notebooks/` that runs in
+Google Colab with zero local setup — it clones this repository and
+executes the chapter's scripts, so the code you run is exactly the
+code here. Click the **Open in Colab** badge at the top of any chapter
+README, add your Google AI Studio key as a Colab secret named
+`GOOGLE_API_KEY` (🔑 sidebar), and run the cells top to bottom.
+
 ## Setup
 
 You need [uv](https://docs.astral.sh/uv/getting-started/installation/)
@@ -28,7 +37,7 @@ is present.
 curl -LsSf https://astral.sh/uv/install.sh | sh   # Windows: powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
 
 # 2. Clone and enter the repository
-git clone <repo-url>
+git clone https://github.com/rohanyashraj/agentic-ai-for-actuaries-code.git
 cd agentic-ai-for-actuaries-code
 
 # 3. Install dependencies (creates .venv from pyproject.toml/uv.lock)

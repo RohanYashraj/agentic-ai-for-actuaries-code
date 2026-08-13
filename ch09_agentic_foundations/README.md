@@ -1,5 +1,7 @@
 # Chapter 9 — Agentic AI Foundations
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/rohanyashraj/agentic-ai-for-actuaries-code/blob/main/notebooks/ch09.ipynb)
+
 | Script | Book listing | Needs API key |
 |---|---|---|
 | `01_column_agent.py` | §9.6 "Your First Agent (Code)" | Yes |

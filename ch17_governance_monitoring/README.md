@@ -1,5 +1,7 @@
 # Chapter 17 — Governance, Monitoring, Observability
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/rohanyashraj/agentic-ai-for-actuaries-code/blob/main/notebooks/ch17.ipynb)
+
 | Script | Book listing | Needs API key |
 |---|---|---|
 | `01_monitoring_dashboard.py` | §17.5 monitoring_dashboard tool | No (direct tool test) |
