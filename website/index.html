@@ -289,8 +289,9 @@ document.querySelectorAll("[data-words]").forEach(function(q){
   words.forEach(function(w,i){
     var s = document.createElement("span");
     s.className = "wd"; s.style.transitionDelay = (i*26)+"ms";
-    s.textContent = w + " ";
+    s.textContent = w;
     q.appendChild(s);
+    q.appendChild(document.createTextNode(" "));
   });
 });
 
