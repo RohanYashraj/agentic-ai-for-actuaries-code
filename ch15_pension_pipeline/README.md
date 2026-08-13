@@ -1,5 +1,7 @@
 # Chapter 15 — Multi-Scheme Pension Pipeline
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/rohanyashraj/agentic-ai-for-actuaries-code/blob/main/notebooks/ch15.ipynb)
+
 | Script | Book listing | Needs API key |
 |---|---|---|
 | `01_pension_valuation.py` | pension_valuation.py | Yes (tool testable without) |

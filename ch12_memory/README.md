@@ -1,5 +1,7 @@
 # Chapter 12 — Memory
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/rohanyashraj/agentic-ai-for-actuaries-code/blob/main/notebooks/ch12.ipynb)
+
 | Script | Book listing | Needs API key |
 |---|---|---|
 | `01_sqlite_memory.py` | §12.3 SQLite long-term memory | Yes |

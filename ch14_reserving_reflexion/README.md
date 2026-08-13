@@ -1,5 +1,7 @@
 # Chapter 14 — Reserving with Reflexion
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/rohanyashraj/agentic-ai-for-actuaries-code/blob/main/notebooks/ch14.ipynb)
+
 | Script | Book listing | Needs API key |
 |---|---|---|
 | `tools_reserving.py` | meridian_re/tools/reserving.py (Cape Cod tool) | No (direct tool test) |

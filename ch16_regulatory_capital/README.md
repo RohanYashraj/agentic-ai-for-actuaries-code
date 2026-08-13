@@ -1,5 +1,7 @@
 # Chapter 16 — Regulatory Monitoring, Capital, ORSA
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/rohanyashraj/agentic-ai-for-actuaries-code/blob/main/notebooks/ch16.ipynb)
+
 | Script | Book listing | Needs API key |
 |---|---|---|
 | `01_regulatory_monitoring_tool.py` | regulatory_monitoring_tool.py | Yes (tool testable without) |

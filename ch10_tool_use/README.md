@@ -1,5 +1,7 @@
 # Chapter 10 — Designing Actuarial Tools
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/rohanyashraj/agentic-ai-for-actuaries-code/blob/main/notebooks/ch10.ipynb)
+
 | Script | Book listing | Needs API key |
 |---|---|---|
 | `01_mortality_tool.py` | §10.2 mortality lookup tool | No (direct tool test) |

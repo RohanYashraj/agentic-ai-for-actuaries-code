@@ -1,5 +1,7 @@
 # Chapter 13 — Commercial Property Underwriting
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/rohanyashraj/agentic-ai-for-actuaries-code/blob/main/notebooks/ch13.ipynb)
+
 | Script | Book listing | Needs API key |
 |---|---|---|
 | `01_cope_extraction_tool.py` | COPE extraction tool | No (direct tool test) |
