@@ -82,21 +82,43 @@ export function ScriptCard({
               <DemoRunner spec={demoSpec!} initialSource={demoSource!} />
             </TabsContent>
             <TabsContent value="agent">
-              <AgentRunner
-                agent={agentEntry}
-                chapter={chapter.slug}
-                source={originalSource}
-              />
+              <div className="space-y-3">
+                {originalSource !== undefined && (
+                  <div className="overflow-hidden rounded-md border border-border">
+                    <CodeView
+                      source={originalSource}
+                      expandable
+                      title={`${chapter.folder}/${script.file}`}
+                    />
+                  </div>
+                )}
+                <AgentRunner
+                  agent={agentEntry}
+                  chapter={chapter.slug}
+                  source={originalSource}
+                />
+              </div>
             </TabsContent>
           </Tabs>
         ) : hasDemo ? (
           <DemoRunner spec={demoSpec!} initialSource={demoSource!} />
         ) : hasAgent && agentEntry ? (
-          <AgentRunner
-            agent={agentEntry}
-            chapter={chapter.slug}
-            source={originalSource}
-          />
+          <div className="space-y-3">
+            {originalSource !== undefined && (
+              <div className="overflow-hidden rounded-md border border-border">
+                <CodeView
+                  source={originalSource}
+                  expandable
+                  title={`${chapter.folder}/${script.file}`}
+                />
+              </div>
+            )}
+            <AgentRunner
+              agent={agentEntry}
+              chapter={chapter.slug}
+              source={originalSource}
+            />
+          </div>
         ) : (
           <div className="overflow-hidden rounded-md border border-border">
             {originalSource !== undefined && (

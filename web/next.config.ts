@@ -1,10 +1,14 @@
 import type { NextConfig } from "next";
 
-// Report-Only first: watch the console/report noise across a deploy
-// (Pyodide worker, CodeMirror, Next inline bootstrap), then flip to an
-// enforcing Content-Security-Policy header. jsDelivr is required by the
-// Pyodide worker (importScripts + package fetches); wasm-unsafe-eval by
-// the Pyodide wasm runtime.
+// Report-Only first, then flip the header name to the enforcing
+// Content-Security-Policy once the site's flows run clean. There is no
+// report-uri collector, so verification is manual: exercise a Pyodide
+// demo and an agent run on the deployed site with the console open
+// (dev shows unsafe-eval reports from HMR — dev-only noise; if the
+// PRODUCTION Pyodide demo reports unsafe-eval too, add 'unsafe-eval'
+// to script-src before enforcing). jsDelivr is required by the Pyodide
+// worker (importScripts + package fetches); wasm-unsafe-eval by the
+// Pyodide wasm runtime.
 const csp = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://cdn.jsdelivr.net",

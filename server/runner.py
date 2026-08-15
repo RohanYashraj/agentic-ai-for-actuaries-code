@@ -72,7 +72,9 @@ def serialize_event(ev) -> dict:
     elif name in ("StepStarted", "StepCompleted", "StepError"):
         out["step"] = getattr(ev, "step_name", None)
     elif name in ("RunError", "WorkflowError"):
-        out["detail"] = _truncate(getattr(ev, "content", None) or "run failed", 2000)
+        # agno-authored error messages (auth, quota, model errors) — short
+        # and user-actionable, unlike tracebacks, so shown but capped.
+        out["detail"] = _truncate(getattr(ev, "content", None) or "run failed", 500)
     return out
 
 
@@ -149,7 +151,13 @@ def main() -> int:
         return code or 0
     except BaseException as e:  # noqa: BLE001 — report anything to the stream
         sys.stdout.flush()
-        emit({"type": "Fatal", "detail": _truncate(f"{type(e).__name__}: {e}", 2000)})
+        # Same shape as main.py's sanitized Fatal: friendly message plus a
+        # short excerpt — raw exception text never reaches the browser.
+        emit({
+            "type": "Fatal",
+            "detail": "The run failed on the server. Try again, or open the chapter in Colab.",
+            "excerpt": _truncate(f"{type(e).__name__}: {e}", 300),
+        })
         return 1
 
 

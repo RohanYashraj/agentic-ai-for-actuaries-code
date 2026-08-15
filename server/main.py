@@ -38,11 +38,11 @@ def _abs_pythonpath() -> str:
     return os.pathsep.join(os.path.abspath(p) for p in parts if p)
 
 
-# Chapter scripts run with an allowlisted environment: the model keys and
-# runtime basics they need, nothing else (in particular no Upstash
-# credentials — the sandbox's blast radius stays small).
+# Chapter scripts run with an allowlisted environment: the active
+# provider's model key and runtime basics, nothing else (no Upstash
+# credentials, no unused provider keys — the sandbox's blast radius
+# stays minimal).
 _SUBPROCESS_ENV_KEYS = (
-    "GOOGLE_API_KEY", "ANTHROPIC_API_KEY", "OPENAI_API_KEY",
     "MODEL_PROVIDER", "MODEL_ID",
     "PATH", "HOME", "TMPDIR", "LANG", "LC_ALL",
     "SSL_CERT_FILE", "SSL_CERT_DIR", "REQUESTS_CA_BUNDLE",
@@ -51,6 +51,9 @@ _SUBPROCESS_ENV_KEYS = (
 
 def _subprocess_env() -> dict[str, str]:
     env = {k: v for k in _SUBPROCESS_ENV_KEYS if (v := os.environ.get(k))}
+    key_name = _required_key_name()
+    if os.environ.get(key_name):
+        env[key_name] = os.environ[key_name]
     env.update({"PYTHONPATH": _abs_pythonpath(), "PYTHONUNBUFFERED": "1",
                 "NO_COLOR": "1", "TERM": "dumb"})
     return env
@@ -143,6 +146,15 @@ async def limits(request: Request) -> dict:
 
 @app.post("/api/py/waitlist")
 async def join_waitlist(request: Request):
+    # Requiring the JSON content type forces cross-site senders into a
+    # CORS preflight (which fails — no CORS headers exist). Without it, a
+    # text/plain "simple request" from any page could post signups.
+    ctype = request.headers.get("content-type", "").split(";")[0].strip().lower()
+    if ctype != "application/json":
+        return JSONResponse(
+            {"error": "bad_request", "detail": "Send JSON with an email field."},
+            status_code=415,
+        )
     try:
         body = await request.json()
         email_raw = str(body.get("email", ""))
