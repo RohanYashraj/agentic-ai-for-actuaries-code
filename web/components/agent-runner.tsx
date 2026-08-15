@@ -127,13 +127,12 @@ function reduceBlocks(blocks: Block[], event: Record<string, unknown>): Block[] 
     case "StepStarted":
       if (event.step) next.push({ type: "step", name: String(event.step) });
       return next;
-    case "StepError":
-      next.push({
-        type: "log",
-        level: "error",
-        message: event.step ? `step ${String(event.step)} failed` : "a step failed",
-      });
+    case "StepError": {
+      const where = event.step ? `step ${String(event.step)} failed` : "a step failed";
+      const why = typeof event.detail === "string" ? ` — ${event.detail}` : "";
+      next.push({ type: "log", level: "error", message: where + why });
       return next;
+    }
     case "Log": {
       const message = String(event.message ?? "");
       if (!message) return blocks;

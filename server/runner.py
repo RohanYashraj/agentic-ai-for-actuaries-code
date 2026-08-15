@@ -71,10 +71,16 @@ def serialize_event(ev) -> dict:
             out["detail"] = _truncate(getattr(ev, "error", None) or "tool call failed", 2000)
     elif name in ("StepStarted", "StepCompleted", "StepError"):
         out["step"] = getattr(ev, "step_name", None)
+        if name == "StepError" and getattr(ev, "error", None):
+            out["detail"] = _truncate(ev.error, 500)
     elif name in ("RunError", "WorkflowError"):
         # agno-authored error messages (auth, quota, model errors) — short
         # and user-actionable, unlike tracebacks, so shown but capped.
-        out["detail"] = _truncate(getattr(ev, "content", None) or "run failed", 500)
+        # RunErrorEvent carries the message in `content`; WorkflowErrorEvent
+        # (and StepErrorEvent above) in `error`.
+        out["detail"] = _truncate(
+            getattr(ev, "content", None) or getattr(ev, "error", None) or "run failed", 500
+        )
     return out
 
 

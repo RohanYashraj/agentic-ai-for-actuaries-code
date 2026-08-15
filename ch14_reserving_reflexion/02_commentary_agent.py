@@ -24,7 +24,7 @@ commentary_agent = Agent(
     tools=[draft_movement_commentary],
     tool_call_limit=3,
     markdown=True,
-    tool_choice="validated" if os.getenv("MODEL_PROVIDER", "google") == "google" else None,
+    tool_choice="validated" if os.getenv("MODEL_PROVIDER", "google").lower() == "google" else None,
     instructions=(
         "Call draft_movement_commentary once, passing the reconciliation "
         "figures from the request as the reflexion_output dict (use empty "

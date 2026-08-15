@@ -46,6 +46,11 @@ _SUBPROCESS_ENV_KEYS = (
     "MODEL_PROVIDER", "MODEL_ID",
     "PATH", "HOME", "TMPDIR", "LANG", "LC_ALL",
     "SSL_CERT_FILE", "SSL_CERT_DIR", "REQUESTS_CA_BUNDLE",
+    # Vercel's Python functions run on AWS Lambda, whose python binary
+    # resolves libpython and bundled native libs via LD_LIBRARY_PATH —
+    # dropping it would break the subprocess only in production. Proxy
+    # knobs pass through for operators; none of these carry secrets.
+    "LD_LIBRARY_PATH", "HTTP_PROXY", "HTTPS_PROXY", "NO_PROXY", "AGNO_TELEMETRY",
 )
 
 
@@ -240,6 +245,7 @@ async def run_agent(agent_id: str, request: Request):
             )
             yield _sse({"type": "Accepted", "id": spec.id, "estSeconds": spec.est_seconds})
             deadline = asyncio.get_event_loop().time() + RUN_TIMEOUT_SECONDS
+            child_reported_failure = False
             while True:
                 if await request.is_disconnected():
                     proc.kill()
@@ -262,11 +268,18 @@ async def run_agent(agent_id: str, request: Request):
                 if not text:
                     continue
                 try:
-                    yield _sse(json.loads(text))
+                    obj = json.loads(text)
                 except json.JSONDecodeError:
                     yield _sse({"type": "Stdout", "line": text})
+                else:
+                    if obj.get("type") in ("Fatal", "RunError", "WorkflowError"):
+                        child_reported_failure = True
+                    yield _sse(obj)
             rc = await proc.wait()
-            if rc != 0:
+            # The runner reports its own failures with an informative
+            # excerpt and empty stderr; a second Fatal here would clobber
+            # that excerpt with a useless "exit code N".
+            if rc != 0 and not child_reported_failure:
                 stderr_tail = (await proc.stderr.read())[-2000:].decode("utf-8", "replace")
                 lines = [ln.strip() for ln in stderr_tail.splitlines() if ln.strip()]
                 yield _sse({

@@ -6,7 +6,10 @@
 #   - ChromaDb requires the `chromadb` package (a project dependency).
 #   - ChromaDb defaults to an OpenAI embedder; the GeminiEmbedder is
 #     passed explicitly so the whole example runs on the one
-#     GOOGLE_API_KEY the repo already needs.
+#     GOOGLE_API_KEY the repo already needs. NB: the embedder stays
+#     Google-pinned even when MODEL_PROVIDER switches the chat model —
+#     embeddings must match the index, so this script always needs
+#     GOOGLE_API_KEY regardless of provider.
 #   - add_content is synchronous here; indexing runs once at build.
 import os
 

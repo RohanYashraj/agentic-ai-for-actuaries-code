@@ -222,11 +222,13 @@ the repository root (see `.env.example`):
 
 The book's listings construct the model inline
 (`model=Gemini(id="gemini-3.1-flash-lite")`); the repository scripts
-call `get_model()` from `common/config.py` instead, which returns
-exactly that construction by default but lets `MODEL_PROVIDER` and
+call `get_model()` from `common/config.py` instead, which defaults to
+the newer `gemini-3.5-flash-lite` and lets `MODEL_PROVIDER` and
 `MODEL_ID` in your `.env` switch every example at once — no per-script
-edits. Anthropic Claude and OpenAI backends are wired in; install the
-matching SDK with:
+edits. (One exception: Chapter 12's vector-knowledge script keeps its
+Google embedder regardless of provider, so it always needs
+`GOOGLE_API_KEY`.) Anthropic Claude and OpenAI backends are wired in;
+install the matching SDK with:
 
 ```bash
 uv sync --extra anthropic   # or: --extra openai

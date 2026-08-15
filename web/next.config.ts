@@ -8,7 +8,12 @@ import type { NextConfig } from "next";
 // PRODUCTION Pyodide demo reports unsafe-eval too, add 'unsafe-eval'
 // to script-src before enforcing). jsDelivr is required by the Pyodide
 // worker (importScripts + package fetches); wasm-unsafe-eval by the
-// Pyodide wasm runtime.
+// Pyodide wasm runtime. Note the honest scope: script-src keeps
+// 'unsafe-inline' (Next's inline bootstrap; going nonce-based needs
+// middleware), so even enforced this policy is an egress/framing
+// control — foreign script, connect, base, and form targets — not an
+// inline-XSS shield. The page renders no raw HTML anywhere, which is
+// the actual XSS defense.
 const csp = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://cdn.jsdelivr.net",
@@ -17,6 +22,8 @@ const csp = [
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data:",
   "font-src 'self'",
+  "base-uri 'self'",
+  "form-action 'self'",
   "frame-ancestors 'none'",
 ].join("; ");
 
