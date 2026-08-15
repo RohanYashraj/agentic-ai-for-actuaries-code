@@ -9,6 +9,7 @@ import { AGENT_SCRIPTS } from "@/lib/agents";
 import { CHAPTERS, getChapter } from "@/lib/chapters";
 import { loadDemoSource, loadManifest } from "@/lib/demos";
 import { colabUrl, GITHUB_REPO } from "@/lib/links";
+import { cn, CONTAINER } from "@/lib/utils";
 
 export function generateStaticParams() {
   return CHAPTERS.map((c) => ({ chapter: c.slug }));
@@ -50,7 +51,7 @@ export default async function ChapterPage({
   const next = CHAPTERS[index + 1];
 
   return (
-    <div className="mx-auto w-full max-w-[1120px] px-5 py-10 sm:px-8">
+    <div className={cn(CONTAINER, "py-10")}>
       <nav className="font-mono text-xs text-muted-foreground">
         <Link href="/code" className="transition-colors hover:text-cream-100">
           Run the code

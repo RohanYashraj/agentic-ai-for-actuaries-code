@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Mono, IBM_Plex_Sans, Source_Serif_4 } from "next/font/google";
 import Link from "next/link";
+import { GithubLogo } from "@phosphor-icons/react/dist/ssr";
+import { SiteFooter } from "@/components/site-footer";
+import { GITHUB_REPO } from "@/lib/links";
+import { cn, CONTAINER } from "@/lib/utils";
 import "./globals.css";
 
 const sourceSerif = Source_Serif_4({
@@ -41,44 +45,37 @@ export default function RootLayout({
     >
       <body className="flex min-h-svh flex-col">
         <header className="sticky top-0 z-40 border-b border-border bg-navy-900/90 backdrop-blur">
-          <div className="mx-auto flex h-16 w-full max-w-[1120px] items-center justify-between px-5 sm:px-8">
+          <div
+            className={cn(CONTAINER, "flex h-16 items-center justify-between gap-3")}
+          >
             <Link
               href="/"
-              className="font-serif text-base text-cream-100 sm:text-lg"
+              className="whitespace-nowrap font-serif text-[15px] text-cream-100 sm:text-lg"
             >
               Agentic AI <span className="text-gold-400">for Actuaries</span>
             </Link>
-            <nav className="flex items-center gap-5 text-sm">
+            <nav className="flex shrink-0 items-center gap-3 text-sm sm:gap-4">
+              <a
+                href={GITHUB_REPO}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="GitHub repository"
+                className="inline-flex items-center gap-1.5 text-foreground transition-colors hover:text-cream-100"
+              >
+                <GithubLogo size={18} aria-hidden="true" />
+                <span className="hidden sm:inline">GitHub</span>
+              </a>
               <Link
                 href="/code"
-                className="text-foreground transition-colors hover:text-cream-100"
+                className="inline-flex h-7 items-center whitespace-nowrap rounded-full border border-gold-400/40 px-3 text-xs text-gold-300 transition-colors hover:border-gold-400/70 hover:bg-gold-400/10 hover:text-gold-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-400 sm:h-8 sm:px-4 sm:text-sm"
               >
                 Run the code
               </Link>
-              <a
-                href="https://github.com/rohanyashraj/agentic-ai-for-actuaries-code"
-                target="_blank"
-                rel="noreferrer"
-                className="hidden text-foreground transition-colors hover:text-cream-100 sm:block"
-              >
-                GitHub
-              </a>
             </nav>
           </div>
         </header>
         <main className="flex-1">{children}</main>
-        <footer className="border-t border-border">
-          <div className="mx-auto flex w-full max-w-[1120px] flex-col gap-2 px-5 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-8">
-            <p>
-              Companion code for{" "}
-              <span className="text-cream-200">Agentic AI for Actuaries</span>
-            </p>
-            <p>
-              All data is synthetic. Agent runs use Gemini; browser demos run
-              locally via Python in WebAssembly.
-            </p>
-          </div>
-        </footer>
+        <SiteFooter />
       </body>
     </html>
   );

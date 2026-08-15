@@ -1,7 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowUpRight } from "@phosphor-icons/react/dist/ssr";
 import { NotifyForm } from "@/components/notify-form";
+import { NotifyPopup } from "@/components/notify-popup";
 import { Button } from "@/components/ui/button";
+import { cn, CONTAINER } from "@/lib/utils";
 import { CHAPTERS } from "@/lib/chapters";
 import { GITHUB_REPO } from "@/lib/links";
 import { BOOK_PROMISE, OUTLINE, TARGET_READERS } from "@/lib/outline";
@@ -34,7 +37,12 @@ export default function LandingPage() {
     <div>
       {/* Hero: the book itself. */}
       <section className="overflow-x-clip border-b border-border">
-        <div className="mx-auto grid w-full max-w-[1180px] items-center gap-12 px-5 pb-20 pt-16 sm:px-8 lg:grid-cols-[1fr_1.05fr] lg:gap-8">
+        <div
+          className={cn(
+            CONTAINER,
+            "grid items-center gap-12 pb-20 pt-16 lg:grid-cols-[1fr_1.05fr] lg:gap-8"
+          )}
+        >
           <div className="hero-rise">
             <p className="font-mono text-xs uppercase tracking-[0.22em] text-gold-400">
               ACTEX · First edition · 2026
@@ -78,7 +86,7 @@ export default function LandingPage() {
 
       {/* Overview: what the book promises, and to whom */}
       <section className="border-b border-border">
-        <div className="mx-auto w-full max-w-[1120px] px-5 py-16 sm:px-8">
+        <div className={cn(CONTAINER, "py-16")}>
           <h2 className="max-w-2xl text-2xl leading-snug sm:text-3xl">
             A hands-on guide, structured as a single journey
           </h2>
@@ -123,7 +131,7 @@ export default function LandingPage() {
 
       {/* The outline: five parts, eighteen chapters */}
       <section id="outline" className="scroll-mt-16 border-b border-border">
-        <div className="mx-auto w-full max-w-[1120px] px-5 py-16 sm:px-8">
+        <div className={cn(CONTAINER, "py-16")}>
           <h2 className="text-2xl leading-snug sm:text-3xl">
             Inside the book
           </h2>
@@ -200,7 +208,7 @@ export default function LandingPage() {
 
       {/* Companion code directory */}
       <section className="border-b border-border">
-        <div className="mx-auto w-full max-w-[1120px] px-5 py-16 sm:px-8">
+        <div className={cn(CONTAINER, "py-16")}>
           <h2 className="text-2xl leading-snug sm:text-3xl">
             Every listing, runnable
           </h2>
@@ -243,7 +251,7 @@ export default function LandingPage() {
 
       {/* Pull quote */}
       <section className="border-b border-border">
-        <div className="mx-auto w-full max-w-[1120px] px-5 py-16 sm:px-8">
+        <div className={cn(CONTAINER, "py-16")}>
           <blockquote className="mx-auto max-w-2xl text-center">
             <p className="font-serif text-2xl leading-snug text-cream-100 sm:text-3xl">
               “The difference is not talent. Both hold the same fellowship
@@ -258,7 +266,7 @@ export default function LandingPage() {
 
       {/* Authors */}
       <section className="border-b border-border">
-        <div className="mx-auto w-full max-w-[1120px] px-5 py-16 sm:px-8">
+        <div className={cn(CONTAINER, "py-16")}>
           <h2 className="text-2xl leading-snug sm:text-3xl">The authors</h2>
           <div className="mt-8 grid gap-8 sm:grid-cols-2">
             <div className="flex gap-4">
@@ -305,6 +313,15 @@ export default function LandingPage() {
                   published papers, and adjunct professor at the Sri Sathya Sai
                   Institute of Actuaries.
                 </p>
+                <a
+                  href="https://rohanyashraj.com"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-2 inline-flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-cream-100"
+                >
+                  rohanyashraj.com
+                  <ArrowUpRight size={12} aria-hidden="true" />
+                </a>
               </div>
             </div>
           </div>
@@ -325,13 +342,15 @@ export default function LandingPage() {
 
       {/* Launch notify */}
       <section>
-        <div className="mx-auto flex w-full max-w-[1120px] flex-col gap-4 px-5 py-14 sm:px-8">
+        <div className={cn(CONTAINER, "flex flex-col gap-4 py-16")}>
           <h2 className="text-xl text-cream-100">
             Available later this year, free from ACTEX
           </h2>
           <NotifyForm />
         </div>
       </section>
+
+      <NotifyPopup />
     </div>
   );
 }

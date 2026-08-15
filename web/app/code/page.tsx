@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Play, Sparkle } from "@phosphor-icons/react/dist/ssr";
 import { AGENT_SCRIPTS } from "@/lib/agents";
 import { CHAPTERS } from "@/lib/chapters";
+import { cn, CONTAINER } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Run the code",
@@ -11,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function CodeIndexPage() {
   return (
-    <div className="mx-auto w-full max-w-[1120px] px-5 py-12 sm:px-8">
+    <div className={cn(CONTAINER, "py-12")}>
       <header className="max-w-3xl">
         <h1 className="text-3xl leading-tight sm:text-4xl">
           Every listing, runnable
@@ -49,16 +51,24 @@ export default function CodeIndexPage() {
               <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted-foreground">
                 {chapter.blurb}
               </p>
-              <p className="mt-3 font-mono text-[11px] text-muted-foreground">
-                {[
-                  demoCount > 0 &&
-                    `${demoCount} browser demo${demoCount > 1 ? "s" : ""}`,
-                  agentCount > 0 &&
-                    `${agentCount} live agent${agentCount > 1 ? "s" : ""}`,
-                  "Colab",
-                ]
-                  .filter(Boolean)
-                  .join(" · ")}
+              <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] text-muted-foreground">
+                {demoCount > 0 && (
+                  <span className="inline-flex items-center gap-1">
+                    <Play size={11} className="text-run-ok" aria-hidden="true" />
+                    {demoCount} browser demo{demoCount > 1 ? "s" : ""}
+                  </span>
+                )}
+                {agentCount > 0 && (
+                  <span className="inline-flex items-center gap-1">
+                    <Sparkle
+                      size={11}
+                      className="text-gold-400"
+                      aria-hidden="true"
+                    />
+                    {agentCount} live agent{agentCount > 1 ? "s" : ""}
+                  </span>
+                )}
+                <span>Colab</span>
               </p>
             </Link>
           );

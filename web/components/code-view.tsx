@@ -63,7 +63,7 @@ export function CodeView({
           showCloseButton
         >
           <DialogTitle className="sr-only">
-            {title ?? "Source code"} — expanded view
+            {title ?? "Source code"} · expanded view
           </DialogTitle>
           <div className="flex h-full flex-col">
             {title && (

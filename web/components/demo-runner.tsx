@@ -188,7 +188,7 @@ export function DemoRunner({
             showCloseButton
           >
             <DialogTitle className="sr-only">
-              {spec.entry} — expanded editor
+              {spec.entry} · expanded editor
             </DialogTitle>
             <div className="h-full">{runner}</div>
           </DialogContent>

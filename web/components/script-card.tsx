@@ -1,3 +1,4 @@
+import { FileCode, GithubLogo } from "@phosphor-icons/react/dist/ssr";
 import { AgentRunner } from "@/components/agent-runner";
 import { CodeView } from "@/components/code-view";
 import { DemoRunner } from "@/components/demo-runner";
@@ -29,7 +30,12 @@ export function ScriptCard({
   return (
     <article className="rounded-md border border-border bg-card">
       <header className="flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b border-border px-4 py-3 sm:px-5">
-        <h3 className="font-mono text-sm font-medium text-cream-100">
+        <h3 className="inline-flex items-center gap-1.5 font-mono text-sm font-medium text-cream-100">
+          <FileCode
+            size={16}
+            className="shrink-0 text-gold-400"
+            aria-hidden="true"
+          />
           {script.file}
         </h3>
         {hasDemo && (
@@ -51,8 +57,9 @@ export function ScriptCard({
           href={githubFileUrl(`${chapter.folder}/${script.file}`)}
           target="_blank"
           rel="noreferrer"
-          className="ml-auto text-xs text-muted-foreground transition-colors hover:text-cream-100"
+          className="ml-auto inline-flex items-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-cream-100"
         >
+          <GithubLogo size={14} aria-hidden="true" />
           Source on GitHub
         </a>
         <p className="w-full text-sm text-muted-foreground">
