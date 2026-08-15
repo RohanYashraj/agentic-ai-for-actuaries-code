@@ -37,14 +37,67 @@ def _abs_pythonpath() -> str:
     parts = os.environ.get("PYTHONPATH", "").split(os.pathsep)
     return os.pathsep.join(os.path.abspath(p) for p in parts if p)
 
+
+# Chapter scripts run with an allowlisted environment: the model keys and
+# runtime basics they need, nothing else (in particular no Upstash
+# credentials — the sandbox's blast radius stays small).
+_SUBPROCESS_ENV_KEYS = (
+    "GOOGLE_API_KEY", "ANTHROPIC_API_KEY", "OPENAI_API_KEY",
+    "MODEL_PROVIDER", "MODEL_ID",
+    "PATH", "HOME", "TMPDIR", "LANG", "LC_ALL",
+    "SSL_CERT_FILE", "SSL_CERT_DIR", "REQUESTS_CA_BUNDLE",
+)
+
+
+def _subprocess_env() -> dict[str, str]:
+    env = {k: v for k in _SUBPROCESS_ENV_KEYS if (v := os.environ.get(k))}
+    env.update({"PYTHONPATH": _abs_pythonpath(), "PYTHONUNBUFFERED": "1",
+                "NO_COLOR": "1", "TERM": "dumb"})
+    return env
+
 app = FastAPI(title="Agentic AI for Actuaries — agent runner")
 
 
 def _client_ip(request: Request) -> str:
-    fwd = request.headers.get("x-forwarded-for")
-    if fwd:
-        return fwd.split(",")[0].strip()
-    return request.headers.get("x-real-ip") or (request.client.host if request.client else "unknown")
+    # Per-IP limits are only as strong as the IP source. On Vercel the
+    # platform-set x-vercel-forwarded-for is trustworthy; in a generic
+    # proxy chain only the RIGHT-most x-forwarded-for entry is (left-most
+    # is client-controlled and would grant a fresh limit bucket per
+    # request). Locally, trust the socket peer and ignore headers.
+    if os.environ.get("VERCEL"):
+        fwd = request.headers.get("x-vercel-forwarded-for")
+        if fwd:
+            return fwd.split(",")[0].strip()
+        fwd = request.headers.get("x-forwarded-for")
+        if fwd:
+            return fwd.split(",")[-1].strip()
+    return request.client.host if request.client else "unknown"
+
+
+_PROVIDER_KEYS = {
+    "google": "GOOGLE_API_KEY",
+    "anthropic": "ANTHROPIC_API_KEY",
+    "openai": "OPENAI_API_KEY",
+}
+
+
+def _required_key_name() -> str:
+    provider = os.environ.get("MODEL_PROVIDER", "google").lower()
+    return _PROVIDER_KEYS.get(provider, "GOOGLE_API_KEY")
+
+
+def _origin_allowed(request: Request) -> bool:
+    # Optional belt on top of the x-agent-run header gate: when
+    # ALLOWED_ORIGINS is set (comma-separated), reject browser requests
+    # from other origins. Requests without an Origin header (curl,
+    # server-to-server) pass — rate limits cover those.
+    allowed = os.environ.get("ALLOWED_ORIGINS")
+    if not allowed:
+        return True
+    origin = request.headers.get("origin")
+    if not origin:
+        return True
+    return origin.rstrip("/") in {o.strip().rstrip("/") for o in allowed.split(",") if o.strip()}
 
 
 def _agent_json(a) -> dict:
@@ -66,7 +119,7 @@ def _agent_json(a) -> dict:
 async def health() -> dict:
     return {
         "status": "ok",
-        "hasApiKey": bool(os.environ.get("GOOGLE_API_KEY")),
+        "hasApiKey": bool(os.environ.get(_required_key_name())),
         "agents": len(RUNNABLE),
     }
 
@@ -102,15 +155,23 @@ async def join_waitlist(request: Request):
             status_code=422,
         )
     # Light abuse guard: a handful of signups per IP per day is plenty.
+    # The IP is hashed before it becomes a store key — no PII at rest.
     ip = _client_ip(request)
     day = time.strftime("%Y-%m-%d")
-    count = ratelimit.store().incr(f"wl:ip:{ip}:{day}", 172800)
-    if count > 5:
+    try:
+        count = ratelimit.store().incr(f"wl:ip:{ratelimit.ip_key(ip)}:{day}", 172800)
+        if count > 5:
+            return JSONResponse(
+                {"error": "rate_limited", "detail": "Too many signups from this connection today."},
+                status_code=429,
+            )
+        added = waitlist.signup(email)
+    except Exception:  # noqa: BLE001 — a store outage must not become a 500
         return JSONResponse(
-            {"error": "rate_limited", "detail": "Too many signups from this connection today."},
-            status_code=429,
+            {"error": "unavailable",
+             "detail": "Could not save your signup right now — please try again in a minute."},
+            status_code=503,
         )
-    added = waitlist.signup(email)
     return {"ok": True, "already": not added}
 
 
@@ -120,14 +181,24 @@ def _sse(obj: dict) -> str:
 
 @app.post("/api/py/agents/{agent_id}/run")
 async def run_agent(agent_id: str, request: Request):
+    # The custom header forces a CORS preflight, which fails from any
+    # foreign origin (this API sets no CORS headers) — without it, this
+    # bodyless POST is a "simple request" any third-party page could fire
+    # from a visitor's browser to bill the shared model key.
+    if request.headers.get("x-agent-run") is None or not _origin_allowed(request):
+        return JSONResponse(
+            {"error": "forbidden", "detail": "Runs must be started from the site."},
+            status_code=403,
+        )
     spec = RUNNABLE.get(agent_id)
     if spec is None:
         known = AGENTS.get(agent_id)
         detail = known.reason if known else "unknown agent id"
         return JSONResponse({"error": "not_runnable", "detail": detail}, status_code=404)
-    if not os.environ.get("GOOGLE_API_KEY"):
+    key_name = _required_key_name()
+    if not os.environ.get(key_name):
         return JSONResponse(
-            {"error": "no_api_key", "detail": "GOOGLE_API_KEY is not configured on the server."},
+            {"error": "no_api_key", "detail": f"{key_name} is not configured on the server."},
             status_code=503,
         )
     quota = ratelimit.check_and_increment(_client_ip(request))
@@ -153,8 +224,7 @@ async def run_agent(agent_id: str, request: Request):
                 cwd=str(cwd),
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
-                env={**os.environ, "PYTHONPATH": _abs_pythonpath(),
-                     "PYTHONUNBUFFERED": "1", "NO_COLOR": "1", "TERM": "dumb"},
+                env=_subprocess_env(),
             )
             yield _sse({"type": "Accepted", "id": spec.id, "estSeconds": spec.est_seconds})
             deadline = asyncio.get_event_loop().time() + RUN_TIMEOUT_SECONDS

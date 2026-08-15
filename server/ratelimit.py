@@ -16,9 +16,12 @@ instances. Fallback: per-process in-memory counters.
 from __future__ import annotations
 
 import hashlib
+import logging
 import os
 import time
 from dataclasses import dataclass
+
+_log = logging.getLogger("server.ratelimit")
 
 PER_IP_PER_MINUTE = int(os.environ.get("RATE_LIMIT_PER_IP_MIN", "4"))
 PER_IP_PER_DAY = int(os.environ.get("RATE_LIMIT_PER_IP_DAY", "75"))
@@ -41,7 +44,8 @@ class Quota:
 _UNLIMITED = Quota(allowed=True, per_ip_remaining=PER_IP_PER_DAY, global_remaining=GLOBAL_PER_DAY)
 
 
-def _ip_key(ip: str) -> str:
+def ip_key(ip: str) -> str:
+    """Hash an IP for use in store keys — raw IPs are never persisted."""
     return hashlib.sha256(ip.encode()).hexdigest()[:16]
 
 
@@ -64,20 +68,41 @@ class _MemoryStore:
 
 
 class _UpstashStore:
+    """Upstash-backed counters that fail open to in-memory ones.
+
+    A Redis outage must degrade limits (per-instance memory counters),
+    never take the endpoints down with a 500.
+    """
+
     def __init__(self, url: str, token: str) -> None:
         from upstash_redis import Redis
 
         self._redis = Redis(url=url, token=token)
+        self._fallback = _MemoryStore()
+        self._warned = False
+
+    def _warn_once(self, exc: Exception) -> None:
+        if not self._warned:
+            self._warned = True
+            _log.warning("Upstash unreachable, using in-memory limits: %s", exc)
 
     def incr(self, key: str, ttl: int) -> int:
-        count = self._redis.incr(key)
-        if count == 1:
-            self._redis.expire(key, ttl)
-        return count
+        try:
+            count = self._redis.incr(key)
+            if count == 1:
+                self._redis.expire(key, ttl)
+            return count
+        except Exception as exc:  # noqa: BLE001 — fail open on any transport error
+            self._warn_once(exc)
+            return self._fallback.incr(key, ttl)
 
     def get(self, key: str) -> int:
-        v = self._redis.get(key)
-        return int(v) if v else 0
+        try:
+            v = self._redis.get(key)
+            return int(v) if v else 0
+        except Exception as exc:  # noqa: BLE001
+            self._warn_once(exc)
+            return self._fallback.get(key)
 
 
 def _make_store():
@@ -103,7 +128,7 @@ def store():
 def _keys(ip: str) -> tuple[str, str, str]:
     minute = int(time.time() // 60)
     day = time.strftime("%Y-%m-%d", time.gmtime())
-    h = _ip_key(ip)
+    h = ip_key(ip)
     return f"rl:ip:{h}:m{minute}", f"rl:ip:{h}:d{day}", f"rl:global:{day}"
 
 
@@ -133,13 +158,21 @@ def peek(ip: str) -> Quota:
 
 
 def check_and_increment(ip: str) -> Quota:
+    """Count this request and report whether it is allowed.
+
+    Atomic per window: each INCR's return value is the checked value, so
+    concurrent requests cannot race past a limit (the old peek-then-
+    increment could). Short-circuits so a burst-limited client does not
+    consume day or global budget.
+    """
     if not enforced():
         return _UNLIMITED
-    quota = peek(ip)
-    if not quota.allowed:
-        return quota
     min_key, day_key, global_key = _keys(ip)
     ip_min = _store.incr(min_key, 120)
+    if ip_min > PER_IP_PER_MINUTE:
+        return _quota(ip_min, _store.get(day_key), _store.get(global_key))
     ip_day = _store.incr(day_key, 172800)
+    if ip_day > PER_IP_PER_DAY:
+        return _quota(ip_min, ip_day, _store.get(global_key))
     global_day = _store.incr(global_key, 172800)
     return _quota(ip_min, ip_day, global_day)
