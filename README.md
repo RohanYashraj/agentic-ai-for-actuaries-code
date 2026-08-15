@@ -298,10 +298,12 @@ it. The backend's security model is documented in
 The site deploys as a **single Vercel project**: the Next.js frontend
 builds from `web/`, and the FastAPI backend in `server/` is exposed as
 a Vercel Python serverless function via `web/api/index.py`. A rewrite
-in `web/vercel.json` routes `/api/py/*` to that function, and its
-`includeFiles` setting bundles the chapter code, `common/`, and `data/`
-into the function so agent scripts run against the exact repo code.
-No separate backend hosting is needed.
+in `web/vercel.json` routes `/api/py/*` to that function. Because
+Vercel cannot bundle files outside the project root (`web/`), the
+`prebuild` hook stages the backend — `server/`, the chapter code,
+`common/`, and `data/` — into `web/_backend/` via
+`scripts/bundle_backend.py`, so agent scripts run against the exact
+repo code. No separate backend hosting is needed.
 
 ### 1. Push the repository to GitHub
 
@@ -364,10 +366,12 @@ Click **Deploy**. The build:
    browser demos from the chapter scripts — they cannot drift from the
    book code, and CI double-checks this via
    `.github/workflows/demos-check.yml`;
-2. runs `next build` (static pages for `/`, `/code`, and each chapter);
-3. packages `web/api/index.py` as a Python 3.12 function (300 s max
-   duration, set in `web/vercel.json`) with the server, chapter code,
-   and data bundled in.
+2. runs `scripts/bundle_backend.py` (also via `prebuild`) to stage the
+   server, chapter code, and data into `web/_backend/` for the Python
+   function;
+3. runs `next build` (static pages for `/`, `/code`, and each chapter);
+4. packages `web/api/index.py` as a Python function (300 s max
+   duration, set in `web/vercel.json`) with `web/_backend/` bundled in.
 
 Subsequent pushes to the production branch deploy automatically; every
 pull request gets its own preview URL.

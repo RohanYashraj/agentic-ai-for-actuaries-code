@@ -1,0 +1,5 @@
+[project]
+name = "app"
+version = "0.1.0"
+dependencies = [ "agno==2.9.0", "google-genai>=2.0", "pandas>=2.2", "pypdf>=5.0", "python-dotenv>=1.0", "sqlalchemy>=2.0", "fastapi>=0.110", "upstash-redis>=1.0" ]
+requires-python = "~=3.12.0"

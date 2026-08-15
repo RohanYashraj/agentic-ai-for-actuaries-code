@@ -18,3 +18,5 @@ web/public/demos/
 # OS / editor / local tool state
 .DS_Store
 .claude/settings.local.json
+.vercel
+.env*

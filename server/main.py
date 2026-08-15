@@ -28,6 +28,15 @@ RUNNER = Path(__file__).resolve().parent / "runner.py"
 RUN_TIMEOUT_SECONDS = 240
 KEEPALIVE_SECONDS = 15
 
+
+def _abs_pythonpath() -> str:
+    # Vercel's Python runtime sets PYTHONPATH=_vendor, relative to the
+    # function root; the runner subprocess executes from a /tmp
+    # workspace, so relative entries must be absolutized before they
+    # are passed down or vendored imports (agno, etc.) break.
+    parts = os.environ.get("PYTHONPATH", "").split(os.pathsep)
+    return os.pathsep.join(os.path.abspath(p) for p in parts if p)
+
 app = FastAPI(title="Agentic AI for Actuaries — agent runner")
 
 
@@ -144,7 +153,8 @@ async def run_agent(agent_id: str, request: Request):
                 cwd=str(cwd),
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
-                env={**os.environ, "PYTHONUNBUFFERED": "1", "NO_COLOR": "1", "TERM": "dumb"},
+                env={**os.environ, "PYTHONPATH": _abs_pythonpath(),
+                     "PYTHONUNBUFFERED": "1", "NO_COLOR": "1", "TERM": "dumb"},
             )
             yield _sse({"type": "Accepted", "id": spec.id, "estSeconds": spec.est_seconds})
             deadline = asyncio.get_event_loop().time() + RUN_TIMEOUT_SECONDS

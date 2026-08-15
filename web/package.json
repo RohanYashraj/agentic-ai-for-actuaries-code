@@ -6,7 +6,7 @@
     "predev": "python3 ../scripts/build_demos.py --out public/demos",
     "dev": "next dev",
     "dev:all": "concurrently -n web,api -c auto \"npm run dev\" \"../.venv/bin/uvicorn server.main:app --app-dir .. --port 8000 --reload\"",
-    "prebuild": "python3 ../scripts/build_demos.py --out public/demos",
+    "prebuild": "python3 ../scripts/build_demos.py --out public/demos && python3 ../scripts/bundle_backend.py --out _backend",
     "build": "next build",
     "start": "next start"
   },

@@ -51,8 +51,10 @@ Import the repository into Vercel with:
    `RATE_LIMIT_PER_IP_DAY` (default 75), `RATE_LIMIT_GLOBAL_DAY`
    (default 750). Rate limits only apply when deployed; local dev is
    unlimited (force locally with `RATE_LIMIT_ENFORCE=1`).
-3. `web/vercel.json` wires `/api/py/*` to the Python function and bundles
-   the chapter code and data into it.
+3. `web/vercel.json` wires `/api/py/*` to the Python function. The
+   `prebuild` hook stages the backend (server, chapter code, data) into
+   `web/_backend/` via `../scripts/bundle_backend.py`, because Vercel
+   cannot bundle function files from outside the Root Directory.
 
 Without the env vars the site still works: agent runs report that the
 runner is unavailable and point at Colab; everything else is static.
