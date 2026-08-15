@@ -16,6 +16,8 @@ from support import (
 )
 
 
+# NB: agents address this tool by its registered name "pension_valuation" —
+# instruction text must use that name, not the Python function name.
 @tool(name="pension_valuation")
 def value_scheme(scheme_id: str, effective_date: str) -> dict:
     """Run a funding valuation on a closed UK DB scheme.

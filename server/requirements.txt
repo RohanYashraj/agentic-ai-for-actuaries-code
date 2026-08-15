@@ -1,4 +1,5 @@
 agno==2.9.0
+uvicorn>=0.30
 google-genai>=2.0
 pandas>=2.2
 pypdf>=5.0

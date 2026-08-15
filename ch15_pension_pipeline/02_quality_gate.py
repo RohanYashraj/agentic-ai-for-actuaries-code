@@ -16,6 +16,8 @@ from support import (
 DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "data")
 
 
+# NB: agents address this tool by its registered name "quality_gate" —
+# instruction text must use that name, not the Python function name.
 @tool(name="quality_gate")
 def check_scheme_data(scheme_id: str, file_path: str) -> dict:
     """Validate scheme member-data file before downstream stages.

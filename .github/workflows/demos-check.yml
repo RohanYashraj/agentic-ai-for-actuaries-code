@@ -17,3 +17,6 @@ jobs:
       # browser demo (e.g. a new decorator shape) or a config/data file
       # referenced by scripts/demos.config.json is missing.
       - run: python3 scripts/build_demos.py --check
+      # Fails if a script registered in server/registry.py is missing on
+      # disk (the website's agent list is generated from that registry).
+      - run: python3 scripts/export_registry.py --check

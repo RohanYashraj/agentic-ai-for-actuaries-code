@@ -12,6 +12,8 @@ from agno.tools import tool
 from support import fetch_member_record, generate_statement_prose
 
 
+# NB: agents address this tool by its registered name "draft_member_communication" —
+# instruction text must use that name, not the Python function name.
 @tool(name="draft_member_communication")
 def draft_annual_statement(member_id: str, valuation_date: str, valuation_output: dict) -> dict:
     """Draft an annual annuity statement for a member of a closed UK DB scheme.

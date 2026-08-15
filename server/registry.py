@@ -26,14 +26,14 @@ class AgentScript:
     @property
     def colab_url(self) -> str:
         return (
-            "https://colab.research.google.com/github/rohanyashraj/"
+            "https://colab.research.google.com/github/RohanYashraj/"
             f"agentic-ai-for-actuaries-code/blob/main/notebooks/{self.chapter}.ipynb"
         )
 
     @property
     def github_url(self) -> str:
         return (
-            "https://github.com/rohanyashraj/agentic-ai-for-actuaries-code/"
+            "https://github.com/RohanYashraj/agentic-ai-for-actuaries-code/"
             f"blob/main/{self.chapter_dir}/{self.script}"
         )
 

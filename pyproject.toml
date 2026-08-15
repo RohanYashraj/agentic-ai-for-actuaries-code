@@ -26,6 +26,15 @@ dependencies = [
 anthropic = ["anthropic>=0.40"]
 openai = ["openai>=1.60"]
 
+[dependency-groups]
+# Local website development (`npm run dev:all` starts uvicorn from
+# .venv; the waitlist/rate limits use Upstash when configured). uv
+# installs this group by default with `uv sync`.
+dev = [
+    "uvicorn>=0.30",
+    "upstash-redis>=1.0",
+]
+
 [tool.uv]
 # Examples are run as scripts (python ch09.../01_column_agent.py);
 # nothing in this repo is built or installed as a package.
