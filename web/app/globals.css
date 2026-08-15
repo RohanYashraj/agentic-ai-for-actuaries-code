@@ -1,0 +1,272 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-plex-sans);
+  --font-serif: var(--font-source-serif);
+  --font-mono: var(--font-plex-mono);
+  --font-heading: var(--font-source-serif);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  /* Book palette, carried over from the first edition of the site */
+  --color-navy-950: var(--navy-950);
+  --color-navy-900: var(--navy-900);
+  --color-navy-850: var(--navy-850);
+  --color-navy-800: var(--navy-800);
+  --color-navy-700: var(--navy-700);
+  --color-cream-100: var(--cream-100);
+  --color-cream-200: var(--cream-200);
+  --color-cream-400: var(--cream-400);
+  --color-gold-300: var(--gold-300);
+  --color-gold-400: var(--gold-400);
+  --color-gold-500: var(--gold-500);
+  --color-run-ok: var(--run-ok);
+  --color-run-err: var(--run-err);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* Single locked theme: the book's navy ledger. No light variant. */
+:root {
+  --navy-950: #0d1626;
+  --navy-900: #152238;
+  --navy-850: #182741;
+  --navy-800: #1e2f4c;
+  --navy-700: #2a3d5e;
+  --cream-100: #f2ecdf;
+  --cream-200: #ece4d4;
+  --cream-400: #cfc7b6;
+  --gold-300: #e2b466;
+  --gold-400: #d3a253;
+  --gold-500: #c3913f;
+  --run-ok: #7dbb8a;
+  --run-err: #d98a7a;
+
+  --background: var(--navy-900);
+  --foreground: #c3cad8;
+  --card: var(--navy-850);
+  --card-foreground: #c3cad8;
+  --popover: var(--navy-800);
+  --popover-foreground: var(--cream-200);
+  --primary: var(--gold-400);
+  --primary-foreground: var(--navy-950);
+  --secondary: var(--navy-800);
+  --secondary-foreground: var(--cream-200);
+  --muted: var(--navy-800);
+  --muted-foreground: #8e99ad;
+  --accent: var(--navy-800);
+  --accent-foreground: var(--cream-100);
+  --destructive: var(--run-err);
+  --border: rgba(236, 228, 212, 0.14);
+  --input: rgba(236, 228, 212, 0.2);
+  --ring: var(--gold-400);
+  --radius: 0.25rem;
+  --sidebar: var(--navy-850);
+  --sidebar-foreground: #c3cad8;
+  --sidebar-primary: var(--gold-400);
+  --sidebar-primary-foreground: var(--navy-950);
+  --sidebar-accent: var(--navy-800);
+  --sidebar-accent-foreground: var(--cream-100);
+  --sidebar-border: rgba(236, 228, 212, 0.14);
+  --sidebar-ring: var(--gold-400);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+  ::selection {
+    background: rgba(211, 162, 83, 0.35);
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-serif text-cream-100;
+  }
+}
+
+/* Reader-facing prose (agent output) */
+.agent-prose {
+  @apply text-sm leading-relaxed;
+}
+.agent-prose h1,
+.agent-prose h2,
+.agent-prose h3,
+.agent-prose h4 {
+  @apply mt-4 mb-2 font-serif text-cream-100 text-base font-semibold;
+}
+.agent-prose p {
+  @apply my-2;
+}
+.agent-prose ul,
+.agent-prose ol {
+  @apply my-2 ml-5 list-disc;
+}
+.agent-prose ol {
+  @apply list-decimal;
+}
+.agent-prose code {
+  @apply font-mono text-[0.85em] text-cream-200 bg-navy-950/70 px-1 py-0.5 rounded-sm;
+}
+.agent-prose pre {
+  @apply my-2 overflow-x-auto rounded-sm bg-navy-950/70 p-3;
+}
+.agent-prose pre code {
+  @apply bg-transparent p-0;
+}
+.agent-prose table {
+  @apply my-3 w-full border-collapse text-xs;
+}
+.agent-prose th,
+.agent-prose td {
+  @apply border border-border px-2 py-1 text-left;
+}
+.agent-prose th {
+  @apply text-cream-200;
+}
+.agent-prose a {
+  @apply text-gold-300 underline underline-offset-2;
+}
+.agent-prose blockquote {
+  @apply my-2 border-l-2 border-gold-400/50 pl-3 text-muted-foreground;
+}
+
+/* CodeMirror chrome: light paper code panels on the navy page */
+.cm-editor {
+  @apply text-[13px];
+  background: #ffffff !important;
+}
+.cm-editor .cm-gutters {
+  background: #f6f8fa !important;
+  border-right: 1px solid #d1d9e0 !important;
+}
+.cm-editor.cm-focused {
+  outline: none !important;
+}
+
+/* Hero */
+.hero-rise {
+  animation: hero-rise 0.7s ease-out both;
+}
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.book-cover {
+  position: relative;
+  border-radius: 0.25rem;
+  border: 1px solid rgba(211, 162, 83, 0.45);
+  box-shadow:
+    0 40px 90px rgba(6, 10, 20, 0.7),
+    0 10px 30px rgba(6, 10, 20, 0.55);
+  transform: perspective(1200px) rotateY(-6deg);
+  transition: transform 0.4s ease;
+}
+.book-cover:hover {
+  transform: perspective(1200px) rotateY(0deg);
+}
+/* Soft spotlight behind the hero cover */
+.book-glow {
+  position: absolute;
+  inset: -12% -8%;
+  background: radial-gradient(
+    ellipse at 60% 45%,
+    rgba(211, 162, 83, 0.22) 0%,
+    rgba(211, 162, 83, 0.08) 45%,
+    transparent 70%
+  );
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+/* Shimmer sweep for the hero "Run the code" CTA */
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.btn-shimmer::after {
+  content: "";
+  position: absolute;
+  top: -40%;
+  bottom: -40%;
+  left: -75%;
+  width: 45%;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgba(242, 236, 223, 0.06) 30%,
+    rgba(226, 180, 102, 0.28) 50%,
+    rgba(242, 236, 223, 0.06) 70%,
+    transparent 100%
+  );
+  transform: skewX(-18deg);
+  animation: btn-shimmer-sweep 2.8s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes btn-shimmer-sweep {
+  0% {
+    left: -75%;
+  }
+  55% {
+    left: 130%;
+  }
+  100% {
+    left: 130%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

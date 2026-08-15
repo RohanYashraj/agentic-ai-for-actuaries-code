@@ -1,0 +1,13 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "api/index.py": {
+      "runtime": "python3.12",
+      "maxDuration": 300,
+      "includeFiles": "../{server,ch09_agentic_foundations,ch10_tool_use,ch11_multi_agent_workflows,ch12_memory,ch13_underwriting_agent,ch14_reserving_reflexion,ch15_pension_pipeline,ch16_regulatory_capital,ch17_governance_monitoring,common,data}/**"
+    }
+  },
+  "rewrites": [
+    { "source": "/api/py/:path*", "destination": "/api/index" }
+  ]
+}
