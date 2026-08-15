@@ -4,7 +4,14 @@ import Link from "next/link";
 import { GithubLogo } from "@phosphor-icons/react/dist/ssr";
 import { SiteFooter } from "@/components/site-footer";
 import { GITHUB_REPO } from "@/lib/links";
-import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
+import {
+  AUTHORS,
+  BOOK_KEYWORDS,
+  BOOK_SUBTITLE,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_URL,
+} from "@/lib/site";
 import { cn, CONTAINER } from "@/lib/utils";
 import "./globals.css";
 
@@ -29,14 +36,19 @@ const plexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: SITE_NAME,
+    default: `${SITE_NAME}: ${BOOK_SUBTITLE}`,
     template: `%s · ${SITE_NAME}`,
   },
   description: SITE_DESCRIPTION,
+  keywords: BOOK_KEYWORDS,
+  authors: AUTHORS.map((a) => ({ name: a.name })),
+  creator: AUTHORS.map((a) => a.name).join(", "),
   openGraph: {
     siteName: SITE_NAME,
     type: "website",
     url: "/",
+    title: `${SITE_NAME}: ${BOOK_SUBTITLE}`,
+    description: SITE_DESCRIPTION,
     images: [
       {
         url: "/book-cover-photo.png",
@@ -46,7 +58,11 @@ export const metadata: Metadata = {
       },
     ],
   },
-  twitter: { card: "summary_large_image" },
+  twitter: {
+    card: "summary_large_image",
+    title: `${SITE_NAME}: ${BOOK_SUBTITLE}`,
+    description: SITE_DESCRIPTION,
+  },
   icons: { icon: "/favicon.png" },
 };
 

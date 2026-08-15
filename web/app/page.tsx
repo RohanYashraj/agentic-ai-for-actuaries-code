@@ -9,27 +9,75 @@ import { cn, CONTAINER } from "@/lib/utils";
 import { CHAPTERS } from "@/lib/chapters";
 import { GITHUB_REPO } from "@/lib/links";
 import { BOOK_PROMISE, OUTLINE, TARGET_READERS } from "@/lib/outline";
-import { AUTHORS, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
+import {
+  AUTHORS,
+  BOOK_DESCRIPTION,
+  BOOK_KEYWORDS,
+  BOOK_SUBTITLE,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_URL,
+} from "@/lib/site";
+
+// Person nodes are referenced by @id from the Book so authors are one
+// entity in the graph rather than two copies.
+const AUTHOR_NODES = AUTHORS.map((a) => ({
+  "@type": "Person",
+  "@id": `${SITE_URL}/#${a.name.toLowerCase().replace(/\s+/g, "-")}`,
+  name: a.name,
+  ...(a.honorificPrefix ? { honorificPrefix: a.honorificPrefix } : {}),
+  ...(a.honorificSuffix ? { honorificSuffix: a.honorificSuffix } : {}),
+  ...(a.jobTitle ? { jobTitle: a.jobTitle } : {}),
+  ...(a.affiliation
+    ? { affiliation: { "@type": "Organization", name: a.affiliation } }
+    : {}),
+  ...(a.bio ? { description: a.bio } : {}),
+  knowsAbout: ["Actuarial science", "Agentic AI", "Insurance analytics"],
+}));
 
 const STRUCTURED_DATA = {
   "@context": "https://schema.org",
   "@graph": [
+    ...AUTHOR_NODES,
     {
       "@type": "Book",
+      "@id": `${SITE_URL}/#book`,
       name: SITE_NAME,
-      description: BOOK_PROMISE,
+      alternateName: `${SITE_NAME}: ${BOOK_SUBTITLE}`,
+      description: BOOK_DESCRIPTION,
+      abstract: BOOK_PROMISE,
       bookFormat: "https://schema.org/Hardcover",
       publisher: { "@type": "Organization", name: "ACTEX Learning" },
       datePublished: "2026",
+      inLanguage: "en",
+      keywords: BOOK_KEYWORDS.join(", "),
+      about: BOOK_KEYWORDS.map((k) => ({ "@type": "Thing", name: k })),
+      audience: {
+        "@type": "Audience",
+        audienceType: "Actuaries, actuarial students, and actuarial leaders",
+      },
       image: `${SITE_URL}/book-cover-photo.png`,
       url: SITE_URL,
-      author: AUTHORS.map((a) => ({ "@type": "Person", ...a })),
+      author: AUTHOR_NODES.map((a) => ({ "@id": a["@id"] })),
+      hasPart: OUTLINE.flatMap((part) =>
+        part.chapters.map((ch) => ({
+          "@type": "Chapter",
+          position: ch.number,
+          name: `Chapter ${ch.number}: ${ch.title}`,
+          abstract: ch.oneLiner,
+          ...(ch.slug ? { url: `${SITE_URL}/code/${ch.slug}` } : {}),
+        }))
+      ),
     },
     {
       "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
       name: SITE_NAME,
       description: SITE_DESCRIPTION,
       url: SITE_URL,
+      inLanguage: "en",
+      about: { "@id": `${SITE_URL}/#book` },
+      author: AUTHOR_NODES.map((a) => ({ "@id": a["@id"] })),
     },
   ],
 };

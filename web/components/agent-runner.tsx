@@ -2,6 +2,8 @@
 
 import {
   ArrowSquareOut,
+  ArrowsInSimple,
+  ArrowsOutSimple,
   CaretDown,
   Play,
   Spinner,
@@ -18,8 +20,11 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Editor } from "@/components/code-view";
 import type { AgentEntry } from "@/lib/agents";
 import { colabUrl } from "@/lib/links";
+import { cn } from "@/lib/utils";
 
 type Block =
   | { type: "input"; text: string }
@@ -215,13 +220,16 @@ export function AgentRunner({
   agent,
   chapter,
   source,
+  title,
 }: {
   agent: AgentEntry;
   chapter: string;
   source?: string;
+  title?: string;
 }) {
   const [blocks, setBlocks] = useState<Block[]>([]);
   const [state, setState] = useState<RunState>("idle");
+  const [expanded, setExpanded] = useState(false);
   const [notice, setNotice] = useState<string>("");
   const [excerpt, setExcerpt] = useState<string>("");
   const [elapsed, setElapsed] = useState(0);
@@ -384,9 +392,17 @@ export function AgentRunner({
     }
   })();
 
-  return (
-    <div className="overflow-hidden rounded-md border border-border bg-navy-950/60">
-      <div className="flex items-center gap-2 border-b border-border px-3 py-2">
+  // The full runner UI: rendered inline, or inside the fullscreen dialog
+  // when expanded — one instance, so run state carries over (mirrors the
+  // browser-demo runner's shell).
+  const runner = (
+    <div
+      className={cn(
+        "overflow-hidden rounded-md border border-border bg-navy-950/60",
+        expanded && "flex h-full flex-col rounded-none border-0"
+      )}
+    >
+      <div className="flex shrink-0 items-center gap-2 border-b border-border px-3 py-2">
         <Button
           size="sm"
           onClick={handleRun}
@@ -411,19 +427,53 @@ export function AgentRunner({
             Stop
           </Button>
         )}
-        <span aria-live="polite" className="font-mono text-[11px] text-muted-foreground">
+        <span
+          aria-live="polite"
+          className="truncate font-mono text-[11px] text-muted-foreground"
+        >
           {status}
         </span>
         <a
           href={colabUrl(chapter)}
           target="_blank"
           rel="noreferrer"
-          className="ml-auto inline-flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-cream-100"
+          className="ml-auto inline-flex shrink-0 items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-cream-100"
         >
           Open in Colab
           <ArrowSquareOut className="size-3" />
         </a>
+        {source !== undefined && (
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => setExpanded((v) => !v)}
+            className={cn(
+              "h-7 shrink-0 gap-1.5 px-2 text-xs text-muted-foreground hover:text-foreground",
+              expanded && "mr-8"
+            )}
+          >
+            {expanded ? (
+              <ArrowsInSimple className="size-3.5" />
+            ) : (
+              <ArrowsOutSimple className="size-3.5" />
+            )}
+            <span className="sr-only sm:not-sr-only">
+              {expanded ? "Collapse" : "Expand"}
+            </span>
+          </Button>
+        )}
       </div>
+
+      {source !== undefined && (
+        <div
+          className={cn(
+            "border-b border-border",
+            expanded && "min-h-0 flex-1 overflow-auto"
+          )}
+        >
+          <Editor source={source} fill={expanded} />
+        </div>
+      )}
 
       {state === "limited" && (
         <div className="border-b border-border px-4 py-3 text-sm">
@@ -473,7 +523,13 @@ export function AgentRunner({
       )}
 
       {blocks.length > 0 && (
-        <div ref={scrollRef} className="max-h-[420px] overflow-auto px-4 py-3">
+        <div
+          ref={scrollRef}
+          className={cn(
+            "overflow-auto px-4 py-3",
+            expanded ? "max-h-[32vh] shrink-0" : "max-h-[420px]"
+          )}
+        >
           {blocks.map((block, i) => {
             switch (block.type) {
               case "input":
@@ -547,11 +603,34 @@ export function AgentRunner({
         </p>
       )}
       {source !== undefined && blocks.length === 0 && state === "idle" && (
-        <p className="px-4 py-3 text-sm text-muted-foreground">
+        <p className="shrink-0 px-4 py-3 text-sm text-muted-foreground">
           Runs the unmodified chapter script on the server and streams the
           agent&apos;s tool calls and reasoning here.
         </p>
       )}
     </div>
   );
+
+  if (expanded) {
+    return (
+      <>
+        <div className="flex h-24 items-center justify-center rounded-md border border-dashed border-border text-sm text-muted-foreground">
+          Viewing in expanded view
+        </div>
+        <Dialog open onOpenChange={(open) => !open && setExpanded(false)}>
+          <DialogContent
+            className="block h-[92vh] w-[96vw] max-w-none overflow-hidden rounded-md p-0 sm:max-w-none"
+            showCloseButton
+          >
+            <DialogTitle className="sr-only">
+              {title ?? agent.id} · expanded view
+            </DialogTitle>
+            <div className="h-full">{runner}</div>
+          </DialogContent>
+        </Dialog>
+      </>
+    );
+  }
+
+  return runner;
 }

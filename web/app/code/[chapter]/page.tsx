@@ -7,10 +7,11 @@ import { JsonLd } from "@/components/json-ld";
 import { ScriptCard } from "@/components/script-card";
 import { Button } from "@/components/ui/button";
 import { AGENT_SCRIPTS } from "@/lib/agents";
+import { CHAPTER_CONCEPTS } from "@/lib/book";
 import { CHAPTERS, getChapter } from "@/lib/chapters";
 import { loadDemoSource, loadManifest } from "@/lib/demos";
 import { colabUrl, GITHUB_REPO } from "@/lib/links";
-import { SITE_NAME, SITE_URL } from "@/lib/site";
+import { AUTHORS, SITE_NAME, SITE_URL } from "@/lib/site";
 import { cn, CONTAINER } from "@/lib/utils";
 
 export function generateStaticParams() {
@@ -25,10 +26,19 @@ export async function generateMetadata({
   const { chapter } = await params;
   const ch = getChapter(chapter);
   if (!ch) return { title: "Chapter" };
+  const title = `Chapter ${ch.number}: ${ch.title}`;
+  const url = `/code/${ch.slug}`;
   return {
-    title: `Chapter ${ch.number}: ${ch.title}`,
+    title,
     description: ch.blurb,
-    alternates: { canonical: `/code/${ch.slug}` },
+    keywords: CHAPTER_CONCEPTS[ch.number]?.slice(0, 6),
+    alternates: { canonical: url },
+    openGraph: {
+      type: "article",
+      url,
+      title: `${title} · ${SITE_NAME}`,
+      description: ch.blurb,
+    },
   };
 }
 
@@ -53,6 +63,7 @@ export default async function ChapterPage({
   if (!chapter) notFound();
 
   const manifest = loadManifest();
+  const concepts = CHAPTER_CONCEPTS[chapter.number] ?? [];
   const index = CHAPTERS.findIndex((c) => c.slug === slug);
   const prev = CHAPTERS[index - 1];
   const next = CHAPTERS[index + 1];
@@ -78,8 +89,16 @@ export default async function ChapterPage({
         headline: `Chapter ${chapter.number}: ${chapter.title}`,
         description: chapter.blurb,
         proficiencyLevel: "Beginner",
-        isPartOf: { "@type": "Book", name: SITE_NAME, url: SITE_URL },
+        inLanguage: "en",
+        isPartOf: { "@type": "Book", "@id": `${SITE_URL}/#book`, name: SITE_NAME, url: SITE_URL },
+        author: AUTHORS.map((a) => ({
+          "@type": "Person",
+          "@id": `${SITE_URL}/#${a.name.toLowerCase().replace(/\s+/g, "-")}`,
+          name: a.name,
+        })),
+        about: concepts.map((c) => ({ "@type": "Thing", name: c })),
         url: `${SITE_URL}/code/${chapter.slug}`,
+        programmingLanguage: "Python",
       },
     ],
   };
@@ -121,6 +140,24 @@ export default async function ChapterPage({
           </Button>
         </div>
       </header>
+
+      {concepts.length > 0 && (
+        <section className="mt-8 max-w-3xl rounded-md border border-border bg-card px-5 py-4">
+          <h2 className="font-mono text-xs uppercase tracking-[0.18em] text-gold-300">
+            What the chapter covers
+          </h2>
+          <ul className="mt-3 space-y-1.5 text-sm text-muted-foreground">
+            {concepts.map((c) => (
+              <li key={c} className="flex gap-2">
+                <span aria-hidden="true" className="text-gold-400">
+                  ·
+                </span>
+                {c}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <section className="mt-10 space-y-6">
         {chapter.scripts.map((script) => {

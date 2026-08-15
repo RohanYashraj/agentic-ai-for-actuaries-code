@@ -11,7 +11,7 @@ import { codeTheme } from "@/lib/editor-theme";
 
 const extensions = [python(), EditorView.lineWrapping];
 
-function Editor({ source, fill }: { source: string; fill?: boolean }) {
+export function Editor({ source, fill }: { source: string; fill?: boolean }) {
   // CodeMirror only renders after mount, which would leave the
   // server-rendered HTML (and thus crawlers, no-JS readers, and the
   // first paint) without the source. Serve a plain <pre> until then.
