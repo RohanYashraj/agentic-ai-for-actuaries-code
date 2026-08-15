@@ -10,7 +10,9 @@ import os
 
 import pandas as pd
 from agno.agent import Agent
-from agno.models.google import Gemini
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))  # for common/
+from common.config import get_model
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "data")
 DEV_PERIODS = [12, 24, 36, 48, 60, 72]
@@ -184,7 +186,7 @@ def check_triangle_quality(
 
 data_quality_agent = Agent(
     name="DataQualityAgent",
-    model=Gemini(id="gemini-3.1-flash-lite"),
+    model=get_model(),
     description="Scans the motor India triangle for data quality issues before reserving.",
     tools=[check_triangle_quality],
     tool_call_limit=5,

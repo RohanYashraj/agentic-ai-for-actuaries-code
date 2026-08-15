@@ -3,15 +3,15 @@
 #
 # The book's code blocks construct the model inline:
 #     model=Gemini(id="gemini-3.1-flash-lite")
-# The chapter scripts in this repository do exactly the same, so they
-# match the printed listings line for line. This module exists for
-# readers who want to swap providers WITHOUT editing every script:
-# import get_model() and replace the inline construction.
+# The chapter scripts in this repository import get_model() instead, so
+# one pair of environment variables switches the model (or the whole
+# provider) for every example at once — no per-script edits:
 #
-# Environment variables (see .env.example at the repo root):
 #   MODEL_PROVIDER   "google" (default) | "anthropic" | "openai"
-#   MODEL_ID         defaults per provider, e.g. "gemini-3.1-flash-lite"
+#   MODEL_ID         defaults per provider, e.g. "gemini-3.5-flash-lite"
 #   GOOGLE_API_KEY   required for the default Google Gemini provider
+#
+# (See .env.example at the repo root.)
 
 import os
 
@@ -21,7 +21,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 DEFAULT_MODEL_IDS = {
-    "google": "gemini-3.1-flash-lite",     # the book's default model
+    "google": "gemini-3.5-flash-lite",
     "anthropic": "claude-sonnet-5",
     "openai": "gpt-4o-mini",
 }
@@ -30,8 +30,8 @@ DEFAULT_MODEL_IDS = {
 def get_model():
     """Return an Agno model object per MODEL_PROVIDER / MODEL_ID env vars.
 
-    Defaults to Google Gemini with id 'gemini-3.1-flash-lite', matching
-    every code listing in the book.
+    Defaults to Google Gemini with id 'gemini-3.5-flash-lite' when
+    neither variable is set.
     """
     provider = os.getenv("MODEL_PROVIDER", "google").lower()
     model_id = os.getenv("MODEL_ID", DEFAULT_MODEL_IDS.get(provider))

@@ -198,7 +198,12 @@ def build_reserving_review_workflow(include_cape_cod: bool = True):
     spec.loader.exec_module(ch11)
 
     from agno.agent import Agent
-    from agno.models.google import Gemini
+
+    # Lazy like the agno imports above: this module is copied verbatim
+    # into the browser demos, where neither agno nor common/ exists.
+    import sys
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+    from common.config import get_model
 
     tools = [ch11.fetch_triangle, ch11.fit_chain_ladder,
              ch11.apply_bornhuetter_ferguson, ch11.reconcile_methods]
@@ -209,7 +214,7 @@ def build_reserving_review_workflow(include_cape_cod: bool = True):
 
     reserving_agent = Agent(
         name="ReservingAgent",
-        model=Gemini(id="gemini-3.1-flash-lite"),
+        model=get_model(),
         description="Computes CL, BF, and Cape Cod estimates and reconciles them.",
         tools=tools,
         tool_call_limit=10,

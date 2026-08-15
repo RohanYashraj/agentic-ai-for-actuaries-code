@@ -8,7 +8,10 @@
 # used below — the persistence behaviour is unchanged.
 from agno.agent import Agent
 from agno.db.sqlite import SqliteDb
-from agno.models.google import Gemini
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))  # for common/
+from common.config import get_model
 from agno.workflow import Workflow, Step
 
 from support import (
@@ -28,7 +31,7 @@ inner_workflow = build_reserving_review_workflow(
 # result.
 reconciliation_agent = Agent(
     name="reconciliation",
-    model=Gemini(id="gemini-3.1-flash-lite"),
+    model=get_model(),
     tools=[reconcile_against_developed_losses, retrieve_prior_cycle],
     db=SqliteDb(db_file="meridian_reserving_memory.db"),  # was: memory=Memory(db=...)
     enable_user_memories=True,

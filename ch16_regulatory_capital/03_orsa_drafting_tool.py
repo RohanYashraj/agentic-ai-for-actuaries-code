@@ -2,7 +2,10 @@
 # Book reference: Chapter 16, "Architecture"
 # Repo note: _generate_paragraph lives in support.py.
 from agno.agent import Agent
-from agno.models.google import Gemini
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))  # for common/
+from common.config import get_model
 from agno.tools import tool
 
 from support import _generate_paragraph
@@ -41,7 +44,7 @@ def draft_risk_profile_section(
 
 
 orsa_drafting_agent = Agent(
-    model=Gemini(id="gemini-3.1-flash-lite"),
+    model=get_model(),
     tools=[draft_risk_profile_section],
     tool_call_limit=4,
     markdown=True,

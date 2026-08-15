@@ -3,7 +3,10 @@
 # Repo note: _load_capital_snapshot and _attribute_impact_by_business_line
 # live in support.py; snapshots ship in data/capital_snapshots.json.
 from agno.agent import Agent
-from agno.models.google import Gemini
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))  # for common/
+from common.config import get_model
 from agno.tools import tool
 
 from support import _attribute_impact_by_business_line, _load_capital_snapshot
@@ -49,7 +52,7 @@ def assess_capital_impact(
 
 
 capital_impact_agent = Agent(
-    model=Gemini(id="gemini-3.1-flash-lite"),
+    model=get_model(),
     tools=[assess_capital_impact],
     tool_call_limit=6,
     markdown=True,

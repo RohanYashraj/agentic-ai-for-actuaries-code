@@ -5,7 +5,10 @@
 import importlib
 
 from agno.agent import Agent
-from agno.models.google import Gemini
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))  # for common/
+from common.config import get_model
 from agno.workflow import Workflow, Step
 
 from support import (
@@ -23,7 +26,7 @@ compare_to_pricing_model = importlib.import_module(
 
 # Three specialised agents — each with a narrow, named scope
 submission_agent = Agent(
-    model=Gemini(id='gemini-3.1-flash-lite'),
+    model=get_model(),
     tools=[extract_cope_attributes, parse_loss_summary],
     tool_call_limit=10,  # bound the agent loop; case-study default
     instructions="Extract COPE attributes and prior loss history.",
@@ -31,7 +34,7 @@ submission_agent = Agent(
 )
 
 market_data_agent = Agent(
-    model=Gemini(id='gemini-3.1-flash-lite'),
+    model=get_model(),
     tools=[query_internal_loss_db, query_marketview_aggregator],
     tool_call_limit=10,
     instructions="Retrieve comparable internal claims and market benchmarks.",
@@ -39,7 +42,7 @@ market_data_agent = Agent(
 )
 
 pricing_comparison_agent = Agent(
-    model=Gemini(id='gemini-3.1-flash-lite'),
+    model=get_model(),
     tools=[fetch_emblem_radar_premium, compare_to_pricing_model],
     tool_call_limit=10,
     instructions="Compare GLM technical premium against comparable-account median.",

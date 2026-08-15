@@ -74,9 +74,11 @@ The rest of this README covers the local setup.
 | Google AI Studio API key | — | Free at [aistudio.google.com/apikey](https://aistudio.google.com/apikey); the free tier is sufficient for every example |
 | Node.js | 20+ | **Only** for developing the website in `web/` — not needed for the book's code |
 
-The default model is `gemini-3.1-flash-lite`, the cheapest model in the
-Gemini 3 series. Anthropic Claude and OpenAI are supported as
-alternative providers (see [Configuration](#configuration)).
+The default model is `gemini-3.5-flash-lite`, the cheapest current
+Gemini model. Every script reads `MODEL_PROVIDER` / `MODEL_ID` from the
+environment via `common/config.py`, so one `.env` line switches the
+model — Anthropic Claude and OpenAI are supported as alternative
+providers (see [Configuration](#configuration)).
 
 ## Quick start
 
@@ -214,21 +216,17 @@ the repository root (see `.env.example`):
 |---|---|---|---|
 | `GOOGLE_API_KEY` | Yes (default provider) | — | Google AI Studio key used by every example |
 | `MODEL_PROVIDER` | No | `google` | `google`, `anthropic`, or `openai` — used by `common/config.py` |
-| `MODEL_ID` | No | `gemini-3.1-flash-lite` | Model id for the chosen provider |
+| `MODEL_ID` | No | `gemini-3.5-flash-lite` | Model id for the chosen provider |
 | `ANTHROPIC_API_KEY` | Only if `MODEL_PROVIDER=anthropic` | — | Anthropic key |
 | `OPENAI_API_KEY` | Only if `MODEL_PROVIDER=openai` | — | OpenAI key |
 
-Every script constructs the model exactly as the book prints it:
-
-```python
-model = Gemini(id="gemini-3.1-flash-lite")
-```
-
-To run the examples against a different provider without editing each
-script, use the factory in `common/config.py` — set `MODEL_PROVIDER`
-and `MODEL_ID` in your `.env` and replace the inline construction with
-`get_model()`. Anthropic Claude and OpenAI backends are wired in;
-install the matching SDK with:
+The book's listings construct the model inline
+(`model=Gemini(id="gemini-3.1-flash-lite")`); the repository scripts
+call `get_model()` from `common/config.py` instead, which returns
+exactly that construction by default but lets `MODEL_PROVIDER` and
+`MODEL_ID` in your `.env` switch every example at once — no per-script
+edits. Anthropic Claude and OpenAI backends are wired in; install the
+matching SDK with:
 
 ```bash
 uv sync --extra anthropic   # or: --extra openai
@@ -459,12 +457,18 @@ These will be reconciled with the manuscript at copy-edit:
 3. **Ch 16 version pins** — the printed listing header pins
    `agno==1.0.6`, which conflicts with Chapter 14's TECHNICAL NOTE
    (`agno>=2.0,<3.0`). The repo follows the Chapter 14 pin.
+4. **Model construction** — the printed listings construct
+   `Gemini(id="gemini-3.1-flash-lite")` inline. The repository scripts
+   call `get_model()` from `common/config.py` instead (default
+   `gemini-3.5-flash-lite`, the current flash-lite generation), so
+   `MODEL_PROVIDER` / `MODEL_ID` in `.env` re-point every example at
+   once. Behaviour is unchanged when the defaults apply.
 
 ## Cost note
 
 Every example runs comfortably on the Gemini free tier. At paid rates,
-`gemini-3.1-flash-lite` is priced at USD 0.25 per million input tokens
-and USD 1.50 per million output tokens; a full pass through every
+`gemini-3.5-flash-lite` is priced at USD 0.30 per million input tokens
+and USD 2.50 per million output tokens; a full pass through every
 example in this repository costs a few cents.
 
 ## Contributing

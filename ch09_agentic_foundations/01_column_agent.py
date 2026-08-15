@@ -1,7 +1,10 @@
 # ── Section purpose: a minimal Agno agent that explains a column name ──
 # Book reference: Chapter 9, §9.6 "Your First Agent (Code)"
 from agno.agent import Agent              # high-level Agent class
-from agno.models.google import Gemini     # Gemini model wrapper for Agno
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))  # for common/
+from common.config import get_model
 
 
 # Tool the agent can call. Agno turns this Python function into a tool
@@ -23,7 +26,7 @@ def lookup_column_definitions(column_name: str) -> str:
 
 # Build the agent. Agno wraps the loop for us; we supply tools and instructions.
 column_agent = Agent(
-    model=Gemini(id='gemini-3.1-flash-lite'),
+    model=get_model(),
     tools=[lookup_column_definitions],
     instructions='Explain claims-triangle columns clearly and concisely.',
     tool_call_limit=5,                   # cap tool calls per run, like an iteration cap

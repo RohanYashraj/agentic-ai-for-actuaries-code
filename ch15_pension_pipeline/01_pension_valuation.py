@@ -3,7 +3,10 @@
 # Repo note: load_scheme_basis, compute_technical_provisions and
 # compute_long_term_funding_target live in support.py.
 from agno.agent import Agent
-from agno.models.google import Gemini
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))  # for common/
+from common.config import get_model
 from agno.tools import tool
 
 from support import (
@@ -48,7 +51,7 @@ def value_scheme(scheme_id: str, effective_date: str) -> dict:
 
 # The valuation agent runs on Google Gemini and calls the tool above.
 valuation_agent = Agent(
-    model=Gemini(id="gemini-3.1-flash-lite"),
+    model=get_model(),
     tools=[value_scheme],
     tool_call_limit=3,
     markdown=True,

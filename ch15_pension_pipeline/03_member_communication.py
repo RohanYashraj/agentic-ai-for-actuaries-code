@@ -3,7 +3,10 @@
 # Repo note: fetch_member_record and generate_statement_prose live in
 # support.py.
 from agno.agent import Agent
-from agno.models.google import Gemini
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))  # for common/
+from common.config import get_model
 from agno.tools import tool
 
 from support import fetch_member_record, generate_statement_prose
@@ -45,7 +48,7 @@ def draft_annual_statement(member_id: str, valuation_date: str, valuation_output
 
 # The commentary agent runs on Google Gemini and calls the tool above.
 commentary_agent = Agent(
-    model=Gemini(id="gemini-3.1-flash-lite"),
+    model=get_model(),
     tools=[draft_annual_statement],
     tool_call_limit=3,
     markdown=True,

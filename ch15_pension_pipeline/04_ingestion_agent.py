@@ -6,7 +6,9 @@ import importlib
 import os
 
 from agno.agent import Agent
-from agno.models.google import Gemini
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))  # for common/
+from common.config import get_model
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "data")
 
@@ -17,7 +19,7 @@ check_scheme_data = importlib.import_module(
 # The administrator names a scheme and file; the agent runs the gate
 # and reports pass / route to manual review.
 ingestion_agent = Agent(
-    model=Gemini(id="gemini-3.1-flash-lite"),
+    model=get_model(),
     tools=[check_scheme_data],
     tool_call_limit=3,
     markdown=True,

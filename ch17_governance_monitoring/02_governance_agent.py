@@ -5,7 +5,10 @@
 import importlib
 
 from agno.agent import Agent
-from agno.models.google import Gemini
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))  # for common/
+from common.config import get_model
 
 # Numeric module names can't be imported with a plain import statement.
 monitoring_dashboard = importlib.import_module(
@@ -15,7 +18,7 @@ monitoring_dashboard = importlib.import_module(
 # and gets the diagnostic surface summarised, with escalation advice
 # when out of band.
 governance_agent = Agent(
-    model=Gemini(id="gemini-3.1-flash-lite"),
+    model=get_model(),
     tools=[monitoring_dashboard],
     tool_call_limit=4,
     markdown=True,

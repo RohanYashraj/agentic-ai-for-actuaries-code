@@ -13,7 +13,9 @@ import os
 from agno.agent import Agent
 from agno.knowledge.embedder.google import GeminiEmbedder
 from agno.knowledge.knowledge import Knowledge
-from agno.models.google import Gemini
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))  # for common/
+from common.config import get_model
 from agno.vectordb.chroma import ChromaDb
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "data")
@@ -31,7 +33,7 @@ prior_study_archive = Knowledge(
 prior_study_archive.add_content(path=os.path.join(DATA_DIR, "xs_reports", "fy2024"))
 
 life_valuation_agent = Agent(
-    model=Gemini(id="gemini-3.1-flash-lite"),
+    model=get_model(),
     knowledge=prior_study_archive,
     tool_call_limit=10,
     markdown=True,

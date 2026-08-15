@@ -7,7 +7,10 @@
 #     (" gemini-3.1-flash-lite"); corrected here. See ERRATA in the
 #     root README.
 from agno.agent import Agent
-from agno.models.google import Gemini
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))  # for common/
+from common.config import get_model
 from agno.workflow import Workflow, Step
 
 from support import (
@@ -24,7 +27,7 @@ from support import (
 # Tool functions defined elsewhere; descriptions are the prompts the model sees.
 reserving_agent = Agent(
     name="ReservingAgent",
-    model=Gemini(id="gemini-3.1-flash-lite"),
+    model=get_model(),
     description=(
         "Computes chain ladder and Bornhuetter-Ferguson reserve estimates "
         "on the motor India triangle and reconciles them."
@@ -44,7 +47,7 @@ reserving_agent = Agent(
 # No access to the triangle directly — read/write separation per Chapter 10.
 commentary_agent = Agent(
     name="CommentaryAgent",
-    model=Gemini(id="gemini-3.1-flash-lite"),
+    model=get_model(),
     description=(
         "Drafts a three-paragraph reserving commentary citing only "
         "figures present in the reserving output dict."

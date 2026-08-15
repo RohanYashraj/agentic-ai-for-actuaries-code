@@ -6,10 +6,12 @@ script generates the Pyodide-runnable copies the website serves, so the
 website can never drift from the book code. Transformations, all verified
 against the AST of the result:
 
-  1. delete `agno` imports (module-level only; entry files never have lazy ones)
+  1. delete `agno` and `common` imports (module-level only; entry files
+     never have lazy ones) — `common.config.get_model` only feeds the
+     stripped Agent constructions
   2. delete `@tool` / `@tool(name=...)` decorators
   3. delete module-level `X = Agent(...)` assignments (plus the comment
-     lines directly above them)
+     lines directly above them) and `sys.path.append/insert(...)` shims
   4. rewrite `X.entrypoint(` -> `X(`
   5. optionally replace the `if __name__ == "__main__":` block with a
      demo-specific override from scripts/overrides/
@@ -44,11 +46,39 @@ class TransformError(Exception):
 
 
 def _is_agno_import(node: ast.stmt) -> bool:
+    return _is_import_of(node, "agno")
+
+
+def _is_common_import(node: ast.stmt) -> bool:
+    # `from common.config import get_model` — the env-driven model
+    # selector. Meaningless in the browser (agents are stripped, and
+    # common/ is not bundled), so it is removed like the agno imports.
+    return _is_import_of(node, "common")
+
+
+def _is_import_of(node: ast.stmt, root: str) -> bool:
     if isinstance(node, ast.ImportFrom):
-        return (node.module or "").split(".")[0] == "agno"
+        return (node.module or "").split(".")[0] == root
     if isinstance(node, ast.Import):
-        return any(a.name.split(".")[0] == "agno" for a in node.names)
+        return any(a.name.split(".")[0] == root for a in node.names)
     return False
+
+
+def _is_sys_path_mutation(node: ast.stmt) -> bool:
+    # `sys.path.append(...)` / `sys.path.insert(...)` expression statements
+    # — the entry-script shim that makes common/ importable outside the
+    # browser. Pointless in Pyodide once the common import is gone.
+    if not (isinstance(node, ast.Expr) and isinstance(node.value, ast.Call)):
+        return False
+    f = node.value.func
+    return (
+        isinstance(f, ast.Attribute)
+        and f.attr in ("append", "insert")
+        and isinstance(f.value, ast.Attribute)
+        and f.value.attr == "path"
+        and isinstance(f.value.value, ast.Name)
+        and f.value.value.id == "sys"
+    )
 
 
 def _is_agent_assign(node: ast.stmt) -> bool:
@@ -78,7 +108,9 @@ def transform_source(src: str, rel_path: str, main_override: str | None) -> str:
             i -= 1
 
     for node in ast.walk(tree):
-        if isinstance(node, (ast.Import, ast.ImportFrom)) and _is_agno_import(node):
+        if isinstance(node, (ast.Import, ast.ImportFrom)) and (
+            _is_agno_import(node) or _is_common_import(node)
+        ):
             kill_range(node.lineno, node.end_lineno)
         elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
             for dec in node.decorator_list:
@@ -91,6 +123,8 @@ def transform_source(src: str, rel_path: str, main_override: str | None) -> str:
         if _is_agent_assign(node):
             kill_range(node.lineno, node.end_lineno)
             kill_preceding_comments(node.lineno)
+        if _is_sys_path_mutation(node):
+            kill_range(node.lineno, node.end_lineno)
         if (
             isinstance(node, ast.If)
             and isinstance(node.test, ast.Compare)
@@ -128,9 +162,13 @@ def transform_source(src: str, rel_path: str, main_override: str | None) -> str:
     for node in ast.walk(out_tree):
         if isinstance(node, (ast.Import, ast.ImportFrom)) and _is_agno_import(node):
             raise TransformError(f"{rel_path}: agno import survived the transform")
+        if isinstance(node, (ast.Import, ast.ImportFrom)) and _is_common_import(node):
+            raise TransformError(f"{rel_path}: common import survived the transform")
         if isinstance(node, ast.Attribute) and node.attr == "entrypoint":
             raise TransformError(f"{rel_path}: .entrypoint call survived the transform")
-        if isinstance(node, ast.Name) and node.id in ("Agent", "Workflow", "Gemini", "agno"):
+        if isinstance(node, ast.Name) and node.id in (
+            "Agent", "Workflow", "Gemini", "agno", "get_model"
+        ):
             raise TransformError(f"{rel_path}: reference to {node.id} survived the transform")
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.decorator_list:
             for dec in node.decorator_list:

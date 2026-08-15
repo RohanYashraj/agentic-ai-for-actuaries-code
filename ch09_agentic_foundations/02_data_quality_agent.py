@@ -6,7 +6,9 @@ import os
 
 import pandas as pd
 from agno.agent import Agent
-from agno.models.google import Gemini
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))  # for common/
+from common.config import get_model
 
 # Load the Meridian Re motor India triangle from the warehouse extract.
 DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "data")
@@ -53,7 +55,7 @@ def check_development_consistency() -> dict:
 # Build the data quality agent. The three Python functions become tools
 # automatically; their docstrings become the tool descriptions.
 data_quality_agent = Agent(
-    model=Gemini(id='gemini-3.1-flash-lite'),
+    model=get_model(),
     tools=[
         check_missing_values,
         check_negative_reserves,

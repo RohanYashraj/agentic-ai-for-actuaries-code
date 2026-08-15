@@ -4,7 +4,10 @@
 from typing import Literal
 
 from agno.agent import Agent
-from agno.models.google import Gemini
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))  # for common/
+from common.config import get_model
 
 from support import _experience_lookup, _ialm_lookup
 
@@ -86,7 +89,7 @@ def calculate_present_value(
 
 # ── Agent: term life net premium calculator ──────────────────
 term_life_agent = Agent(
-    model=Gemini(id="gemini-3.1-flash-lite"),
+    model=get_model(),
     tools=[
         lookup_mortality_rate,
         query_experience_study,

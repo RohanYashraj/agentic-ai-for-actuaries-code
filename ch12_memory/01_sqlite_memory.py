@@ -10,14 +10,17 @@
 # version-pinning re-test the book's TECHNICAL NOTE anticipates.
 from agno.agent import Agent
 from agno.db.sqlite import SqliteDb
-from agno.models.google import Gemini
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))  # for common/
+from common.config import get_model
 
 # The .db file is the persistence layer; it lives on disk between runs
 experience_study_db = SqliteDb(db_file="meridian_xs_memory.db")
 
 # The agent now reads and writes memory keyed to the actuary's user_id
 life_valuation_agent = Agent(
-    model=Gemini(id="gemini-3.1-flash-lite"),
+    model=get_model(),
     db=experience_study_db,          # was: memory=Memory(db=...) in print
     enable_user_memories=True,       # persistent memory across runs
     user_id="mumbai_life_valuation",

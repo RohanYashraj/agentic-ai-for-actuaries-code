@@ -5,7 +5,9 @@
 import os
 
 from agno.agent import Agent
-from agno.models.google import Gemini
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))  # for common/
+from common.config import get_model
 
 from tools_commentary import draft_movement_commentary
 
@@ -18,7 +20,7 @@ from tools_commentary import draft_movement_commentary
 # Gemini-only function-calling mode; other providers would reject it)
 # additionally constrains the model to the declared tool names.
 commentary_agent = Agent(
-    model=Gemini(id="gemini-3.1-flash-lite"),
+    model=get_model(),
     tools=[draft_movement_commentary],
     tool_call_limit=3,
     markdown=True,

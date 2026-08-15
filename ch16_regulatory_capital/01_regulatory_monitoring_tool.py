@@ -8,7 +8,10 @@
 from datetime import datetime, timezone
 
 from agno.agent import Agent
-from agno.models.google import Gemini
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))  # for common/
+from common.config import get_model
 from agno.tools import tool
 
 from support import _retrieve_from_source
@@ -72,7 +75,7 @@ def fetch_regulatory_publications(
 
 
 monitoring_agent = Agent(
-    model=Gemini(id="gemini-3.1-flash-lite"),
+    model=get_model(),
     tools=[fetch_regulatory_publications],
     tool_call_limit=8,
     markdown=True,
