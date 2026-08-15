@@ -3,16 +3,25 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
-export function NotifyForm() {
-  const [state, setState] = useState<"idle" | "sending" | "done" | "error">(
-    "idle"
-  );
+export function NotifyForm({ onSuccess }: { onSuccess?: () => void }) {
+  const [state, setState] = useState<
+    "idle" | "sending" | "done" | "already" | "error"
+  >("idle");
   const [error, setError] = useState<string>("");
 
   if (state === "done") {
     return (
       <p className="text-sm text-run-ok">
         Thank you. We will email you when the book is released.
+      </p>
+    );
+  }
+
+  if (state === "already") {
+    return (
+      <p className="text-sm text-cream-200">
+        You are already on the list. We will email you when the book is
+        released.
       </p>
     );
   }
@@ -32,7 +41,9 @@ export function NotifyForm() {
             body: JSON.stringify({ email }),
           });
           if (res.ok) {
-            setState("done");
+            const body = await res.json().catch(() => null);
+            setState(body?.already ? "already" : "done");
+            onSuccess?.();
           } else {
             const body = await res.json().catch(() => null);
             setError(body?.detail ?? "That did not go through. Try again.");

@@ -25,8 +25,11 @@ class _MemoryWaitlist:
     def __init__(self) -> None:
         self._meta: dict[str, str] = {}
 
-    def add(self, email: str, date: str) -> None:
-        self._meta.setdefault(email, date)
+    def add(self, email: str, date: str) -> bool:
+        if email in self._meta:
+            return False
+        self._meta[email] = date
+        return True
 
     def count(self) -> int:
         return len(self._meta)
@@ -38,9 +41,10 @@ class _UpstashWaitlist:
 
         self._redis = Redis(url=url, token=token)
 
-    def add(self, email: str, date: str) -> None:
-        self._redis.sadd(SET_KEY, email)
+    def add(self, email: str, date: str) -> bool:
+        added = int(self._redis.sadd(SET_KEY, email) or 0)
         self._redis.hsetnx(META_KEY, email, date)
+        return added == 1
 
     def count(self) -> int:
         return int(self._redis.scard(SET_KEY) or 0)
@@ -69,6 +73,9 @@ def normalize(email: str) -> str | None:
     return email
 
 
-def signup(email: str) -> None:
-    """Record a signup (idempotent). Caller validates via normalize() first."""
-    _store.add(email, time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()))
+def signup(email: str) -> bool:
+    """Record a signup (idempotent); True if the address is new.
+
+    Caller validates via normalize() first.
+    """
+    return _store.add(email, time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()))

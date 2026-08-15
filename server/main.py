@@ -110,8 +110,8 @@ async def join_waitlist(request: Request):
             {"error": "rate_limited", "detail": "Too many signups from this connection today."},
             status_code=429,
         )
-    waitlist.signup(email)
-    return {"ok": True}
+    added = waitlist.signup(email)
+    return {"ok": True, "already": not added}
 
 
 def _sse(obj: dict) -> str:
