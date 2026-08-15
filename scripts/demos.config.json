@@ -1,0 +1,129 @@
+{
+  "demos": {
+    "ch10-01": {
+      "chapter_dir": "ch10_tool_use",
+      "dir": "ch10",
+      "entry": "01_mortality_tool.py",
+      "files": ["01_mortality_tool.py", "support.py"],
+      "packages": ["pandas"],
+      "data": ["ialm_2012_14_ulp.csv"],
+      "title": "Mortality lookup tool",
+      "description": "Looks up q(x) from the IALM 2012-14 ULT mortality table with input validation."
+    },
+    "ch10-02": {
+      "chapter_dir": "ch10_tool_use",
+      "dir": "ch10",
+      "entry": "02_present_value_tool.py",
+      "files": ["02_present_value_tool.py"],
+      "packages": [],
+      "data": [],
+      "title": "Present value tool",
+      "description": "Discounts a stream of future cashflows to a present value, stdlib only."
+    },
+    "ch13-02": {
+      "chapter_dir": "ch13_underwriting_agent",
+      "dir": "ch13",
+      "entry": "02_pricing_reconciliation_tool.py",
+      "files": ["02_pricing_reconciliation_tool.py"],
+      "packages": [],
+      "data": [],
+      "title": "Pricing reconciliation tool",
+      "description": "Reconciles a cedent's proposed reinsurance rate against internal pricing."
+    },
+    "ch14-reserving": {
+      "chapter_dir": "ch14_reserving_reflexion",
+      "dir": "ch14",
+      "entry": "tools_reserving.py",
+      "files": ["tools_reserving.py", "support.py"],
+      "packages": ["pandas"],
+      "data": ["meridian_motor_india_triangle_clean.csv"],
+      "title": "Cape Cod reserving tool",
+      "description": "Runs a Cape Cod reserve estimate on the Meridian motor triangle."
+    },
+    "ch14-commentary": {
+      "chapter_dir": "ch14_reserving_reflexion",
+      "dir": "ch14",
+      "entry": "tools_commentary.py",
+      "files": ["tools_commentary.py", "support.py"],
+      "packages": ["pandas"],
+      "data": ["meridian_motor_india_triangle_clean.csv"],
+      "title": "Movement commentary tool",
+      "description": "Drafts reserve movement commentary from a reflexion check's output."
+    },
+    "ch15-01": {
+      "chapter_dir": "ch15_pension_pipeline",
+      "dir": "ch15",
+      "entry": "01_pension_valuation.py",
+      "files": ["01_pension_valuation.py", "support.py"],
+      "packages": ["pandas"],
+      "data": ["uk_annuity_members.csv"],
+      "title": "Pension funding valuation",
+      "description": "Values a closed UK DB scheme: technical provisions, funding target, sensitivities.",
+      "main_override": "overrides/ch15-01_main.py"
+    },
+    "ch15-02": {
+      "chapter_dir": "ch15_pension_pipeline",
+      "dir": "ch15",
+      "entry": "02_quality_gate.py",
+      "files": ["02_quality_gate.py", "support.py"],
+      "packages": ["pandas"],
+      "data": ["uk_annuity_members.csv"],
+      "title": "Data quality gate",
+      "description": "Validates scheme member data before the valuation pipeline runs."
+    },
+    "ch15-03": {
+      "chapter_dir": "ch15_pension_pipeline",
+      "dir": "ch15",
+      "entry": "03_member_communication.py",
+      "files": ["03_member_communication.py", "01_pension_valuation.py", "support.py"],
+      "packages": ["pandas"],
+      "data": ["uk_annuity_members.csv"],
+      "title": "Member statement drafter",
+      "description": "Drafts an annual annuity statement with source-traced citations.",
+      "main_override": "overrides/ch15-03_main.py"
+    },
+    "ch16-01": {
+      "chapter_dir": "ch16_regulatory_capital",
+      "dir": "ch16",
+      "entry": "01_regulatory_monitoring_tool.py",
+      "files": ["01_regulatory_monitoring_tool.py", "support.py"],
+      "packages": [],
+      "data": [],
+      "title": "Regulatory monitoring tool",
+      "description": "Fetches publications from an approved source registry and rejects authority drift.",
+      "main_override": "overrides/ch16-01_main.py"
+    },
+    "ch16-02": {
+      "chapter_dir": "ch16_regulatory_capital",
+      "dir": "ch16",
+      "entry": "02_capital_impact_tool.py",
+      "files": ["02_capital_impact_tool.py", "support.py"],
+      "packages": [],
+      "data": ["capital_snapshots.json"],
+      "title": "Capital impact tool",
+      "description": "Attributes a regulation's capital impact across business lines from a snapshot.",
+      "main_override": "overrides/ch16-02_main.py"
+    },
+    "ch16-03": {
+      "chapter_dir": "ch16_regulatory_capital",
+      "dir": "ch16",
+      "entry": "03_orsa_drafting_tool.py",
+      "files": ["03_orsa_drafting_tool.py", "02_capital_impact_tool.py", "support.py"],
+      "packages": [],
+      "data": ["capital_snapshots.json"],
+      "title": "ORSA drafting tool",
+      "description": "Drafts an ORSA risk-profile section from a typed capital impact assessment.",
+      "main_override": "overrides/ch16-03_main.py"
+    },
+    "ch17-01": {
+      "chapter_dir": "ch17_governance_monitoring",
+      "dir": "ch17",
+      "entry": "01_monitoring_dashboard.py",
+      "files": ["01_monitoring_dashboard.py", "support.py"],
+      "packages": [],
+      "data": ["metrics_registry.json"],
+      "title": "Monitoring dashboard tool",
+      "description": "Checks agent metrics against thresholds: one nominal run, one tripped incident."
+    }
+  }
+}

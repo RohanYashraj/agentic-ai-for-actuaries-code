@@ -8,3 +8,8 @@ venv/
 xs_index/
 ch11_multi_agent_workflows/reserving_output.json
 ch14_reserving_reflexion/prior_cycle_record.json
+web/public/demos/
+web/node_modules/
+web/.next/
+.DS_Store
+.claude/settings.local.json
