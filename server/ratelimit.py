@@ -81,8 +81,9 @@ class _UpstashStore:
 
 
 def _make_store():
-    url = os.environ.get("UPSTASH_REDIS_REST_URL")
-    token = os.environ.get("UPSTASH_REDIS_REST_TOKEN")
+    from .redis_env import redis_rest_credentials
+
+    url, token = redis_rest_credentials()
     if url and token:
         try:
             return _UpstashStore(url, token)

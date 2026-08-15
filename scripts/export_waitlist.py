@@ -8,22 +8,21 @@ Usage (reads UPSTASH_REDIS_REST_URL/TOKEN from the repo-root .env):
 from __future__ import annotations
 
 import csv
-import os
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from server.redis_env import redis_rest_credentials  # noqa: E402
 from server.waitlist import META_KEY, SET_KEY  # noqa: E402
 
 
 def main() -> int:
-    url = os.environ.get("UPSTASH_REDIS_REST_URL")
-    token = os.environ.get("UPSTASH_REDIS_REST_TOKEN")
+    url, token = redis_rest_credentials()
     if not url or not token:
         print(
-            "UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN are not set. "
-            "Add them to .env (same values as the Vercel project).",
+            "UPSTASH_REDIS_REST_URL/TOKEN (or KV_REST_API_URL/TOKEN) are "
+            "not set. Add them to .env (same values as the Vercel project).",
             file=sys.stderr,
         )
         return 1
