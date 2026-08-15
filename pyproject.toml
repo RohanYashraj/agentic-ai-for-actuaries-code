@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 license = { file = "LICENSE" }
 dependencies = [
-    "agno>=2.6,<3.0",        # tested with 2.6.22
+    "agno>=2.9,<3.0",        # tested with 2.9.0
     "google-genai>=2.0",     # Gemini SDK (Agno's model backend here)
     "pandas>=2.2",           # triangles, policy and member datasets
     "pypdf>=5.0",            # Ch 13 submission PDF reading

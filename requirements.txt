@@ -4,7 +4,7 @@
 # the printed Chapter 9 §9.5 venv + pip steps.
 # Tested against the versions noted; pins follow the book's CODE-08(5)
 # version-pinning discipline: agno>=2.0,<3.0.
-agno>=2.6,<3.0            # tested with 2.6.22
+agno>=2.9,<3.0            # tested with 2.9.0
 google-genai>=2.0         # Gemini SDK (Agno's model backend here)
 pandas>=2.2               # triangles, policy and member datasets
 pypdf>=5.0                # Ch 13 submission PDF reading
