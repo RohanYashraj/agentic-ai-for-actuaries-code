@@ -4,7 +4,7 @@ import { python } from "@codemirror/lang-python";
 import { EditorView } from "@codemirror/view";
 import CodeMirror from "@uiw/react-codemirror";
 import { ArrowsOutSimple } from "@phosphor-icons/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { codeTheme } from "@/lib/editor-theme";
@@ -12,6 +12,22 @@ import { codeTheme } from "@/lib/editor-theme";
 const extensions = [python(), EditorView.lineWrapping];
 
 function Editor({ source, fill }: { source: string; fill?: boolean }) {
+  // CodeMirror only renders after mount, which would leave the
+  // server-rendered HTML (and thus crawlers, no-JS readers, and the
+  // first paint) without the source. Serve a plain <pre> until then.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  if (!mounted) {
+    return (
+      <pre
+        className={`overflow-auto whitespace-pre bg-navy-950 px-4 py-3 font-mono text-[12px] leading-relaxed text-foreground ${
+          fill ? "h-full" : "max-h-[420px]"
+        }`}
+      >
+        {source}
+      </pre>
+    );
+  }
   return (
     <CodeMirror
       value={source}

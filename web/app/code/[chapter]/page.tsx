@@ -3,12 +3,14 @@ import path from "node:path";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { JsonLd } from "@/components/json-ld";
 import { ScriptCard } from "@/components/script-card";
 import { Button } from "@/components/ui/button";
 import { AGENT_SCRIPTS } from "@/lib/agents";
 import { CHAPTERS, getChapter } from "@/lib/chapters";
 import { loadDemoSource, loadManifest } from "@/lib/demos";
 import { colabUrl, GITHUB_REPO } from "@/lib/links";
+import { SITE_NAME, SITE_URL } from "@/lib/site";
 import { cn, CONTAINER } from "@/lib/utils";
 
 export function generateStaticParams() {
@@ -22,7 +24,12 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { chapter } = await params;
   const ch = getChapter(chapter);
-  return { title: ch ? `Chapter ${ch.number}: ${ch.title}` : "Chapter" };
+  if (!ch) return { title: "Chapter" };
+  return {
+    title: `Chapter ${ch.number}: ${ch.title}`,
+    description: ch.blurb,
+    alternates: { canonical: `/code/${ch.slug}` },
+  };
 }
 
 function readOriginal(folder: string, file: string): string | undefined {
@@ -50,8 +57,36 @@ export default async function ChapterPage({
   const prev = CHAPTERS[index - 1];
   const next = CHAPTERS[index + 1];
 
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: SITE_NAME, item: SITE_URL },
+          { "@type": "ListItem", position: 2, name: "Run the code", item: `${SITE_URL}/code` },
+          {
+            "@type": "ListItem",
+            position: 3,
+            name: `Chapter ${chapter.number}: ${chapter.title}`,
+            item: `${SITE_URL}/code/${chapter.slug}`,
+          },
+        ],
+      },
+      {
+        "@type": "TechArticle",
+        headline: `Chapter ${chapter.number}: ${chapter.title}`,
+        description: chapter.blurb,
+        proficiencyLevel: "Beginner",
+        isPartOf: { "@type": "Book", name: SITE_NAME, url: SITE_URL },
+        url: `${SITE_URL}/code/${chapter.slug}`,
+      },
+    ],
+  };
+
   return (
     <div className={cn(CONTAINER, "py-10")}>
+      <JsonLd data={structuredData} />
       <nav className="font-mono text-xs text-muted-foreground">
         <Link href="/code" className="transition-colors hover:text-cream-100">
           Run the code

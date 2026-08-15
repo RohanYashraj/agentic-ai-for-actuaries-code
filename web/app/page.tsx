@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "@phosphor-icons/react/dist/ssr";
+import { JsonLd } from "@/components/json-ld";
 import { NotifyForm } from "@/components/notify-form";
 import { NotifyPopup } from "@/components/notify-popup";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,32 @@ import { cn, CONTAINER } from "@/lib/utils";
 import { CHAPTERS } from "@/lib/chapters";
 import { GITHUB_REPO } from "@/lib/links";
 import { BOOK_PROMISE, OUTLINE, TARGET_READERS } from "@/lib/outline";
+import { AUTHORS, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
+
+const STRUCTURED_DATA = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Book",
+      name: SITE_NAME,
+      description: BOOK_PROMISE,
+      bookFormat: "https://schema.org/Hardcover",
+      publisher: { "@type": "Organization", name: "ACTEX Learning" },
+      datePublished: "2026",
+      image: `${SITE_URL}/book-cover-photo.png`,
+      url: SITE_URL,
+      author: AUTHORS.map((a) => ({ "@type": "Person", ...a })),
+    },
+    {
+      "@type": "WebSite",
+      name: SITE_NAME,
+      description: SITE_DESCRIPTION,
+      url: SITE_URL,
+    },
+  ],
+};
+
+export const metadata = { alternates: { canonical: "/" } };
 
 const STATS = [
   {
@@ -35,6 +62,7 @@ const STATS = [
 export default function LandingPage() {
   return (
     <div>
+      <JsonLd data={STRUCTURED_DATA} />
       {/* Hero: the book itself. */}
       <section className="overflow-x-clip border-b border-border">
         <div

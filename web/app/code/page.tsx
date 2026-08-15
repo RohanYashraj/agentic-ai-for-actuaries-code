@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "Run the code",
   description:
     "Every companion listing from the book: tool scripts run editable in your browser, agent scripts run live against Gemini, and every chapter opens in Colab.",
+  alternates: { canonical: "/code" },
 };
 
 export default function CodeIndexPage() {

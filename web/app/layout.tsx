@@ -4,6 +4,7 @@ import Link from "next/link";
 import { GithubLogo } from "@phosphor-icons/react/dist/ssr";
 import { SiteFooter } from "@/components/site-footer";
 import { GITHUB_REPO } from "@/lib/links";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 import { cn, CONTAINER } from "@/lib/utils";
 import "./globals.css";
 
@@ -26,12 +27,26 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "Agentic AI for Actuaries",
-    template: "%s · Agentic AI for Actuaries",
+    default: SITE_NAME,
+    template: `%s · ${SITE_NAME}`,
   },
-  description:
-    "Companion site for the book Agentic AI for Actuaries: run the actuarial tools in your browser, watch the agents work, and open every chapter in Colab.",
+  description: SITE_DESCRIPTION,
+  openGraph: {
+    siteName: SITE_NAME,
+    type: "website",
+    url: "/",
+    images: [
+      {
+        url: "/book-cover-photo.png",
+        width: 1536,
+        height: 1024,
+        alt: "Cover of Agentic AI for Actuaries",
+      },
+    ],
+  },
+  twitter: { card: "summary_large_image" },
   icons: { icon: "/favicon.png" },
 };
 

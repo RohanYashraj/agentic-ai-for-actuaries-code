@@ -10,7 +10,7 @@ import {
   Play,
   Spinner,
 } from "@phosphor-icons/react";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { OutputLine, RunOutput } from "@/components/run-output";
@@ -35,6 +35,10 @@ export function DemoRunner({
   const [state, setState] = useState<RunState>("idle");
   const [status, setStatus] = useState<string>(spec.entry);
   const [expanded, setExpanded] = useState(false);
+  // CodeMirror renders nothing until mounted; keep the source in the
+  // server HTML (crawlers, no-JS readers, first paint) via a <pre>.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   const cancelRef = useRef<(() => void) | null>(null);
 
   const append = useCallback((line: OutputLine) => {
@@ -154,21 +158,32 @@ export function DemoRunner({
           </span>
         </Button>
       </div>
-      <CodeMirror
-        value={source}
-        onChange={setSource}
-        theme={codeTheme}
-        extensions={extensions}
-        basicSetup={{
-          lineNumbers: true,
-          foldGutter: false,
-          highlightActiveLine: true,
-          autocompletion: false,
-        }}
-        className={cn(
-          expanded ? "min-h-0 flex-1 overflow-auto" : "max-h-[480px] overflow-auto"
-        )}
-      />
+      {mounted ? (
+        <CodeMirror
+          value={source}
+          onChange={setSource}
+          theme={codeTheme}
+          extensions={extensions}
+          basicSetup={{
+            lineNumbers: true,
+            foldGutter: false,
+            highlightActiveLine: true,
+            autocompletion: false,
+          }}
+          className={cn(
+            expanded ? "min-h-0 flex-1 overflow-auto" : "max-h-[480px] overflow-auto"
+          )}
+        />
+      ) : (
+        <pre
+          className={cn(
+            "overflow-auto whitespace-pre bg-navy-950 px-4 py-3 font-mono text-[12px] leading-relaxed text-foreground",
+            expanded ? "min-h-0 flex-1" : "max-h-[480px]"
+          )}
+        >
+          {source}
+        </pre>
+      )}
       <RunOutput
         lines={lines}
         className={expanded ? "shrink-0 [&_pre]:max-h-[28vh]" : undefined}
