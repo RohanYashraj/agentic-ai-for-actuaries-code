@@ -15,6 +15,32 @@ appears anywhere in this repository. The IALM-style table is a
 Gompertz-shaped synthetic with the same structure as IALM 2012-14 ULP,
 sufficient for the examples to run — do not use it for real work.
 
+## Repository layout
+
+The repository has four kinds of content. If you are here for the book's
+code, the chapter folders are all you need; everything else supports the
+website and tooling.
+
+| Path | What it is |
+|---|---|
+| `ch09_…` to `ch17_…` | **The book's code**, one folder per chapter, matching the printed listings. Each has its own README. |
+| `common/`, `data/` | Shared model-config helper and the synthetic datasets the chapters use. |
+| `notebooks/` | Colab notebook per chapter — run everything with zero install ([README](notebooks/README.md)). |
+| `web/` | The book's website: Next.js app with in-browser and live agent runs ([README](web/README.md)). |
+| `server/` | FastAPI backend the website uses to run agent scripts live ([README](server/README.md)). |
+| `scripts/` | Build tooling, including the codegen that keeps website demos in sync with chapter code ([README](scripts/README.md)). |
+
+## Run on the website (nothing to install)
+
+The book's site, in `web/`, runs the code three ways: tool scripts
+execute editable in your browser (Python in WebAssembly), agent scripts
+run live on the server with their tool calls streamed to the page, and
+every chapter links to its Colab notebook. The browser copies are
+generated from the chapter scripts at build time by
+`scripts/build_demos.py`, so they can never drift from the code here.
+The agent-run backend lives in `server/`. See `web/README.md` for local
+development and deployment.
+
 ## Run in Colab (no install)
 
 Every chapter has a companion notebook in `notebooks/` that runs in
