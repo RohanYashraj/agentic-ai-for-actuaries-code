@@ -39,6 +39,7 @@ begins. Chapter 18 contains no code by design.
 - [Running the examples](#running-the-examples)
 - [Repository structure](#repository-structure)
 - [Website and backend development](#website-and-backend-development)
+- [Deploying to production](#deploying-to-production)
 - [Troubleshooting](#troubleshooting)
 - [How the repo relates to the printed listings](#how-the-repo-relates-to-the-printed-listings)
 - [Errata noted while building this repository](#errata-noted-while-building-this-repository)
@@ -289,8 +290,118 @@ npm run dev:all     # frontend (Next.js) + backend (FastAPI) together
 
 Open http://localhost:3000. The backend needs `GOOGLE_API_KEY` in the
 repo-root `.env` for live agent runs; the in-browser demos work without
-it. Deployment (Vercel) and the backend's security model are documented
-in [`web/README.md`](web/README.md) and [`server/README.md`](server/README.md).
+it. The backend's security model is documented in
+[`server/README.md`](server/README.md).
+
+## Deploying to production
+
+The site deploys as a **single Vercel project**: the Next.js frontend
+builds from `web/`, and the FastAPI backend in `server/` is exposed as
+a Vercel Python serverless function via `web/api/index.py`. A rewrite
+in `web/vercel.json` routes `/api/py/*` to that function, and its
+`includeFiles` setting bundles the chapter code, `common/`, and `data/`
+into the function so agent scripts run against the exact repo code.
+No separate backend hosting is needed.
+
+### 1. Push the repository to GitHub
+
+Vercel deploys from a Git remote. Fork or push this repository to your
+own GitHub account (GitLab/Bitbucket also work).
+
+### 2. Import the project into Vercel
+
+1. On [vercel.com](https://vercel.com) choose **Add New → Project** and
+   import the repository.
+2. Set **Root Directory** to `web/`.
+3. Under the Root Directory setting, enable **"Include source files
+   outside of the Root Directory in the Build Step"** — the build needs
+   the repo root for `scripts/build_demos.py` (demo codegen) and the
+   Python function needs `server/`, the chapter folders, and `data/`.
+4. Framework preset: **Next.js** (auto-detected). Leave build command
+   and output directory at their defaults — `npm run build` runs the
+   `prebuild` hook that regenerates `public/demos/` from the chapter
+   scripts before `next build`.
+
+### 3. Configure environment variables
+
+In the Vercel project's **Settings → Environment Variables** (all for
+the *Production* environment; add to *Preview* too if you want live
+agent runs on preview deployments):
+
+| Variable | Required | Purpose |
+|---|---|---|
+| `GOOGLE_API_KEY` | Yes, for live agent runs | Gemini key used by the serverless agent runner |
+| `UPSTASH_REDIS_REST_URL` | Recommended | Durable rate-limit counters and waitlist storage |
+| `UPSTASH_REDIS_REST_TOKEN` | Recommended | Auth token for the above |
+| `RATE_LIMIT_PER_IP_MIN` | No (default 4) | Agent runs allowed per IP per minute |
+| `RATE_LIMIT_PER_IP_DAY` | No (default 75) | Agent runs allowed per IP per day |
+| `RATE_LIMIT_GLOBAL_DAY` | No (default 750) | Agent runs allowed site-wide per day |
+
+The site **degrades gracefully without any of these**: with no
+`GOOGLE_API_KEY`, agent runs report that the runner is unavailable and
+point visitors at Colab, while the in-browser Pyodide demos and all
+static content keep working. Without Upstash, rate-limit counters and
+waitlist signups fall back to per-instance process memory (fine for
+trying things out, not durable).
+
+### 4. Add Upstash Redis (recommended)
+
+From the Vercel **Marketplace**, add the **Upstash Redis** integration
+to the project (free tier is sufficient). It injects
+`UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` automatically.
+This makes rate limits hold across serverless instances and stores
+waitlist emails, which you can export any time:
+
+```bash
+uv run --env-file .env python scripts/export_waitlist.py > waitlist.csv
+```
+
+### 5. Deploy
+
+Click **Deploy**. The build:
+
+1. runs `scripts/build_demos.py` (via `prebuild`) to generate the
+   browser demos from the chapter scripts — they cannot drift from the
+   book code, and CI double-checks this via
+   `.github/workflows/demos-check.yml`;
+2. runs `next build` (static pages for `/`, `/code`, and each chapter);
+3. packages `web/api/index.py` as a Python 3.12 function (300 s max
+   duration, set in `web/vercel.json`) with the server, chapter code,
+   and data bundled in.
+
+Subsequent pushes to the production branch deploy automatically; every
+pull request gets its own preview URL.
+
+### 6. Verify the deployment
+
+```bash
+# Liveness + whether the API key is configured
+curl https://<your-domain>/api/py/health
+
+# The agent-script registry the site runs from
+curl https://<your-domain>/api/py/agents
+
+# Remaining quota for your IP
+curl https://<your-domain>/api/py/limits
+```
+
+Then open the site, run a browser demo (no key needed), and start an
+agent run to confirm the SSE stream works end to end.
+
+### 7. Custom domain (optional)
+
+Add your domain under **Settings → Domains** and follow Vercel's DNS
+instructions; HTTPS certificates are provisioned automatically.
+
+### Production security model
+
+The backend never executes visitor-supplied code: `POST
+/api/py/agents/{id}/run` only accepts an id from the fixed registry in
+`server/registry.py`, each run executes in a throwaway per-run `/tmp`
+workspace that is deleted afterwards, and rate limiting is enforced
+whenever the `VERCEL` env var is present (all deployments). Editable
+code on the site runs entirely in the visitor's own browser via
+Pyodide. Details in [`server/README.md`](server/README.md).
 
 ## Troubleshooting
 
