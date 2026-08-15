@@ -25,6 +25,17 @@ def _truncate(value, limit: int = 4000) -> str:
     return s if len(s) <= limit else s[:limit] + " …[truncated]"
 
 
+def _truncate_json(value, limit: int = 4000) -> str:
+    # JSON-encode dicts/lists so the UI can pretty-print them; anything
+    # unserializable falls back to the plain truncated repr.
+    if not isinstance(value, str):
+        try:
+            value = json.dumps(value, ensure_ascii=False, default=str)
+        except (TypeError, ValueError):
+            pass
+    return _truncate(value, limit)
+
+
 def serialize_event(ev) -> dict:
     """Map an agno RunOutputEvent/WorkflowRunOutputEvent to a small dict.
 
@@ -43,13 +54,21 @@ def serialize_event(ev) -> dict:
         tool = getattr(ev, "tool", None)
         if tool is not None:
             out["tool"] = getattr(tool, "tool_name", None)
+            call_id = getattr(tool, "tool_call_id", None)
+            if call_id:
+                out["toolCallId"] = call_id
             args = getattr(tool, "tool_args", None)
             if args:
-                out["args"] = _truncate(args, 1000)
+                out["args"] = _truncate_json(args, 1000)
             if name != "ToolCallStarted":
                 result = getattr(tool, "result", None)
                 if result is not None:
-                    out["result"] = _truncate(result, 2000)
+                    out["result"] = _truncate_json(result, 2000)
+                if getattr(tool, "tool_call_error", None):
+                    out["error"] = True
+        if name == "ToolCallError":
+            out["error"] = True
+            out["detail"] = _truncate(getattr(ev, "error", None) or "tool call failed", 2000)
     elif name in ("StepStarted", "StepCompleted", "StepError"):
         out["step"] = getattr(ev, "step_name", None)
     elif name in ("RunError", "WorkflowError"):
@@ -58,8 +77,30 @@ def serialize_event(ev) -> dict:
 
 
 def install_shim() -> None:
+    import logging
+
     from agno.agent import Agent
     from agno.workflow import Workflow
+
+    # agno reports failed tool lookups (e.g. a model calling a tool name
+    # that does not exist) only through its loggers — no run event is
+    # emitted. Route WARNING+ records onto the stream so those failures
+    # are visible in the UI. Replacing the handlers (not appending) also
+    # drops agno's RichHandler, which would otherwise write terminal
+    # markup through the stdout shim.
+    class _LogToStream(logging.Handler):
+        def emit(self, record: logging.LogRecord) -> None:
+            try:
+                emit({"type": "Log", "level": record.levelname.lower(),
+                      "message": _truncate(record.getMessage(), 1000)})
+            except Exception:  # noqa: BLE001 — logging must never kill the run
+                pass
+
+    handler = _LogToStream(level=logging.WARNING)
+    for logger_name in ("agno", "agno-team", "agno-workflow"):
+        lg = logging.getLogger(logger_name)
+        lg.handlers = [handler]
+        lg.setLevel(logging.WARNING)
 
     def make_shim(kind: str):
         def shim(self, input=None, *args, **kwargs):

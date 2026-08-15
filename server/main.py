@@ -186,9 +186,18 @@ async def run_agent(agent_id: str, request: Request):
             rc = await proc.wait()
             if rc != 0:
                 stderr_tail = (await proc.stderr.read())[-2000:].decode("utf-8", "replace")
-                yield _sse({"type": "Fatal", "detail": stderr_tail or f"exit code {rc}"})
+                lines = [ln.strip() for ln in stderr_tail.splitlines() if ln.strip()]
+                yield _sse({
+                    "type": "Fatal",
+                    "detail": "The run failed on the server. Try again, or open the chapter in Colab.",
+                    "excerpt": " · ".join(lines[-3:])[:300] or f"exit code {rc}",
+                })
         except Exception as e:  # noqa: BLE001
-            yield _sse({"type": "Fatal", "detail": f"{type(e).__name__}: {e}"})
+            yield _sse({
+                "type": "Fatal",
+                "detail": "The run failed on the server. Try again, or open the chapter in Colab.",
+                "excerpt": f"{type(e).__name__}: {e}"[:300],
+            })
         finally:
             if proc is not None and proc.returncode is None:
                 proc.kill()
