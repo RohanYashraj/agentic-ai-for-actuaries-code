@@ -86,6 +86,24 @@ export default function RootLayout({
               Agentic AI <span className="text-gold-400">for Actuaries</span>
             </Link>
             <nav className="flex shrink-0 items-center gap-3 text-sm sm:gap-4">
+              <Link
+                href="/book"
+                className="hidden text-foreground transition-colors hover:text-cream-100 sm:inline"
+              >
+                The book
+              </Link>
+              <Link
+                href="/actuarial-ai"
+                className="hidden text-foreground transition-colors hover:text-cream-100 md:inline"
+              >
+                Domains
+              </Link>
+              <Link
+                href="/glossary"
+                className="hidden text-foreground transition-colors hover:text-cream-100 md:inline"
+              >
+                Glossary
+              </Link>
               <a
                 href={GITHUB_REPO}
                 target="_blank"

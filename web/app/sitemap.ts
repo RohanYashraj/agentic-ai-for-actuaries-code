@@ -1,15 +1,24 @@
 import type { MetadataRoute } from "next";
-import { CHAPTERS } from "@/lib/chapters";
+import { ROUTES } from "@/lib/routes";
 import { SITE_URL } from "@/lib/site";
 
+/** Generated from the route registry so a new page cannot be shipped
+ * without being crawlable. llms.txt is listed alongside the HTML pages
+ * because answer engines fetch it directly. */
 export default function sitemap(): MetadataRoute.Sitemap {
+  const lastModified = new Date();
   return [
-    { url: SITE_URL, changeFrequency: "weekly", priority: 1 },
-    { url: `${SITE_URL}/code`, changeFrequency: "weekly", priority: 0.8 },
-    ...CHAPTERS.map((c) => ({
-      url: `${SITE_URL}/code/${c.slug}`,
-      changeFrequency: "monthly" as const,
-      priority: 0.6,
+    ...ROUTES.map((route) => ({
+      url: route.path === "/" ? SITE_URL : `${SITE_URL}${route.path}`,
+      lastModified,
+      changeFrequency: route.changeFrequency,
+      priority: route.priority,
     })),
+    {
+      url: `${SITE_URL}/llms.txt`,
+      lastModified,
+      changeFrequency: "weekly" as const,
+      priority: 0.5,
+    },
   ];
 }
