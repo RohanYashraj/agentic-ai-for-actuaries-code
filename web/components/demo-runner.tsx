@@ -110,7 +110,9 @@ export function DemoRunner({
         expanded && "flex h-full flex-col rounded-none border-0"
       )}
     >
-      <div className="flex shrink-0 items-center gap-2 border-b border-border px-3 py-2">
+      {/* Wraps on a phone: in one row the status was squeezed to a few
+          pixels and the filename never showed. */}
+      <div className="flex shrink-0 flex-wrap items-center gap-x-2 gap-y-1.5 border-b border-border px-3 py-2">
         <Button
           size="sm"
           onClick={handleRun}
@@ -134,7 +136,7 @@ export function DemoRunner({
           Reset
         </Button>
         <span
-          className="ml-auto truncate font-mono text-[11px] text-muted-foreground"
+          className="order-last w-full truncate font-mono text-[11px] text-muted-foreground sm:order-none sm:ml-auto sm:w-auto"
           aria-live="polite"
         >
           {status}
@@ -144,7 +146,7 @@ export function DemoRunner({
           variant="ghost"
           onClick={() => setExpanded((v) => !v)}
           className={cn(
-            "h-7 shrink-0 gap-1.5 px-2 text-xs text-muted-foreground hover:text-foreground",
+            "ml-auto h-7 shrink-0 gap-1.5 px-2 text-xs text-muted-foreground hover:text-foreground sm:ml-0",
             expanded && "mr-8"
           )}
         >

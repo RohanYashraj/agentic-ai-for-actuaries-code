@@ -33,7 +33,9 @@ export function RelatedLinks({ groups }: { groups: RelatedGroup[] }) {
             <h3 className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
               {group.title}
             </h3>
-            <ul className="mt-2.5 space-y-2 text-sm">
+            {/* Looser on a phone: these are thumb targets there, not
+                a dense reference rail. */}
+            <ul className="mt-2.5 space-y-3 text-sm sm:space-y-2">
               {group.links.map((link) => (
                 <li key={`${group.title}-${link.href}-${link.label}`}>
                   <Link

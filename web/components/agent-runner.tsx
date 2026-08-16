@@ -402,7 +402,9 @@ export function AgentRunner({
         expanded && "flex h-full flex-col rounded-none border-0"
       )}
     >
-      <div className="flex shrink-0 items-center gap-2 border-b border-border px-3 py-2">
+      {/* Wraps on a phone, same reason as the browser-demo toolbar: the
+          status line needs a row of its own below 640px. */}
+      <div className="flex shrink-0 flex-wrap items-center gap-x-2 gap-y-1.5 border-b border-border px-3 py-2">
         <Button
           size="sm"
           onClick={handleRun}
@@ -429,7 +431,7 @@ export function AgentRunner({
         )}
         <span
           aria-live="polite"
-          className="truncate font-mono text-[11px] text-muted-foreground"
+          className="order-last w-full truncate font-mono text-[11px] text-muted-foreground sm:order-none sm:w-auto"
         >
           {status}
         </span>

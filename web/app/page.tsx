@@ -1,6 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight } from "@phosphor-icons/react/dist/ssr";
+import {
+  ArrowUpRight,
+  BookOpenText,
+  GithubLogo,
+  Terminal,
+} from "@phosphor-icons/react/dist/ssr";
 import { JsonLd } from "@/components/json-ld";
 import { NotifyForm } from "@/components/notify-form";
 import { NotifyPopup } from "@/components/notify-popup";
@@ -150,12 +155,20 @@ export default function LandingPage() {
                 Launch updates are the tertiary action further down the
                 page: asking a first-time visitor only to wait wastes the
                 strongest thing here, which is that the code runs. */}
-            <div className="mt-7 flex flex-wrap gap-3">
-              <Button asChild className="btn-shimmer">
-                <Link href="/code">Explore &amp; run the code</Link>
+            {/* Stacked and full-width on a phone; side by side once
+                both fit on one line. */}
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <Button asChild size="lg" className="btn-shimmer w-full sm:w-auto">
+                <Link href="/code">
+                  <Terminal size={16} aria-hidden="true" />
+                  Explore &amp; run the code
+                </Link>
               </Button>
-              <Button asChild variant="outline">
-                <Link href="/book">Read the chapters</Link>
+              <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
+                <Link href="/book">
+                  <BookOpenText size={16} aria-hidden="true" />
+                  Read the chapters
+                </Link>
               </Button>
             </div>
             <p className="mt-4 text-sm text-muted-foreground">
@@ -232,7 +245,7 @@ export default function LandingPage() {
       </section>
 
       {/* The outline: five parts, eighteen chapters */}
-      <section id="outline" className="scroll-mt-16 border-b border-border">
+      <section id="outline" className="scroll-mt-24 border-b border-border">
         <div className={cn(CONTAINER, "py-16")}>
           <h2 className="text-2xl leading-snug sm:text-3xl">
             Inside the book
@@ -342,6 +355,7 @@ export default function LandingPage() {
           <div className="mt-6">
             <Button asChild variant="outline">
               <a href={GITHUB_REPO} target="_blank" rel="noreferrer">
+                <GithubLogo size={16} aria-hidden="true" />
                 View on GitHub
               </a>
             </Button>
@@ -478,7 +492,7 @@ export default function LandingPage() {
       </section>
 
       {/* Launch notify */}
-      <section id="notify" className="scroll-mt-20">
+      <section id="notify" className="scroll-mt-24">
         <div className={cn(CONTAINER, "flex flex-col gap-4 py-16")}>
           <h2 className="text-xl text-cream-100">
             Available later this year, free from ACTEX

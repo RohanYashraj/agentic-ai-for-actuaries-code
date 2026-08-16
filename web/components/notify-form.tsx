@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { PaperPlaneTilt } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 
 export function NotifyForm({ onSuccess }: { onSuccess?: () => void }) {
@@ -27,8 +28,10 @@ export function NotifyForm({ onSuccess }: { onSuccess?: () => void }) {
   }
 
   return (
+    // Stacked on a phone: the input and the button together need more
+    // than 320px, and a row here pushed the button off the screen.
     <form
-      className="flex w-full max-w-md gap-2"
+      className="flex w-full max-w-md flex-col gap-2 sm:flex-row"
       onSubmit={async (e) => {
         e.preventDefault();
         setState("sending");
@@ -64,13 +67,19 @@ export function NotifyForm({ onSuccess }: { onSuccess?: () => void }) {
         type="email"
         required
         placeholder="you@example.com"
-        className="h-9 flex-1 rounded-md border border-input bg-navy-950/60 px-3 text-sm text-cream-100 placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-gold-400"
+        className="h-10 w-full min-w-0 rounded-md border border-input bg-navy-950/60 px-3 text-base text-cream-100 placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-gold-400 sm:h-9 sm:flex-1 sm:text-sm"
       />
-      <Button type="submit" size="sm" className="h-9" disabled={state === "sending"}>
+      <Button
+        type="submit"
+        size="sm"
+        className="h-10 shrink-0 gap-1.5 sm:h-9"
+        disabled={state === "sending"}
+      >
+        <PaperPlaneTilt size={15} aria-hidden="true" />
         {state === "sending" ? "Sending…" : "Notify me at launch"}
       </Button>
       {state === "error" && (
-        <p className="self-center text-xs text-run-err">{error}</p>
+        <p className="text-xs text-run-err sm:self-center">{error}</p>
       )}
     </form>
   );
