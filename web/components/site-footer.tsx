@@ -44,7 +44,7 @@ export function SiteFooter() {
               <h2 className="font-mono text-[11px] uppercase tracking-[0.16em] text-gold-300">
                 {group.title}
               </h2>
-              <ul className="mt-2.5 space-y-1.5 text-sm">
+              <ul className="mt-2.5 space-y-2.5 text-sm sm:space-y-1.5">
                 {group.links.map((link) => (
                   <li key={link.href}>
                     <Link

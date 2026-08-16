@@ -117,16 +117,18 @@ export default function CodeIndexPage() {
                 )}
                 {domain && <span>{domain.name}</span>}
               </p>
-              <p className="mt-auto flex flex-wrap gap-x-4 gap-y-1 pt-4 font-mono text-[11px]">
+              {/* py-1 on each action: at 11px these are otherwise a
+                  16px-tall thumb target. */}
+              <p className="mt-auto flex flex-wrap gap-x-4 pt-3 font-mono text-[11px]">
                 <Link
                   href={`/code/${chapter.slug}`}
-                  className="text-gold-300 transition-colors hover:text-gold-300 hover:underline"
+                  className="py-1 text-gold-300 transition-colors hover:text-gold-300 hover:underline"
                 >
                   Run it
                 </Link>
                 <Link
                   href={chapterPath(chapter.number)}
-                  className="text-muted-foreground transition-colors hover:text-cream-100"
+                  className="py-1 text-muted-foreground transition-colors hover:text-cream-100"
                 >
                   Read the chapter
                 </Link>
@@ -134,7 +136,7 @@ export default function CodeIndexPage() {
                   href={colabUrl(chapter.slug)}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-muted-foreground transition-colors hover:text-cream-100"
+                  className="py-1 text-muted-foreground transition-colors hover:text-cream-100"
                 >
                   Colab
                 </a>

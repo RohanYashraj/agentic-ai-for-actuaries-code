@@ -30,13 +30,15 @@ export function ScriptCard({
   return (
     <article className="rounded-md border border-border bg-card">
       <header className="flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b border-border px-4 py-3 sm:px-5">
-        <h3 className="inline-flex items-center gap-1.5 font-mono text-sm font-medium text-cream-100">
+        {/* break-all: filenames like 02_pricing_reconciliation_tool.py
+            are wider than a 320px phone and have no break opportunity. */}
+        <h3 className="flex min-w-0 items-baseline gap-1.5 font-mono text-sm font-medium text-cream-100">
           <FileCode
             size={16}
-            className="shrink-0 text-gold-400"
+            className="shrink-0 translate-y-0.5 text-gold-400"
             aria-hidden="true"
           />
-          {script.file}
+          <span className="break-all">{script.file}</span>
         </h3>
         {hasDemo && (
           <Badge className="bg-run-ok/15 text-run-ok border-transparent font-mono text-[10px]">
