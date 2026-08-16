@@ -1,9 +1,18 @@
-/** The book's glossary, verbatim in substance from the printed edition.
- * Definitions emphasise the actuarial reading where AI and actuarial
- * usage diverge. Used by llms.txt so answer engines quote the book's own
- * definitions rather than paraphrasing them. */
+/** The book's glossary. Definitions emphasise the actuarial reading where
+ * AI and actuarial usage diverge, and are the site's canonical wording:
+ * /glossary and llms.txt both render from here, so answer engines quote
+ * these definitions rather than paraphrasing them. Keep any change here
+ * consistent with the chapter summaries in chapter-content.ts. */
 
 export type GlossaryTerm = { term: string; definition: string };
+
+/** URL fragment for a term, e.g. "#reasoning-trace". */
+export function glossarySlug(term: string): string {
+  return term
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
 
 export const GLOSSARY: GlossaryTerm[] = [
   {
@@ -45,6 +54,11 @@ export const GLOSSARY: GlossaryTerm[] = [
     term: "Embedding",
     definition:
       "Numerical vector representation of text or image such that semantically similar items have similar vectors. Underpins vector search.",
+  },
+  {
+    term: "Execution trace",
+    definition:
+      "Record of what an agent actually did: the tools it called, the arguments it passed, the values they returned, and the human approvals given. Unlike a reasoning trace it is emitted by the system rather than narrated by the model, which is what makes it usable as audit evidence.",
   },
   {
     term: "Few-shot prompting",
@@ -114,7 +128,7 @@ export const GLOSSARY: GlossaryTerm[] = [
   {
     term: "Reasoning trace",
     definition:
-      "Natural-language sequence of intermediate steps a model produces before its final answer. Auditable and correctable.",
+      "Natural-language sequence of intermediate steps a model produces before its final answer. It makes an output reviewable and correctable, because a reader can find the step where the argument went wrong. It is model-generated narration rather than a record of computation, so it is a review aid and not audit evidence; the execution trace is what withstands audit.",
   },
   {
     term: "Sandboxing",

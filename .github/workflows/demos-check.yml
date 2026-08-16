@@ -20,3 +20,7 @@ jobs:
       # Fails if a script registered in server/registry.py is missing on
       # disk (the website's agent list is generated from that registry).
       - run: python3 scripts/export_registry.py --check
+      # Fails if any internal link in the site points at a route that does
+      # not exist. The pages cross-link by hand, so a renamed route would
+      # otherwise turn a dozen links into 404s with a green build.
+      - run: node scripts/check_site_graph.mjs

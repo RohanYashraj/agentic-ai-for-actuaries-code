@@ -1,5 +1,9 @@
 /** The book's structure: 5 parts, 18 chapters, paraphrased from the
- * detailed outline. Chapters 9-17 link to their companion-code pages. */
+ * detailed outline. Chapters 9-17 link to their companion-code pages.
+ *
+ * This module is the skeleton the book pages hang from. Reading material
+ * lives in chapter-content.ts, and the practice domain of a Part IV
+ * chapter is derived from DOMAINS rather than repeated here. */
 
 export type OutlineChapter = {
   number: number;
@@ -104,7 +108,7 @@ export const OUTLINE: OutlinePart[] = [
   },
   {
     roman: "III",
-    title: "Agentic AI. From Concept to Code",
+    title: "Agentic AI: From Concept to Architecture",
     approach: "Hands-on code",
     blurb:
       "The core of the book. What makes AI agentic, and your first working agents in Python, introduced line by line.",
@@ -209,3 +213,31 @@ export const OUTLINE: OutlinePart[] = [
     ],
   },
 ];
+
+/** Every chapter in reading order, flattened out of the parts. */
+export const CHAPTER_LIST: OutlineChapter[] = OUTLINE.flatMap(
+  (part) => part.chapters
+);
+
+/** Chapter numbers are zero-padded in URLs so /book/chapters/01 sorts and
+ * reads like a table of contents entry. */
+export function chapterPath(n: number): string {
+  return `/book/chapters/${String(n).padStart(2, "0")}`;
+}
+
+export function getOutlineChapter(n: number): OutlineChapter | undefined {
+  return CHAPTER_LIST.find((c) => c.number === n);
+}
+
+export function getPartOf(n: number): OutlinePart | undefined {
+  return OUTLINE.find((p) => p.chapters.some((c) => c.number === n));
+}
+
+export function prevNextChapter(n: number): {
+  prev?: OutlineChapter;
+  next?: OutlineChapter;
+} {
+  const i = CHAPTER_LIST.findIndex((c) => c.number === n);
+  if (i === -1) return {};
+  return { prev: CHAPTER_LIST[i - 1], next: CHAPTER_LIST[i + 1] };
+}

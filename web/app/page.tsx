@@ -7,8 +7,14 @@ import { NotifyPopup } from "@/components/notify-popup";
 import { Button } from "@/components/ui/button";
 import { cn, CONTAINER } from "@/lib/utils";
 import { CHAPTERS } from "@/lib/chapters";
+import { FEATURED_FAQ } from "@/lib/faq";
 import { GITHUB_REPO } from "@/lib/links";
-import { BOOK_PROMISE, OUTLINE, TARGET_READERS } from "@/lib/outline";
+import {
+  BOOK_PROMISE,
+  chapterPath,
+  OUTLINE,
+  TARGET_READERS,
+} from "@/lib/outline";
 import {
   AUTHORS,
   BOOK_DESCRIPTION,
@@ -59,13 +65,18 @@ const STRUCTURED_DATA = {
       image: `${SITE_URL}/book-cover-photo.png`,
       url: SITE_URL,
       author: AUTHOR_NODES.map((a) => ({ "@id": a["@id"] })),
+      // Every chapter now has a page of its own, so each part references
+      // the @id of that page's node rather than pointing only the coded
+      // chapters at their /code URL. Matching ids lets the Book node and
+      // the chapter pages merge into one entity.
       hasPart: OUTLINE.flatMap((part) =>
         part.chapters.map((ch) => ({
           "@type": "Chapter",
+          "@id": `${SITE_URL}${chapterPath(ch.number)}`,
           position: ch.number,
           name: `Chapter ${ch.number}: ${ch.title}`,
           abstract: ch.oneLiner,
-          ...(ch.slug ? { url: `${SITE_URL}/code/${ch.slug}` } : {}),
+          url: `${SITE_URL}${chapterPath(ch.number)}`,
         }))
       ),
     },
@@ -135,14 +146,29 @@ export default function LandingPage() {
               A practical guide to building AI agents that price, reserve, and
               report. You still sign the opinion.
             </p>
+            {/* Two co-equal actions, both of which deliver something now.
+                Launch updates are the tertiary action further down the
+                page: asking a first-time visitor only to wait wastes the
+                strongest thing here, which is that the code runs. */}
             <div className="mt-7 flex flex-wrap gap-3">
-              <Button asChild>
-                <a href="#outline">Read the outline</a>
+              <Button asChild className="btn-shimmer">
+                <Link href="/code">Explore &amp; run the code</Link>
               </Button>
-              <Button asChild variant="outline" className="btn-shimmer">
-                <Link href="/code">Run the code</Link>
+              <Button asChild variant="outline">
+                <Link href="/book">Read the chapters</Link>
               </Button>
             </div>
+            <p className="mt-4 text-sm text-muted-foreground">
+              Eighteen chapters, nine of them with code you can run without
+              installing anything.{" "}
+              <a
+                href="#notify"
+                className="text-cream-200 underline decoration-border underline-offset-4 hover:decoration-gold-400"
+              >
+                Get launch updates
+              </a>
+              .
+            </p>
           </div>
           <div className="hero-rise relative flex justify-center lg:justify-end">
             <div className="book-glow" aria-hidden="true" />
@@ -263,16 +289,14 @@ export default function LandingPage() {
                         </div>
                       </div>
                     );
-                    return chapter.slug ? (
+                    return (
                       <Link
                         key={chapter.number}
-                        href={`/code/${chapter.slug}`}
+                        href={chapterPath(chapter.number)}
                         className="block transition-colors hover:bg-navy-800/40"
                       >
                         {inner}
                       </Link>
-                    ) : (
-                      <div key={chapter.number}>{inner}</div>
                     );
                   })}
                 </div>
@@ -344,62 +368,56 @@ export default function LandingPage() {
       <section className="border-b border-border">
         <div className={cn(CONTAINER, "py-16")}>
           <h2 className="text-2xl leading-snug sm:text-3xl">The authors</h2>
+          {/* Rendered from AUTHORS rather than written out here: this
+              section used to carry its own copy of each biography, which
+              meant the page and the JSON-LD could describe the same person
+              differently. */}
           <div className="mt-8 grid gap-8 sm:grid-cols-2">
-            <div className="flex gap-4">
-              <Image
-                src="/author-satya.webp"
-                alt="Portrait of Satya Sai Mudigonda"
-                width={72}
-                height={72}
-                className="size-18 shrink-0 rounded-sm border border-border object-cover"
-              />
-              <div>
-                <h3 className="font-serif text-lg text-cream-100">
-                  Satya Sai Mudigonda
-                </h3>
-                <p className="font-mono text-[11px] text-gold-400">
-                  CPCU · PMP · AIAI
-                </p>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  Senior tech actuarial consultant and Professor of Practice;
-                  Chairman of the Sri Sathya Sai Institute of Actuaries. Thirty
-                  plus years across actuarial practice, technology leadership,
-                  and data science research.
-                </p>
+            {AUTHORS.map((author) => (
+              <div key={author.slug} className="flex gap-4">
+                {author.image && (
+                  <Image
+                    src={author.image}
+                    alt={`Portrait of ${author.name}`}
+                    width={72}
+                    height={72}
+                    className="size-18 shrink-0 rounded-sm border border-border object-cover"
+                  />
+                )}
+                <div>
+                  <h3 className="font-serif text-lg text-cream-100">
+                    <Link
+                      href={`/authors/${author.slug}`}
+                      className="hover:underline"
+                    >
+                      {[author.honorificPrefix, author.name]
+                        .filter(Boolean)
+                        .join(" ")}
+                    </Link>
+                  </h3>
+                  {author.honorificSuffix && (
+                    <p className="font-mono text-[11px] text-gold-400">
+                      {author.honorificSuffix.split(", ").join(" · ")}
+                    </p>
+                  )}
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                    {author.cardBio}
+                  </p>
+                  {author.links?.map((link) => (
+                    <a
+                      key={link.url}
+                      href={link.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-2 inline-flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-cream-100"
+                    >
+                      {link.label}
+                      <ArrowUpRight size={12} aria-hidden="true" />
+                    </a>
+                  ))}
+                </div>
               </div>
-            </div>
-            <div className="flex gap-4">
-              <Image
-                src="/author-rohan.jpeg"
-                alt="Portrait of Rohan Yashraj Gupta"
-                width={72}
-                height={72}
-                className="size-18 shrink-0 rounded-sm border border-border object-cover"
-              />
-              <div>
-                <h3 className="font-serif text-lg text-cream-100">
-                  Dr Rohan Yashraj Gupta
-                </h3>
-                <p className="font-mono text-[11px] text-gold-400">
-                  PhD · FIA · FIAI
-                </p>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  The first person in India to earn a PhD in actuarial science.
-                  Eight years of life and non-life insurance experience, nine
-                  published papers, and adjunct professor at the Sri Sathya Sai
-                  Institute of Actuaries.
-                </p>
-                <a
-                  href="https://rohanyashraj.com"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-2 inline-flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-cream-100"
-                >
-                  rohanyashraj.com
-                  <ArrowUpRight size={12} aria-hidden="true" />
-                </a>
-              </div>
-            </div>
+            ))}
           </div>
           <p className="mt-8 text-sm text-muted-foreground">
             In collaboration with the{" "}
@@ -416,12 +434,67 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* FAQ teaser */}
+      <section className="border-b border-border">
+        <div className={cn(CONTAINER, "py-16")}>
+          <h2 className="text-2xl leading-snug sm:text-3xl">
+            Common questions
+          </h2>
+          <dl className="mt-8 grid max-w-4xl gap-x-10 gap-y-6 sm:grid-cols-2">
+            {FEATURED_FAQ.map((item) => (
+              <div key={item.question}>
+                <dt className="font-serif text-lg leading-snug text-cream-100">
+                  {item.question}
+                </dt>
+                <dd className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                  {item.answer}
+                </dd>
+              </div>
+            ))}
+          </dl>
+          <p className="mt-8 text-sm">
+            <Link
+              href="/faq"
+              className="text-cream-200 underline decoration-border underline-offset-4 hover:decoration-gold-400"
+            >
+              All questions
+            </Link>
+            {" · "}
+            <Link
+              href="/glossary"
+              className="text-cream-200 underline decoration-border underline-offset-4 hover:decoration-gold-400"
+            >
+              Glossary
+            </Link>
+            {" · "}
+            <Link
+              href="/resources"
+              className="text-cream-200 underline decoration-border underline-offset-4 hover:decoration-gold-400"
+            >
+              Sources and standards
+            </Link>
+          </p>
+        </div>
+      </section>
+
       {/* Launch notify */}
-      <section>
+      <section id="notify" className="scroll-mt-20">
         <div className={cn(CONTAINER, "flex flex-col gap-4 py-16")}>
           <h2 className="text-xl text-cream-100">
             Available later this year, free from ACTEX
           </h2>
+          <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
+            We will email you when the full edition is released. In the
+            meantime the{" "}
+            <Link
+              href="/book/primer"
+              className="text-cream-200 underline decoration-border underline-offset-4 hover:decoration-gold-400"
+            >
+              abridged primer
+            </Link>{" "}
+            covers the argument in eighteen short chapters, and the code is
+            already here.
+          </p>
           <NotifyForm />
         </div>
       </section>

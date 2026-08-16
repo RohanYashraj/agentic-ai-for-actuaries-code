@@ -3,15 +3,26 @@ import path from "node:path";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { JsonLd } from "@/components/json-ld";
+import { RelatedLinks } from "@/components/related-links";
 import { ScriptCard } from "@/components/script-card";
 import { Button } from "@/components/ui/button";
 import { AGENT_SCRIPTS } from "@/lib/agents";
 import { CHAPTER_CONCEPTS } from "@/lib/book";
 import { CHAPTERS, getChapter } from "@/lib/chapters";
 import { loadDemoSource, loadManifest } from "@/lib/demos";
+import { relatedForCodeChapter } from "@/lib/graph";
 import { colabUrl, GITHUB_REPO } from "@/lib/links";
-import { AUTHORS, SITE_NAME, SITE_URL } from "@/lib/site";
+import {
+  absolute,
+  authorRefs,
+  breadcrumbList,
+  graph,
+  ID,
+  pageMetadata,
+} from "@/lib/seo";
+import { SITE_NAME } from "@/lib/site";
 import { cn, CONTAINER } from "@/lib/utils";
 
 export function generateStaticParams() {
@@ -26,20 +37,13 @@ export async function generateMetadata({
   const { chapter } = await params;
   const ch = getChapter(chapter);
   if (!ch) return { title: "Chapter" };
-  const title = `Chapter ${ch.number}: ${ch.title}`;
-  const url = `/code/${ch.slug}`;
-  return {
-    title,
+  return pageMetadata({
+    title: `Chapter ${ch.number}: ${ch.title}`,
     description: ch.blurb,
+    path: `/code/${ch.slug}`,
     keywords: CHAPTER_CONCEPTS[ch.number]?.slice(0, 6),
-    alternates: { canonical: url },
-    openGraph: {
-      type: "article",
-      url,
-      title: `${title} · ${SITE_NAME}`,
-      description: ch.blurb,
-    },
-  };
+    ogType: "article",
+  });
 }
 
 function readOriginal(folder: string, file: string): string | undefined {
@@ -68,50 +72,38 @@ export default async function ChapterPage({
   const prev = CHAPTERS[index - 1];
   const next = CHAPTERS[index + 1];
 
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "BreadcrumbList",
-        itemListElement: [
-          { "@type": "ListItem", position: 1, name: SITE_NAME, item: SITE_URL },
-          { "@type": "ListItem", position: 2, name: "Run the code", item: `${SITE_URL}/code` },
-          {
-            "@type": "ListItem",
-            position: 3,
-            name: `Chapter ${chapter.number}: ${chapter.title}`,
-            item: `${SITE_URL}/code/${chapter.slug}`,
-          },
-        ],
-      },
-      {
-        "@type": "TechArticle",
-        headline: `Chapter ${chapter.number}: ${chapter.title}`,
-        description: chapter.blurb,
-        proficiencyLevel: "Beginner",
-        inLanguage: "en",
-        isPartOf: { "@type": "Book", "@id": `${SITE_URL}/#book`, name: SITE_NAME, url: SITE_URL },
-        author: AUTHORS.map((a) => ({
-          "@type": "Person",
-          "@id": `${SITE_URL}/#${a.name.toLowerCase().replace(/\s+/g, "-")}`,
-          name: a.name,
-        })),
-        about: concepts.map((c) => ({ "@type": "Thing", name: c })),
-        url: `${SITE_URL}/code/${chapter.slug}`,
-        programmingLanguage: "Python",
-      },
-    ],
-  };
+  const trail = [
+    { name: SITE_NAME, path: "/" },
+    { name: "Run the code", path: "/code" },
+    { name: `Chapter ${chapter.number}`, path: `/code/${chapter.slug}` },
+  ];
+
+  const structuredData = graph(breadcrumbList(trail), {
+    "@type": "TechArticle",
+    "@id": absolute(`/code/${chapter.slug}`),
+    headline: `Chapter ${chapter.number}: ${chapter.title}`,
+    description: chapter.blurb,
+    proficiencyLevel: "Beginner",
+    inLanguage: "en",
+    isPartOf: { "@id": ID.book },
+    author: authorRefs(),
+    about: concepts.map((c) => ({ "@type": "Thing", name: c })),
+    url: absolute(`/code/${chapter.slug}`),
+    programmingLanguage: "Python",
+    hasPart: chapter.scripts.map((s) => ({
+      "@type": "SoftwareSourceCode",
+      name: s.file,
+      description: s.description,
+      programmingLanguage: "Python",
+      codeRepository: GITHUB_REPO,
+      codeSampleType: "full solution",
+    })),
+  });
 
   return (
     <div className={cn(CONTAINER, "py-10")}>
       <JsonLd data={structuredData} />
-      <nav className="font-mono text-xs text-muted-foreground">
-        <Link href="/code" className="transition-colors hover:text-cream-100">
-          Run the code
-        </Link>{" "}
-        / {chapter.folder}
-      </nav>
+      <Breadcrumbs trail={trail} />
 
       <header className="mt-6 max-w-3xl">
         <p className="font-mono text-xs uppercase tracking-[0.22em] text-gold-400">
@@ -202,6 +194,8 @@ export default async function ChapterPage({
           .
         </p>
       )}
+
+      <RelatedLinks groups={relatedForCodeChapter(chapter.slug)} />
 
       <nav className="mt-12 flex justify-between border-t border-border pt-6 text-sm">
         {prev ? (
