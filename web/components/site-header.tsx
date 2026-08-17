@@ -9,6 +9,7 @@ import {
   Bookmarks,
   Compass,
   GithubLogo,
+  Lightbulb,
   List,
   Notebook,
   Question,
@@ -42,6 +43,12 @@ const NAV: NavItem[] = [
     label: "Domains",
     icon: Compass,
     blurb: "Pricing, reserving, life, risk",
+  },
+  {
+    href: "/concepts",
+    label: "Concepts",
+    icon: Lightbulb,
+    blurb: "Eight ideas, explained in depth",
   },
   {
     href: "/glossary",

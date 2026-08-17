@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { cn, CONTAINER } from "@/lib/utils";
 
@@ -27,9 +28,17 @@ export default function Error({
         Reloading usually clears it. If it keeps happening, the chapter
         code still runs in Colab.
       </p>
-      <Button onClick={reset} size="sm" className="mt-6 h-8 px-4 text-xs font-medium">
-        Try again
-      </Button>
+      <div className="mt-6 flex items-center gap-5">
+        <Button onClick={reset} size="sm" className="h-8 px-4 text-xs font-medium">
+          Try again
+        </Button>
+        <Link
+          href="/"
+          className="text-sm text-cream-200 underline decoration-border underline-offset-4 hover:decoration-gold-400"
+        >
+          Go to the homepage
+        </Link>
+      </div>
     </main>
   );
 }

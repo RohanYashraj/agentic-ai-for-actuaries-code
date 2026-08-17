@@ -11,12 +11,14 @@ export default function NotFound() {
         This page isn&apos;t in the book.
       </h1>
       <p className="mt-3 max-w-md text-sm text-muted-foreground">
-        The chapter or page you followed doesn&apos;t exist here. The code
-        chapters live under ch09–ch17.
+        The page you followed doesn&apos;t exist here.
       </p>
       <div className="mt-6 flex gap-4 text-sm">
         <Link href="/" className="text-gold-300 underline-offset-4 hover:underline">
-          Back to the book
+          Go to the homepage
+        </Link>
+        <Link href="/book" className="text-gold-300 underline-offset-4 hover:underline">
+          All chapters
         </Link>
         <Link href="/code" className="text-gold-300 underline-offset-4 hover:underline">
           Browse the code chapters

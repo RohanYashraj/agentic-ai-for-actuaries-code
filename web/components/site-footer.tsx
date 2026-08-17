@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { GITHUB_REPO } from "@/lib/links";
 import { cn, CONTAINER } from "@/lib/utils";
 
 /** The secondary navigation. The header carries only the primary routes,
@@ -9,7 +10,7 @@ const FOOTER_LINKS: { title: string; links: { label: string; href: string }[] }[
     {
       title: "The book",
       links: [
-        { label: "All eighteen chapters", href: "/book" },
+        { label: "All chapters", href: "/book" },
         { label: "The primer", href: "/book/primer" },
         { label: "The authors", href: "/authors" },
       ],
@@ -24,9 +25,17 @@ const FOOTER_LINKS: { title: string; links: { label: string; href: string }[] }[
     {
       title: "Reference",
       links: [
+        { label: "Concepts", href: "/concepts" },
         { label: "Glossary", href: "/glossary" },
         { label: "Sources and standards", href: "/resources" },
         { label: "Questions", href: "/faq" },
+      ],
+    },
+    {
+      title: "Stay close",
+      links: [
+        { label: "Get launch updates", href: "/#notify" },
+        { label: "GitHub", href: GITHUB_REPO },
       ],
     },
   ];
@@ -37,22 +46,31 @@ export function SiteFooter() {
       <div className={cn(CONTAINER, "py-10")}>
         <nav
           aria-label="Footer"
-          className="grid gap-6 sm:grid-cols-3"
+          className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
         >
           {FOOTER_LINKS.map((group) => (
             <div key={group.title}>
-              <h2 className="font-mono text-[11px] uppercase tracking-[0.16em] text-gold-300">
-                {group.title}
-              </h2>
+              <h2 className="label-mono">{group.title}</h2>
               <ul className="mt-2.5 space-y-2.5 text-sm sm:space-y-1.5">
                 {group.links.map((link) => (
                   <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      className="text-muted-foreground transition-colors hover:text-cream-100"
-                    >
-                      {link.label}
-                    </Link>
+                    {link.href.startsWith("http") ? (
+                      <a
+                        href={link.href}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-muted-foreground transition-colors hover:text-cream-100"
+                      >
+                        {link.label}
+                      </a>
+                    ) : (
+                      <Link
+                        href={link.href}
+                        className="text-muted-foreground transition-colors hover:text-cream-100"
+                      >
+                        {link.label}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>

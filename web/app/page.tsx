@@ -161,7 +161,7 @@ export default function LandingPage() {
               <Button asChild size="lg" className="w-full sm:w-auto">
                 <Link href="/code">
                   <Terminal size={16} aria-hidden="true" />
-                  Explore &amp; run the code
+                  Run the code
                 </Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
