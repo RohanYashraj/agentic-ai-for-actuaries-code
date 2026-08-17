@@ -102,10 +102,6 @@ export default async function DomainPage({
         </div>
       </header>
 
-      <p className="mt-6 max-w-3xl font-serif text-xl leading-relaxed text-cream-200">
-        {domain.headline}
-      </p>
-
       <section className="mt-10 max-w-3xl space-y-5">
         {domain.intro.map((para) => (
           <p key={para.slice(0, 48)} className="text-base leading-relaxed">
