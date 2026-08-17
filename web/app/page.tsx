@@ -8,11 +8,16 @@ import {
 } from "@phosphor-icons/react/dist/ssr";
 import { JsonLd } from "@/components/json-ld";
 import { NotifyForm } from "@/components/notify-form";
-import { NotifyPopup } from "@/components/notify-popup";
+import { HeroIntro } from "@/components/motion/hero-intro";
+import { RevealOnScroll } from "@/components/motion/reveal-on-scroll";
+import { PartAccordion, type AccordionPart } from "@/components/part-accordion";
+import { StatValue } from "@/components/stat-value";
+import { ScriptCard } from "@/components/script-card";
 import { Button } from "@/components/ui/button";
 import { cn, CONTAINER } from "@/lib/utils";
-import { CHAPTERS } from "@/lib/chapters";
-import { FEATURED_FAQ } from "@/lib/faq";
+import { AGENT_SCRIPTS } from "@/lib/agents";
+import { getChapter } from "@/lib/chapters";
+import { loadDemoSource, loadManifest } from "@/lib/demos";
 import { GITHUB_REPO } from "@/lib/links";
 import {
   BOOK_PROMISE,
@@ -124,30 +129,37 @@ const STATS = [
 ];
 
 export default function LandingPage() {
+  const ch09 = getChapter("ch09");
+  const featuredScript = ch09?.scripts.find((s) => s.demoId);
+  const manifest = loadManifest();
+  const featuredSpec = featuredScript?.demoId
+    ? manifest[featuredScript.demoId]
+    : undefined;
+
   return (
     <div>
       <JsonLd data={STRUCTURED_DATA} />
       {/* Hero: the book itself. */}
       <section className="overflow-x-clip border-b border-border">
-        <div
+        <HeroIntro
           className={cn(
             CONTAINER,
             "grid items-center gap-12 pb-20 pt-16 lg:grid-cols-[1fr_1.05fr] lg:gap-8"
           )}
         >
-          <div className="hero-rise">
-            <p className="font-mono text-xs uppercase tracking-[0.22em] text-gold-400">
+          <div>
+            <p data-hero-item className="font-mono text-xs uppercase tracking-[0.22em] text-gold-400">
               ACTEX · First edition · 2026
             </p>
-            <h1 className="mt-4 text-4xl leading-[1.08] sm:text-6xl">
+            <h1 data-hero-item className="mt-4 text-4xl leading-[1.08] sm:text-6xl">
               Agentic AI
               <br />
               for Actuaries
             </h1>
-            <p className="mt-3 font-serif text-lg text-cream-300">
+            <p data-hero-item className="mt-3 font-serif text-lg text-cream-300">
               From AI foundations to autonomous actuarial systems
             </p>
-            <p className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground">
+            <p data-hero-item className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground">
               A practical guide to building AI agents that price, reserve, and
               report. You still sign the opinion.
             </p>
@@ -157,7 +169,7 @@ export default function LandingPage() {
                 strongest thing here, which is that the code runs. */}
             {/* Stacked and full-width on a phone; side by side once
                 both fit on one line. */}
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <div data-hero-item className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Button asChild size="lg" className="w-full sm:w-auto">
                 <Link href="/code">
                   <Terminal size={16} aria-hidden="true" />
@@ -171,19 +183,16 @@ export default function LandingPage() {
                 </Link>
               </Button>
             </div>
-            <p className="mt-4 text-sm text-muted-foreground">
-              Eighteen chapters, nine of them with code you can run without
-              installing anything.{" "}
-              <a
-                href="#notify"
-                className="text-cream-200 underline decoration-border underline-offset-4 hover:decoration-gold-400"
-              >
-                Get launch updates
-              </a>
+            <p data-hero-item className="mt-4 text-sm text-muted-foreground">
+              Eighteen chapters, nine with code that runs in your browser. Short on
+              time? Start with the{" "}
+              <Link href="/book/primer" className="text-cream-200 underline decoration-border underline-offset-4 hover:decoration-gold-400">
+                primer
+              </Link>
               .
             </p>
           </div>
-          <div className="hero-rise relative flex justify-center lg:justify-end">
+          <div data-hero-cover className="relative flex justify-center lg:justify-end">
             <div className="book-glow" aria-hidden="true" />
             <div className="book-cover">
               <Image
@@ -196,12 +205,12 @@ export default function LandingPage() {
               />
             </div>
           </div>
-        </div>
+        </HeroIntro>
       </section>
 
       {/* Overview: what the book promises, and to whom */}
       <section className="border-b border-border">
-        <div className={cn(CONTAINER, "py-16")}>
+        <RevealOnScroll className={cn(CONTAINER, "py-16")}>
           <h2 className="max-w-2xl text-2xl leading-snug sm:text-3xl">
             A hands-on guide, structured as a single journey
           </h2>
@@ -228,9 +237,7 @@ export default function LandingPage() {
               <div key={stat.label}>
                 <dt className="sr-only">{stat.label}</dt>
                 <dd>
-                  <span className="font-serif text-4xl text-cream-100">
-                    {stat.value}
-                  </span>
+                  <StatValue value={stat.value} />
                   <span className="ml-2 font-mono text-xs uppercase tracking-[0.18em] text-gold-400">
                     {stat.label}
                   </span>
@@ -241,12 +248,12 @@ export default function LandingPage() {
               </div>
             ))}
           </dl>
-        </div>
+        </RevealOnScroll>
       </section>
 
       {/* The outline: five parts, eighteen chapters */}
       <section id="outline" className="scroll-mt-24 border-b border-border">
-        <div className={cn(CONTAINER, "py-16")}>
+        <RevealOnScroll className={cn(CONTAINER, "py-16")}>
           <h2 className="text-2xl leading-snug sm:text-3xl">
             Inside the book
           </h2>
@@ -255,75 +262,38 @@ export default function LandingPage() {
             governance. Every chapter closes with a worked case study;
             chapters 9 to 17 ship runnable companion code.
           </p>
-          <div className="mt-10 space-y-12">
-            {OUTLINE.map((part) => (
-              <div
-                key={part.roman}
-                className="grid gap-4 lg:grid-cols-[220px_1fr]"
-              >
-                <div>
-                  <p className="font-serif text-3xl text-gold-300">
-                    Part {part.roman}
-                  </p>
-                  <h3 className="mt-1 text-lg leading-snug text-cream-100">
-                    {part.title}
-                  </h3>
-                  <p className="mt-2 inline-block rounded-sm border border-border px-2 py-0.5 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-                    {part.approach}
-                  </p>
-                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                    {part.blurb}
-                  </p>
-                </div>
-                <div className="divide-y divide-border/60 border-t border-border/60 lg:border-t-0">
-                  {part.chapters.map((chapter) => {
-                    const inner = (
-                      <div className="grid grid-cols-[44px_1fr] gap-x-3 py-4">
-                        <span className="font-serif text-xl leading-6 text-cream-400">
-                          {chapter.number}
-                        </span>
-                        <div>
-                          <p className="flex flex-wrap items-baseline gap-x-2 leading-6">
-                            <span className="text-[15px] text-cream-100">
-                              {chapter.title}
-                            </span>
-                            {chapter.slug && (
-                              <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-gold-400">
-                                runnable code
-                              </span>
-                            )}
-                          </p>
-                          <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                            {chapter.oneLiner}
-                          </p>
-                          <p className="mt-1 font-mono text-[11px] text-muted-foreground/80">
-                            Case study · {chapter.caseStudy}
-                          </p>
-                        </div>
-                      </div>
-                    );
-                    return (
-                      <Link
-                        key={chapter.number}
-                        href={chapterPath(chapter.number)}
-                        className="block transition-colors hover:bg-navy-800/40"
-                      >
-                        {inner}
-                      </Link>
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+          <PartAccordion
+            parts={OUTLINE.map(
+              (part): AccordionPart => ({
+                roman: part.roman,
+                title: part.title,
+                blurb: part.blurb,
+                chapters: part.chapters.map((ch) => ({
+                  number: ch.number,
+                  title: ch.title,
+                  oneLiner: ch.oneLiner,
+                  hasCode: Boolean(ch.slug),
+                  href: chapterPath(ch.number),
+                })),
+              })
+            )}
+          />
+          <p className="mt-6 text-sm">
+            <Link
+              href="/book"
+              className="text-cream-200 underline decoration-border underline-offset-4 hover:decoration-gold-400"
+            >
+              Browse all chapters
+            </Link>
+          </p>
+        </RevealOnScroll>
       </section>
 
       {/* Companion code directory */}
       <section className="border-b border-border">
         <div className={cn(CONTAINER, "py-16")}>
           <h2 className="text-2xl leading-snug sm:text-3xl">
-            Every listing, runnable
+            Run it before you buy it
           </h2>
           <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted-foreground">
             An open repository carries working code for every listing in Parts
@@ -332,27 +302,49 @@ export default function LandingPage() {
             in your browser, agent scripts run live, and every chapter opens in
             Colab on a free-tier Gemini key.
           </p>
-          <div className="mt-8 overflow-hidden rounded-md border border-border bg-navy-950/50 font-mono text-sm">
-            <p className="border-b border-border px-4 py-2.5 text-xs text-muted-foreground">
-              agentic-ai-for-actuaries-code/
-            </p>
-            {CHAPTERS.map((chapter) => (
-              <Link
-                key={chapter.slug}
-                href={`/code/${chapter.slug}`}
-                className="flex flex-wrap items-baseline gap-x-2 border-b border-border/60 px-4 py-2.5 transition-colors last:border-b-0 hover:bg-navy-800/50"
-              >
-                <span className="text-gold-300">{chapter.slug}</span>
-                <span className="text-muted-foreground">
-                  {chapter.folder.slice(chapter.slug.length)}
-                </span>
-                <span className="ml-auto text-xs text-muted-foreground">
-                  {chapter.title}
-                </span>
-              </Link>
+          <div className="mt-8 grid gap-6 lg:grid-cols-3">
+            {[
+              {
+                title: "In your browser",
+                body: "Tool scripts run on a Python runtime loaded into the page. Edit them and run again.",
+              },
+              {
+                title: "Live agents",
+                body: "Agent scripts run on our server against Gemini, with every tool call streamed as it happens.",
+              },
+              {
+                title: "In Colab",
+                body: "Every chapter opens as a notebook where you bring your own free Gemini key.",
+              },
+            ].map((mode) => (
+              <div key={mode.title}>
+                <h3 className="text-base font-semibold">{mode.title}</h3>
+                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                  {mode.body}
+                </p>
+              </div>
             ))}
           </div>
-          <div className="mt-6">
+          {ch09 && featuredScript && featuredSpec && (
+            <div className="mt-8">
+              <ScriptCard
+                script={featuredScript}
+                chapter={ch09}
+                demoSpec={featuredSpec}
+                demoSource={loadDemoSource(featuredSpec)}
+                agentEntry={
+                  featuredScript.agentId
+                    ? AGENT_SCRIPTS.find((a) => a.id === featuredScript.agentId)
+                    : undefined
+                }
+                originalSource={undefined}
+              />
+            </div>
+          )}
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Button asChild variant="outline">
+              <Link href="/code">All nine code chapters</Link>
+            </Button>
             <Button asChild variant="outline">
               <a href={GITHUB_REPO} target="_blank" rel="noreferrer">
                 <GithubLogo size={16} aria-hidden="true" />
@@ -365,7 +357,7 @@ export default function LandingPage() {
 
       {/* Pull quote */}
       <section className="border-b border-border">
-        <div className={cn(CONTAINER, "py-16")}>
+        <RevealOnScroll className={cn(CONTAINER, "py-16")}>
           <blockquote className="mx-auto max-w-2xl text-center">
             <p className="font-serif text-2xl leading-snug text-cream-100 sm:text-3xl">
               “The difference is not talent. Both hold the same fellowship
@@ -375,12 +367,12 @@ export default function LandingPage() {
               Chapter 1 · The AI Landscape
             </footer>
           </blockquote>
-        </div>
+        </RevealOnScroll>
       </section>
 
       {/* Authors */}
       <section className="border-b border-border">
-        <div className={cn(CONTAINER, "py-16")}>
+        <RevealOnScroll className={cn(CONTAINER, "py-16")}>
           <h2 className="text-2xl leading-snug sm:text-3xl">The authors</h2>
           {/* Rendered from AUTHORS rather than written out here: this
               section used to carry its own copy of each biography, which
@@ -445,55 +437,12 @@ export default function LandingPage() {
             </a>
             .
           </p>
-        </div>
-      </section>
-
-      {/* FAQ teaser */}
-      <section className="border-b border-border">
-        <div className={cn(CONTAINER, "py-16")}>
-          <h2 className="text-2xl leading-snug sm:text-3xl">
-            Common questions
-          </h2>
-          <dl className="mt-8 grid max-w-4xl gap-x-10 gap-y-6 sm:grid-cols-2">
-            {FEATURED_FAQ.map((item) => (
-              <div key={item.question}>
-                <dt className="font-serif text-lg leading-snug text-cream-100">
-                  {item.question}
-                </dt>
-                <dd className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-                  {item.answer}
-                </dd>
-              </div>
-            ))}
-          </dl>
-          <p className="mt-8 text-sm">
-            <Link
-              href="/faq"
-              className="text-cream-200 underline decoration-border underline-offset-4 hover:decoration-gold-400"
-            >
-              All questions
-            </Link>
-            {" · "}
-            <Link
-              href="/glossary"
-              className="text-cream-200 underline decoration-border underline-offset-4 hover:decoration-gold-400"
-            >
-              Glossary
-            </Link>
-            {" · "}
-            <Link
-              href="/resources"
-              className="text-cream-200 underline decoration-border underline-offset-4 hover:decoration-gold-400"
-            >
-              Sources and standards
-            </Link>
-          </p>
-        </div>
+        </RevealOnScroll>
       </section>
 
       {/* Launch notify */}
       <section id="notify" className="scroll-mt-24">
-        <div className={cn(CONTAINER, "flex flex-col gap-4 py-16")}>
+        <RevealOnScroll className={cn(CONTAINER, "flex flex-col gap-4 py-16")}>
           <h2 className="text-xl text-cream-100">
             Available later this year, free from ACTEX
           </h2>
@@ -510,10 +459,8 @@ export default function LandingPage() {
             already here.
           </p>
           <NotifyForm />
-        </div>
+        </RevealOnScroll>
       </section>
-
-      <NotifyPopup />
     </div>
   );
 }
