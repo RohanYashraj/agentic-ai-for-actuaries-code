@@ -1,3 +1,5 @@
+import fs from "node:fs";
+import path from "node:path";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -17,7 +19,6 @@ import { Button } from "@/components/ui/button";
 import { cn, CONTAINER } from "@/lib/utils";
 import { AGENT_SCRIPTS } from "@/lib/agents";
 import { getChapter } from "@/lib/chapters";
-import { loadDemoSource, loadManifest } from "@/lib/demos";
 import { GITHUB_REPO } from "@/lib/links";
 import {
   BOOK_PROMISE,
@@ -128,12 +129,22 @@ const STATS = [
   },
 ];
 
+function readOriginal(folder: string, file: string): string | undefined {
+  try {
+    return fs.readFileSync(
+      path.join(process.cwd(), "..", folder, file),
+      "utf-8"
+    );
+  } catch {
+    return undefined;
+  }
+}
+
 export default function LandingPage() {
   const ch09 = getChapter("ch09");
-  const featuredScript = ch09?.scripts.find((s) => s.demoId);
-  const manifest = loadManifest();
-  const featuredSpec = featuredScript?.demoId
-    ? manifest[featuredScript.demoId]
+  const featuredScript = ch09?.scripts.find((s) => s.agentId);
+  const featuredAgent = featuredScript?.agentId
+    ? AGENT_SCRIPTS.find((a) => a.id === featuredScript.agentId)
     : undefined;
 
   return (
@@ -325,19 +336,15 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
-          {ch09 && featuredScript && featuredSpec && (
+          {ch09 && featuredScript && featuredAgent && (
             <div className="mt-8">
               <ScriptCard
                 script={featuredScript}
                 chapter={ch09}
-                demoSpec={featuredSpec}
-                demoSource={loadDemoSource(featuredSpec)}
-                agentEntry={
-                  featuredScript.agentId
-                    ? AGENT_SCRIPTS.find((a) => a.id === featuredScript.agentId)
-                    : undefined
-                }
-                originalSource={undefined}
+                demoSpec={undefined}
+                demoSource={undefined}
+                agentEntry={featuredAgent}
+                originalSource={readOriginal(ch09.folder, featuredScript.file)}
               />
             </div>
           )}
