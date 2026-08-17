@@ -106,9 +106,7 @@ export default async function ChapterPage({
       <Breadcrumbs trail={trail} />
 
       <header className="mt-6 max-w-3xl">
-        <p className="font-mono text-xs uppercase tracking-[0.22em] text-gold-400">
-          Chapter {chapter.number}
-        </p>
+        <p className="label-mono">Chapter {chapter.number}</p>
         <h1 className="mt-2 text-3xl leading-tight sm:text-4xl">
           {chapter.title}
         </h1>
@@ -117,8 +115,11 @@ export default async function ChapterPage({
         </p>
         <div className="mt-5 flex flex-wrap gap-3">
           <Button asChild size="sm">
+            <a href="#listings">Run it here</a>
+          </Button>
+          <Button asChild size="sm" variant="outline">
             <a href={colabUrl(chapter.slug)} target="_blank" rel="noreferrer">
-              Open chapter in Colab
+              Open in Colab
             </a>
           </Button>
           <Button asChild size="sm" variant="outline">
@@ -127,7 +128,7 @@ export default async function ChapterPage({
               target="_blank"
               rel="noreferrer"
             >
-              Folder on GitHub
+              GitHub
             </a>
           </Button>
         </div>
@@ -135,15 +136,10 @@ export default async function ChapterPage({
 
       {concepts.length > 0 && (
         <section className="mt-8 max-w-3xl rounded-md border border-border bg-card px-5 py-4">
-          <h2 className="font-mono text-xs uppercase tracking-[0.18em] text-gold-300">
-            What the chapter covers
-          </h2>
+          <h3 className="text-base font-semibold">What you&rsquo;ll build</h3>
           <ul className="mt-3 space-y-1.5 text-sm text-muted-foreground">
             {concepts.map((c) => (
-              <li key={c} className="flex gap-2">
-                <span aria-hidden="true" className="text-gold-400">
-                  ·
-                </span>
+              <li key={c} className="list-disc marker:text-gold-400 ml-4">
                 {c}
               </li>
             ))}
@@ -151,7 +147,7 @@ export default async function ChapterPage({
         </section>
       )}
 
-      <section className="mt-10 space-y-6">
+      <section id="listings" className="mt-10 scroll-mt-24 space-y-6">
         {chapter.scripts.map((script) => {
           const demoSpec = script.demoId ? manifest[script.demoId] : undefined;
           const agentEntry = script.agentId

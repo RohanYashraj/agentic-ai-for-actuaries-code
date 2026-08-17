@@ -56,14 +56,32 @@ export default function CodeIndexPage() {
         <h1 className="text-3xl leading-tight sm:text-4xl">
           Every listing, runnable
         </h1>
-        <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-          The companion code for Parts III to V of the book, three ways. Tool
-          scripts run editable right here, on a Python runtime inside your
-          browser. Agent scripts run live on our server against Gemini, with
-          their tool calls streamed as they happen. And every chapter opens as
-          a Colab notebook where you bring your own free Gemini key and go as
-          far as you like.
+        <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
+          The companion code for Parts III to V, three ways.
         </p>
+        <div className="mt-6 grid max-w-3xl gap-6 sm:grid-cols-3">
+          {[
+            {
+              title: "In your browser",
+              body: "Tool scripts run editable on a Python runtime inside the page.",
+            },
+            {
+              title: "Live agents",
+              body: "Agent scripts run on our server against Gemini, tool calls streamed.",
+            },
+            {
+              title: "In Colab",
+              body: "Every chapter opens as a notebook with your own free Gemini key.",
+            },
+          ].map((mode) => (
+            <div key={mode.title}>
+              <h3 className="text-base font-semibold">{mode.title}</h3>
+              <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                {mode.body}
+              </p>
+            </div>
+          ))}
+        </div>
       </header>
 
       <section className="mt-10 grid gap-4 sm:grid-cols-2">
@@ -147,7 +165,7 @@ export default function CodeIndexPage() {
       </section>
 
       <section className="mt-12 max-w-3xl text-sm leading-relaxed text-muted-foreground">
-        <h2 className="text-xl text-cream-100">Notes for the curious</h2>
+        <h2 className="text-xl text-cream-100">Before you run</h2>
         <p className="mt-3">
           Browser demos run on Pyodide, a full CPython compiled to WebAssembly.
           The first run downloads the runtime (about 10 MB, more with pandas);
