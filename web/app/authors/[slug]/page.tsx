@@ -3,6 +3,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ArrowUpRight } from "@phosphor-icons/react/dist/ssr";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { FactSection } from "@/components/fact-section";
 import { JsonLd } from "@/components/json-ld";
 import { RelatedLinks } from "@/components/related-links";
 import { chapterPath } from "@/lib/outline";
@@ -39,28 +40,6 @@ export async function generateMetadata({
     path: authorPath(author),
     ogType: "article",
   });
-}
-
-/** Small labelled block used for the credentials rail. */
-function Facts({ title, items }: { title: string; items: string[] }) {
-  if (items.length === 0) return null;
-  return (
-    <div className="rounded-md border border-border bg-card px-5 py-4">
-      <h2 className="font-mono text-xs uppercase tracking-[0.18em] text-gold-300">
-        {title}
-      </h2>
-      <ul className="mt-3 space-y-1.5 text-sm text-muted-foreground">
-        {items.map((item) => (
-          <li key={item} className="flex gap-2">
-            <span aria-hidden="true" className="text-gold-400">
-              ·
-            </span>
-            {item}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
 }
 
 export default async function AuthorPage({
@@ -161,21 +140,20 @@ export default async function AuthorPage({
         </section>
       )}
 
-      <div className="mt-10 grid max-w-3xl gap-4 sm:grid-cols-2">
-        <Facts
-          title="Roles"
-          items={(author.roles ?? []).map((r) => `${r.title}, ${r.org}`)}
-        />
-        <Facts title="Publications" items={author.publications ?? []} />
-        <Facts title="Teaching and supervision" items={author.teaching ?? []} />
-        <Facts title="Selected platforms" items={author.speaking ?? []} />
-      </div>
+      <FactSection
+        title="Roles"
+        items={(author.roles ?? []).map((r) => `${r.title}, ${r.org}`)}
+      />
+      <FactSection title="Publications" items={author.publications ?? []} />
+      <FactSection
+        title="Teaching and supervision"
+        items={author.teaching ?? []}
+      />
+      <FactSection title="Selected platforms" items={author.speaking ?? []} />
 
       {author.research && (
         <section className="mt-10 max-w-3xl rounded-md border border-border bg-card px-5 py-4">
-          <h2 className="font-mono text-xs uppercase tracking-[0.18em] text-gold-300">
-            Research interests
-          </h2>
+          <h3 className="text-base font-semibold">Research interests</h3>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
             {author.research}
           </p>
@@ -184,9 +162,7 @@ export default async function AuthorPage({
 
       {author.relationToBook && (
         <section className="mt-6 max-w-3xl rounded-md border border-gold-400/25 bg-gold-400/5 px-5 py-5">
-          <h2 className="font-mono text-xs uppercase tracking-[0.18em] text-gold-300">
-            On this book
-          </h2>
+          <h3 className="text-base font-semibold">On this book</h3>
           <p className="mt-3 text-base leading-relaxed">
             {author.relationToBook}
           </p>

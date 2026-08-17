@@ -66,9 +66,7 @@ export default function PrimerPage() {
       <Breadcrumbs trail={TRAIL} />
 
       <header className="mt-6 max-w-3xl">
-        <p className="font-mono text-xs uppercase tracking-[0.22em] text-gold-400">
-          Abridged edition
-        </p>
+        <p className="label-mono">Abridged edition</p>
         <h1 className="mt-2 text-3xl leading-tight sm:text-4xl">
           A Concise Primer
         </h1>
@@ -81,23 +79,10 @@ export default function PrimerPage() {
         </p>
       </header>
 
-      <section className="mt-10 max-w-3xl rounded-md border border-gold-400/30 bg-gold-400/5 px-5 py-5">
-        <h2 className="font-serif text-xl text-cream-100">
-          Get the primer
-        </h2>
-        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-          Leave your email and we will send the primer when it is released,
-          along with news of the full edition. In the meantime, every chapter
-          on this site carries its opening, its argument in summary, and its
-          closing.
-        </p>
-        <div className="mt-4">
-          <NotifyForm />
-        </div>
-      </section>
-
       <section className="mt-12">
-        <h2 className="text-2xl leading-tight">How it reads</h2>
+        <h2 className="font-serif text-2xl leading-tight text-cream-100">
+          How it reads
+        </h2>
         <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted-foreground">
           Every chapter opens on a concrete actuarial situation. Two of them,
           from opposite ends of the book.
@@ -128,58 +113,60 @@ export default function PrimerPage() {
         </div>
       </section>
 
-      <section className="mt-12">
-        <h2 className="text-2xl leading-tight">Contents</h2>
-        <div className="mt-6 space-y-8">
-          {OUTLINE.map((part) => (
-            <div key={part.roman}>
-              <p className="font-mono text-xs uppercase tracking-[0.18em] text-gold-300">
-                Part {part.roman} · {part.title}
-              </p>
-              <ul className="mt-2.5 space-y-1.5">
-                {part.chapters.map((ch) => (
-                  <li key={ch.number} className="text-sm">
-                    <Link
-                      href={chapterPath(ch.number)}
-                      className="text-muted-foreground transition-colors hover:text-cream-100"
-                    >
-                      <span className="font-mono text-[11px] text-gold-400">
-                        {String(ch.number).padStart(2, "0")}
-                      </span>{" "}
-                      {ch.title}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+      <section className="mt-12 max-w-3xl rounded-md border border-gold-400/30 bg-gold-400/5 px-5 py-5">
+        <h2 className="font-serif text-xl text-cream-100">
+          Get the primer
+        </h2>
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+          Leave your email and we will send the primer when it is released,
+          along with news of the full edition. In the meantime, every chapter
+          on this site carries its opening, its argument in summary, and its
+          closing.
+        </p>
+        <div className="mt-4">
+          <NotifyForm />
         </div>
       </section>
 
       <section className="mt-12 max-w-3xl">
-        <h2 className="text-2xl leading-tight">Written by</h2>
-        <ul className="mt-4 space-y-3 text-sm leading-relaxed text-muted-foreground">
-          {AUTHORS.map((author) => (
-            <li key={author.slug}>
-              <Link
-                href={`/authors/${author.slug}`}
-                className="text-cream-200 underline decoration-border underline-offset-4 hover:decoration-gold-400"
-              >
-                {[author.honorificPrefix, author.name]
-                  .filter(Boolean)
-                  .join(" ")}
-              </Link>
-              {author.honorificSuffix && (
-                <span className="font-mono text-[11px] text-gold-400">
-                  {" "}
-                  {author.honorificSuffix}
-                </span>
-              )}
-              . {author.cardBio}
+        <h2 className="font-serif text-2xl leading-tight text-cream-100">
+          Contents
+        </h2>
+        <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
+          {OUTLINE.map((part) => (
+            <li key={part.roman}>
+              <span className="font-serif text-cream-100">
+                Part {part.roman}.
+              </span>{" "}
+              {part.title}
             </li>
           ))}
         </ul>
+        <p className="mt-4 text-sm">
+          <Link
+            href="/book"
+            className="text-cream-200 underline decoration-border underline-offset-4 hover:decoration-gold-400"
+          >
+            Full contents, chapter by chapter
+          </Link>
+        </p>
       </section>
+
+      <p className="mt-12 max-w-3xl text-sm leading-relaxed text-muted-foreground">
+        Written by{" "}
+        {AUTHORS.map((a, i) => (
+          <span key={a.slug}>
+            {i > 0 && " and "}
+            <Link
+              href={`/authors/${a.slug}`}
+              className="text-cream-200 underline decoration-border underline-offset-4 hover:decoration-gold-400"
+            >
+              {[a.honorificPrefix, a.name].filter(Boolean).join(" ")}
+            </Link>
+          </span>
+        ))}
+        .
+      </p>
 
       <RelatedLinks
         groups={[

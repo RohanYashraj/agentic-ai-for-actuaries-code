@@ -3,10 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { JsonLd } from "@/components/json-ld";
-import { RelatedLinks } from "@/components/related-links";
 import {
   absolute,
-  authorId,
   authorPath,
   breadcrumbList,
   graph,
@@ -77,9 +75,9 @@ export default function AuthorsPage() {
                 <Image
                   src={author.image}
                   alt={`Portrait of ${author.name}`}
-                  width={72}
-                  height={72}
-                  className="size-18 shrink-0 rounded-sm border border-border object-cover"
+                  width={96}
+                  height={96}
+                  className="size-24 shrink-0 rounded-sm border border-border object-cover"
                 />
               )}
               <div>
@@ -115,24 +113,18 @@ export default function AuthorsPage() {
         ))}
       </div>
 
-      <RelatedLinks
-        groups={[
-          {
-            title: "The book",
-            links: [
-              { label: "All eighteen chapters", href: "/book" },
-              { label: "Practice domains", href: "/actuarial-ai" },
-            ],
-          },
-          {
-            title: "Reference",
-            links: [
-              { label: "Sources and standards", href: "/resources" },
-              { label: "Glossary", href: "/glossary" },
-            ],
-          },
-        ]}
-      />
+      <p className="mt-10 max-w-3xl text-sm leading-relaxed text-muted-foreground">
+        Written in collaboration with the{" "}
+        <a
+          href="https://sssia.org"
+          target="_blank"
+          rel="noreferrer"
+          className="text-cream-200 underline underline-offset-2"
+        >
+          Sri Sathya Sai Institute of Actuaries
+        </a>
+        .
+      </p>
     </div>
   );
 }
