@@ -293,7 +293,7 @@ export default function LandingPage() {
       <section className="border-b border-border">
         <div className={cn(CONTAINER, "py-16")}>
           <h2 className="text-2xl leading-snug sm:text-3xl">
-            Run it before you buy it
+            Run it before you read it
           </h2>
           <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted-foreground">
             An open repository carries working code for every listing in Parts

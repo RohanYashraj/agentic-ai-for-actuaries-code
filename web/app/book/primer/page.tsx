@@ -35,7 +35,7 @@ const TRAIL = [
 
 /** Two openings, from opposite ends of the book, to show what the prose
  * is actually like rather than describing it. */
-const SAMPLE_CHAPTERS = [1, 14];
+const SAMPLE_CHAPTERS = [1, 18];
 
 export default function PrimerPage() {
   const structuredData = graph(breadcrumbList(TRAIL), {
