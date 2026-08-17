@@ -28,59 +28,67 @@ export function NotifyForm({ onSuccess }: { onSuccess?: () => void }) {
   }
 
   return (
-    // Stacked on a phone: the input and the button together need more
-    // than 320px, and a row here pushed the button off the screen.
-    <form
-      className="flex w-full max-w-md flex-col gap-2 sm:flex-row"
-      onSubmit={async (e) => {
-        e.preventDefault();
-        setState("sending");
-        setError("");
-        const email = new FormData(e.currentTarget).get("email");
-        try {
-          const res = await fetch("/api/py/waitlist", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email }),
-          });
-          if (res.ok) {
-            const body = await res.json().catch(() => null);
-            setState(body?.already ? "already" : "done");
-            onSuccess?.();
-          } else {
-            const body = await res.json().catch(() => null);
-            setError(body?.detail ?? "That did not go through. Try again.");
-            setState("error");
-          }
-        } catch {
-          setError("That did not go through. Try again.");
-          setState("error");
-        }
-      }}
-    >
-      <label htmlFor="notify-email" className="sr-only">
+    <div className="w-full max-w-md">
+      <label
+        htmlFor="notify-email"
+        className="mb-1.5 block text-sm text-cream-200"
+      >
         Email address
       </label>
-      <input
-        id="notify-email"
-        name="email"
-        type="email"
-        required
-        placeholder="you@example.com"
-        className="h-10 w-full min-w-0 rounded-md border border-input bg-navy-950/60 px-3 text-base text-cream-100 placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-gold-400 sm:h-9 sm:flex-1 sm:text-sm"
-      />
-      <Button
-        type="submit"
-        size="sm"
-        className="h-10 shrink-0 gap-1.5 sm:h-9"
-        disabled={state === "sending"}
+      {/* Stacked on a phone: the input and the button together need more
+          than 320px, and a row here pushed the button off the screen. */}
+      <form
+        className="flex w-full flex-col gap-2 sm:flex-row"
+        onSubmit={async (e) => {
+          e.preventDefault();
+          setState("sending");
+          setError("");
+          const email = new FormData(e.currentTarget).get("email");
+          try {
+            const res = await fetch("/api/py/waitlist", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email }),
+            });
+            if (res.ok) {
+              const body = await res.json().catch(() => null);
+              setState(body?.already ? "already" : "done");
+              onSuccess?.();
+            } else {
+              const body = await res.json().catch(() => null);
+              setError(body?.detail ?? "That did not go through. Try again.");
+              setState("error");
+            }
+          } catch {
+            setError("That did not go through. Try again.");
+            setState("error");
+          }
+        }}
       >
-        <PaperPlaneTilt size={15} aria-hidden="true" />
-        {state === "sending" ? "Sending…" : "Notify me at launch"}
-      </Button>
+        <input
+          id="notify-email"
+          name="email"
+          type="email"
+          required
+          placeholder="you@example.com"
+          className="h-10 w-full min-w-0 rounded-md border border-input bg-navy-950/60 px-3 text-base text-cream-100 placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-gold-400 sm:h-9 sm:flex-1 sm:text-sm"
+        />
+        <Button
+          type="submit"
+          size="sm"
+          className="h-10 shrink-0 gap-1.5 sm:h-9"
+          disabled={state === "sending"}
+        >
+          <PaperPlaneTilt size={15} aria-hidden="true" />
+          {state === "sending" ? "Sending…" : "Notify me at launch"}
+        </Button>
+      </form>
+      <p className="mt-1.5 text-xs text-muted-foreground">
+        One email, when the book ships. No spam, no list sharing.
+      </p>
       {state === "error" && (
-        <p className="text-xs text-run-err sm:self-center">{error}</p>
+        <p className="mt-1.5 text-xs text-run-err">{error}</p>
       )}
-    </form>
+    </div>
   );
 }

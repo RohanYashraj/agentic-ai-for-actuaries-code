@@ -24,7 +24,7 @@ export function RelatedLinks({ groups }: { groups: RelatedGroup[] }) {
 
   return (
     <aside className="mt-12 border-t border-border pt-8">
-      <h2 className="font-mono text-xs uppercase tracking-[0.18em] text-gold-300">
+      <h2 className="font-mono text-xs uppercase tracking-[0.16em] text-gold-300">
         Keep reading
       </h2>
       <div className="mt-5 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

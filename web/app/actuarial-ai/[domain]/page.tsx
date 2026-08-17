@@ -79,7 +79,7 @@ export default async function DomainPage({
       <Breadcrumbs trail={trail} />
 
       <header className="mt-6 max-w-3xl">
-        <p className="font-mono text-xs uppercase tracking-[0.22em] text-gold-400">
+        <p className="label-mono">
           Practice domain
         </p>
         <h1 className="mt-2 text-3xl leading-tight sm:text-4xl">

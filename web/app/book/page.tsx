@@ -22,6 +22,12 @@ const TRAIL = [
   { name: "The book", path: "/book" },
 ];
 
+function joinReaders(readers: string[]): string {
+  const items = readers.map((r) => r.charAt(0).toLowerCase() + r.slice(1));
+  if (items.length <= 1) return items.join("");
+  return `${items.slice(0, -1).join("; ")}; and ${items[items.length - 1]}`;
+}
+
 export default function BookPage() {
   const structuredData = graph(
     breadcrumbList(TRAIL),
@@ -61,7 +67,7 @@ export default function BookPage() {
           {BOOK_PROMISE}
         </p>
         <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-          Written for {TARGET_READERS.map((r) => r.charAt(0).toLowerCase() + r.slice(1)).join(", ").replace(/, ([^,]*)$/, ", and $1")}.
+          Written for {joinReaders(TARGET_READERS)}.
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
           <Button asChild size="sm">

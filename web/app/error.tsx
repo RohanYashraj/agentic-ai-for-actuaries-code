@@ -18,7 +18,7 @@ export default function Error({
 
   return (
     <main className={cn(CONTAINER, "flex flex-1 flex-col items-start justify-center py-24")}>
-      <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-run-err">
+      <p className="label-mono text-run-err">
         something went wrong
       </p>
       <h1 className="mt-3 font-serif text-3xl text-cream-100">

@@ -134,7 +134,7 @@ function reduceBlocks(blocks: Block[], event: Record<string, unknown>): Block[] 
       return next;
     case "StepError": {
       const where = event.step ? `step ${String(event.step)} failed` : "a step failed";
-      const why = typeof event.detail === "string" ? ` — ${event.detail}` : "";
+      const why = typeof event.detail === "string" ? `: ${event.detail}` : "";
       next.push({ type: "log", level: "error", message: where + why });
       return next;
     }
@@ -547,7 +547,7 @@ export function AgentRunner({
                 return (
                   <p
                     key={i}
-                    className="mt-4 mb-1 font-mono text-[11px] uppercase tracking-[0.18em] text-gold-300"
+                    className="mt-4 mb-1 font-mono text-[11px] uppercase tracking-[0.16em] text-gold-300"
                   >
                     {block.name}
                   </p>
@@ -601,7 +601,7 @@ export function AgentRunner({
         <p className="px-4 py-3 font-mono text-xs text-muted-foreground">
           {state === "starting"
             ? "Waking the server and preparing the workspace…"
-            : "Agent accepted — waiting for the first tokens…"}
+            : "Agent accepted, waiting for the first tokens…"}
         </p>
       )}
       {source !== undefined && blocks.length === 0 && state === "idle" && (

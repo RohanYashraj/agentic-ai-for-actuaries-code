@@ -73,7 +73,7 @@ export default function PrimerPage() {
         <p className="mt-4 text-base leading-relaxed text-muted-foreground">
           Distilled from the parent edition into eighteen short chapters. It
           keeps the argument and the worked examples and drops the
-          implementation detail — enough to decide what your team should
+          implementation detail, enough to decide what your team should
           adopt, defer, or govern, in an afternoon rather than a fortnight.
           Published by the Sri Sathya Sai Institute of Actuaries.
         </p>

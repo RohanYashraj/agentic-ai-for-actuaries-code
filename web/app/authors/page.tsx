@@ -90,7 +90,7 @@ export default function AuthorsPage() {
                 </h2>
                 {author.honorificSuffix && (
                   <p className="font-mono text-[11px] text-gold-400">
-                    {author.honorificSuffix.split(", ").join(" · ")}
+                    {author.honorificSuffix}
                   </p>
                 )}
                 <p className="mt-1 font-mono text-[11px] text-muted-foreground">

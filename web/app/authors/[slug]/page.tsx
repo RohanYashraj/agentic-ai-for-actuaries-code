@@ -105,7 +105,7 @@ export default async function AuthorPage({
           <h1 className="text-3xl leading-tight sm:text-4xl">{fullName}</h1>
           {author.honorificSuffix && (
             <p className="mt-1.5 font-mono text-xs text-gold-400">
-              {author.honorificSuffix.split(", ").join(" · ")}
+              {author.honorificSuffix}
             </p>
           )}
           <p className="mt-2 text-sm text-muted-foreground">

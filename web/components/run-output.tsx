@@ -28,7 +28,7 @@ export function RunOutput({
   return (
     <div className={cn("border-t border-border bg-navy-950/60", className)}>
       <div className="flex items-center justify-between px-3 py-1.5">
-        <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+        <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
           Output
         </span>
       </div>

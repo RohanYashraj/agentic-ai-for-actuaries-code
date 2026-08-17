@@ -17,7 +17,7 @@ import { SITE_NAME } from "@/lib/site";
 import { cn, CONTAINER } from "@/lib/utils";
 
 const DESCRIPTION =
-  "The standards, regulations and professional guidance the book cites — IFRS 17, Solvency II, LDTI, IRDAI, IAIS, and the AI guidance of the ASB, IFoA, IAA and CAS — with jurisdiction and the chapters that use them.";
+  "The standards, regulations and professional guidance the book cites, including IFRS 17, Solvency II, LDTI, IRDAI, IAIS, and the AI guidance of the ASB, IFoA, IAA and CAS, with jurisdiction and the chapters that use them.";
 
 export const metadata: Metadata = pageMetadata({
   title: "Sources and standards",
@@ -76,7 +76,7 @@ export default function ResourcesPage() {
           below names the jurisdiction it applies to, what the book uses it
           for, and the chapters that cite it. Where a link has not yet been
           checked against the current version of the source, no verification
-          date is shown — treat those as pointers to follow rather than as
+          date is shown. Treat those as pointers to follow rather than as
           confirmed citations.
         </p>
       </header>

@@ -148,8 +148,8 @@ export default function LandingPage() {
           )}
         >
           <div>
-            <p data-hero-item className="font-mono text-xs uppercase tracking-[0.22em] text-gold-400">
-              ACTEX · First edition · 2026
+            <p data-hero-item className="label-mono">
+              ACTEX, First edition, 2026
             </p>
             <h1 data-hero-item className="mt-4 text-4xl leading-[1.08] sm:text-6xl">
               Agentic AI
@@ -238,7 +238,7 @@ export default function LandingPage() {
                 <dt className="sr-only">{stat.label}</dt>
                 <dd>
                   <StatValue value={stat.value} />
-                  <span className="ml-2 font-mono text-xs uppercase tracking-[0.18em] text-gold-400">
+                  <span className="label-mono ml-2">
                     {stat.label}
                   </span>
                   <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
@@ -403,7 +403,7 @@ export default function LandingPage() {
                   </h3>
                   {author.honorificSuffix && (
                     <p className="font-mono text-[11px] text-gold-400">
-                      {author.honorificSuffix.split(", ").join(" · ")}
+                      {author.honorificSuffix}
                     </p>
                   )}
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">

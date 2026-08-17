@@ -4,7 +4,7 @@ import { cn, CONTAINER } from "@/lib/utils";
 export default function NotFound() {
   return (
     <main className={cn(CONTAINER, "flex flex-1 flex-col items-start justify-center py-24")}>
-      <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-gold-300">
+      <p className="label-mono text-gold-300">
         404 · not found
       </p>
       <h1 className="mt-3 font-serif text-3xl text-cream-100">
