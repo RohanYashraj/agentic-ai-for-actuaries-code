@@ -43,6 +43,7 @@ export const ROUTES: SiteRoute[] = [
     changeFrequency: "monthly" as const,
     priority: 0.7,
   })),
+  { path: "/concepts", changeFrequency: "monthly", priority: 0.7 },
   ...CONCEPTS.map((c) => ({
     path: conceptPath(c.slug),
     changeFrequency: "monthly" as const,

@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { JsonLd } from "@/components/json-ld";
+import { NextStep } from "@/components/next-step";
 import { RelatedLinks } from "@/components/related-links";
 import { CONCEPTS, conceptPath, getConcept } from "@/lib/concepts";
 import { GLOSSARY, glossarySlug } from "@/lib/glossary";
 import { relatedForConcept } from "@/lib/graph";
+import { chapterPath } from "@/lib/outline";
 import {
   absolute,
   authorRefs,
@@ -50,7 +52,7 @@ export default async function ConceptPage({
 
   const trail = [
     { name: SITE_NAME, path: "/" },
-    { name: "Concepts", path: "/glossary" },
+    { name: "Concepts", path: "/concepts" },
     { name: concept.title, path: conceptPath(concept.slug) },
   ];
 
@@ -86,10 +88,7 @@ export default async function ConceptPage({
       <Breadcrumbs trail={trail} />
 
       <header className="mt-6 max-w-3xl">
-        <p className="font-mono text-xs uppercase tracking-[0.22em] text-gold-400">
-          Concept
-        </p>
-        <h1 className="mt-2 text-3xl leading-tight sm:text-4xl">
+        <h1 className="text-3xl leading-tight sm:text-4xl">
           {concept.title}
         </h1>
         <p className="mt-4 text-base leading-relaxed text-muted-foreground">
@@ -99,9 +98,7 @@ export default async function ConceptPage({
 
       {definition && (
         <aside className="mt-8 max-w-3xl rounded-md border border-border bg-card px-5 py-4">
-          <h2 className="font-mono text-xs uppercase tracking-[0.18em] text-gold-300">
-            In one definition
-          </h2>
+          <h2 className="text-base font-semibold">In one definition</h2>
           <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground">
             <span className="text-cream-200">{definition.term}.</span>{" "}
             {definition.definition}
@@ -118,11 +115,24 @@ export default async function ConceptPage({
       </section>
 
       <section className="mt-10 max-w-3xl rounded-md border border-gold-400/25 bg-gold-400/5 px-5 py-5">
-        <h2 className="font-mono text-xs uppercase tracking-[0.18em] text-gold-300">
-          Why it matters for actuaries
-        </h2>
+        <h2 className="text-xl sm:text-xl">Why it matters for actuaries</h2>
         <p className="mt-3 text-base leading-relaxed">{concept.whyItMatters}</p>
       </section>
+
+      {concept.chapters.length > 0 && (
+        <NextStep
+          heading="See it in the book"
+          description={`${concept.title} first appears in Chapter ${concept.chapters[0]}.`}
+          href={chapterPath(concept.chapters[0])}
+          cta={`Read Chapter ${concept.chapters[0]}`}
+          secondaryHref={
+            concept.codeSlugs.length > 0
+              ? `/code/${concept.codeSlugs[0]}`
+              : undefined
+          }
+          secondaryLabel={concept.codeSlugs.length > 0 ? "Run the code" : undefined}
+        />
+      )}
 
       <RelatedLinks groups={relatedForConcept(concept.slug)} />
     </div>
