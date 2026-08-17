@@ -4,7 +4,6 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { JsonLd } from "@/components/json-ld";
 import { RelatedLinks } from "@/components/related-links";
 import { DOMAINS, domainPath } from "@/lib/domains";
-import { chapterPath } from "@/lib/outline";
 import { absolute, breadcrumbList, graph, ID, pageMetadata } from "@/lib/seo";
 import { SITE_NAME } from "@/lib/site";
 import { cn, CONTAINER } from "@/lib/utils";
@@ -64,42 +63,37 @@ export default function DomainIndexPage() {
 
       <div className="mt-10 grid gap-4 sm:grid-cols-2">
         {DOMAINS.map((domain) => (
-          <article
+          <Link
             key={domain.slug}
+            href={domainPath(domain.slug)}
             className="flex flex-col rounded-md border border-border bg-card p-5 transition-colors hover:border-gold-400/50"
           >
             <p className="font-mono text-xs text-gold-400">
               Chapter {domain.chapter}
             </p>
             <h2 className="mt-1.5 text-lg leading-snug text-cream-100">
-              <Link href={domainPath(domain.slug)} className="hover:underline">
-                {domain.name}
-              </Link>
+              {domain.name}
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
               {domain.blurb}
             </p>
-            <p className="mt-auto pt-4 font-mono text-[11px] text-muted-foreground">
-              {domain.workflows.length} workflows ·{" "}
-              {domain.codeSlugs.length} code chapter
-              {domain.codeSlugs.length > 1 ? "s" : ""}
+            <ul className="mt-3 space-y-1 text-sm text-muted-foreground">
+              {domain.workflows.slice(0, 2).map((w) => (
+                <li key={w.title} className="list-disc marker:text-gold-400 ml-4">
+                  {w.title}
+                </li>
+              ))}
+            </ul>
+            <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+              <span className="text-gold-300">The actuary retains.</span>{" "}
+              {domain.workflows[0].humanRetains}
             </p>
-          </article>
+          </Link>
         ))}
       </div>
 
       <RelatedLinks
         groups={[
-          {
-            title: "In the book",
-            links: [
-              { label: "All eighteen chapters", href: "/book" },
-              ...DOMAINS.map((d) => ({
-                label: `Chapter ${d.chapter}: ${d.name}`,
-                href: chapterPath(d.chapter),
-              })),
-            ],
-          },
           {
             title: "Reference",
             links: [

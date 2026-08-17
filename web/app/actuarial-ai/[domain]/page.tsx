@@ -5,10 +5,10 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { JsonLd } from "@/components/json-ld";
 import { RelatedLinks } from "@/components/related-links";
 import { Button } from "@/components/ui/button";
-import { CHAPTER_CONTENT } from "@/lib/chapter-content";
+import { RetainsRule } from "@/components/retains-rule";
 import { DOMAINS, domainPath, getDomain } from "@/lib/domains";
 import { relatedForDomain } from "@/lib/graph";
-import { chapterPath, getOutlineChapter } from "@/lib/outline";
+import { chapterPath } from "@/lib/outline";
 import {
   absolute,
   authorRefs,
@@ -49,44 +49,29 @@ export default async function DomainPage({
   const domain = getDomain(slug);
   if (!domain) notFound();
 
-  const chapter = getOutlineChapter(domain.chapter);
-  const vignette = CHAPTER_CONTENT[domain.chapter]?.vignette;
-
   const trail = [
     { name: SITE_NAME, path: "/" },
     { name: "Practice domains", path: "/actuarial-ai" },
     { name: domain.name, path: domainPath(domain.slug) },
   ];
 
-  const structuredData = graph(
-    breadcrumbList(trail),
-    {
-      "@type": "Article",
-      "@id": absolute(domainPath(domain.slug)),
-      headline: domain.headline,
-      description: domain.blurb,
-      abstract: domain.intro[0],
-      inLanguage: "en",
-      url: absolute(domainPath(domain.slug)),
-      isPartOf: { "@id": ID.website },
-      about: { "@id": ID.book },
-      author: authorRefs(),
-      mentions: domain.workflows.map((w) => ({
-        "@type": "Thing",
-        name: w.title,
-        description: w.blurb,
-      })),
-    },
-    {
-      "@type": "FAQPage",
-      "@id": `${absolute(domainPath(domain.slug))}#faq`,
-      mainEntity: domain.questions.map((q) => ({
-        "@type": "Question",
-        name: q.question,
-        acceptedAnswer: { "@type": "Answer", text: q.answer },
-      })),
-    }
-  );
+  const structuredData = graph(breadcrumbList(trail), {
+    "@type": "Article",
+    "@id": absolute(domainPath(domain.slug)),
+    headline: domain.headline,
+    description: domain.blurb,
+    abstract: domain.intro[0],
+    inLanguage: "en",
+    url: absolute(domainPath(domain.slug)),
+    isPartOf: { "@id": ID.website },
+    about: { "@id": ID.book },
+    author: authorRefs(),
+    mentions: domain.workflows.map((w) => ({
+      "@type": "Thing",
+      name: w.title,
+      description: w.blurb,
+    })),
+  });
 
   return (
     <div className={cn(CONTAINER, "py-10")}>
@@ -117,17 +102,9 @@ export default async function DomainPage({
         </div>
       </header>
 
-      {vignette && (
-        <figure className="mt-10 max-w-3xl border-l-2 border-gold-400/50 pl-5">
-          <blockquote className="font-serif text-lg leading-relaxed text-cream-200">
-            {vignette}
-          </blockquote>
-          <figcaption className="mt-3 font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-            Opening of Chapter {domain.chapter}
-            {chapter ? `: ${chapter.title}` : ""}
-          </figcaption>
-        </figure>
-      )}
+      <p className="mt-6 max-w-3xl font-serif text-xl leading-relaxed text-cream-200">
+        {domain.headline}
+      </p>
 
       <section className="mt-10 max-w-3xl space-y-5">
         {domain.intro.map((para) => (
@@ -138,7 +115,7 @@ export default async function DomainPage({
       </section>
 
       <section className="mt-12">
-        <h2 className="text-2xl leading-tight">Where agents are used</h2>
+        <h2>Where agents are used</h2>
         <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted-foreground">
           Each workflow names what the agent does and, explicitly, what stays
           with the qualified professional.
@@ -155,19 +132,16 @@ export default async function DomainPage({
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                 {workflow.blurb}
               </p>
-              <p className="mt-3 border-t border-border pt-3 text-xs leading-relaxed text-muted-foreground">
-                <span className="font-mono uppercase tracking-[0.14em] text-gold-300">
-                  Human retains
-                </span>
-                <span className="mt-1 block">{workflow.humanRetains}</span>
-              </p>
+              <div className="mt-3 border-t border-border pt-3">
+                <RetainsRule>{workflow.humanRetains}</RetainsRule>
+              </div>
             </li>
           ))}
         </ul>
       </section>
 
       <section id="faq" className="mt-12 max-w-3xl scroll-mt-24">
-        <h2 className="text-2xl leading-tight">Common questions</h2>
+        <h2>Questions about {domain.name.toLowerCase()}</h2>
         <dl className="mt-6 divide-y divide-border border-t border-border">
           {domain.questions.map((q) => (
             <div key={q.question} className="py-5">
@@ -178,9 +152,21 @@ export default async function DomainPage({
             </div>
           ))}
         </dl>
+        <p className="mt-6 text-sm">
+          <Link
+            href="/faq"
+            className="text-cream-200 underline decoration-border underline-offset-4 hover:decoration-gold-400"
+          >
+            More questions about the book
+          </Link>
+        </p>
       </section>
 
-      <RelatedLinks groups={relatedForDomain(domain.slug)} />
+      <RelatedLinks
+        groups={relatedForDomain(domain.slug).filter(
+          (g) => g.title !== "Other domains"
+        )}
+      />
     </div>
   );
 }
