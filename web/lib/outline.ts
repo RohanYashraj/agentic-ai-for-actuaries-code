@@ -233,6 +233,15 @@ export function getPartOf(n: number): OutlinePart | undefined {
   return OUTLINE.find((p) => p.chapters.some((c) => c.number === n));
 }
 
+/** Joins the target-reader list into a single sentence fragment,
+ * semicolon-separated so the internal "pricing, reserving, ... and risk"
+ * comma list doesn't collide with the list's own joining comma. */
+export function joinReaders(readers: string[]): string {
+  const items = readers.map((r) => r.charAt(0).toLowerCase() + r.slice(1));
+  if (items.length <= 1) return items.join("");
+  return `${items.slice(0, -1).join("; ")}; and ${items[items.length - 1]}`;
+}
+
 export function prevNextChapter(n: number): {
   prev?: OutlineChapter;
   next?: OutlineChapter;

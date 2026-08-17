@@ -235,7 +235,7 @@ export default async function BookChapterPage({
         <NextStep
           heading="Run what you just read"
           description={`${code.scripts.length} listing${code.scripts.length > 1 ? "s" : ""}, runnable in your browser or live on our server.`}
-          href={`/code/${code.slug}`}
+          href={`/code/${code.slug}#listings`}
           cta="Run it here"
           secondaryHref={next ? chapterPath(next.number) : undefined}
           secondaryLabel={next ? `Next: Chapter ${next.number}` : undefined}

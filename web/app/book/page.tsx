@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Button } from "@/components/ui/button";
 import { JsonLd } from "@/components/json-ld";
-import { chapterPath, BOOK_PROMISE, OUTLINE, TARGET_READERS } from "@/lib/outline";
+import { chapterPath, BOOK_PROMISE, OUTLINE, TARGET_READERS, joinReaders } from "@/lib/outline";
 import { absolute, breadcrumbList, graph, ID, pageMetadata } from "@/lib/seo";
 import { SITE_NAME } from "@/lib/site";
 import { cn, CONTAINER } from "@/lib/utils";
@@ -21,12 +21,6 @@ const TRAIL = [
   { name: SITE_NAME, path: "/" },
   { name: "The book", path: "/book" },
 ];
-
-function joinReaders(readers: string[]): string {
-  const items = readers.map((r) => r.charAt(0).toLowerCase() + r.slice(1));
-  if (items.length <= 1) return items.join("");
-  return `${items.slice(0, -1).join("; ")}; and ${items[items.length - 1]}`;
-}
 
 export default function BookPage() {
   const structuredData = graph(

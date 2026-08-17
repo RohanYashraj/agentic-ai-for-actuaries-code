@@ -80,7 +80,7 @@ export function NotifyForm({ onSuccess }: { onSuccess?: () => void }) {
           disabled={state === "sending"}
         >
           <PaperPlaneTilt size={15} aria-hidden="true" />
-          {state === "sending" ? "Sending…" : "Notify me at launch"}
+          {state === "sending" ? "Sending…" : "Get launch updates"}
         </Button>
       </form>
       <p className="mt-1.5 text-xs text-muted-foreground">

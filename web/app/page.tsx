@@ -23,6 +23,7 @@ import { GITHUB_REPO } from "@/lib/links";
 import {
   BOOK_PROMISE,
   chapterPath,
+  joinReaders,
   OUTLINE,
   TARGET_READERS,
 } from "@/lib/outline";
@@ -229,19 +230,7 @@ export default function LandingPage() {
             {BOOK_PROMISE}
           </p>
           <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-            Written for{" "}
-            {TARGET_READERS.map((reader, i) => (
-              <span key={reader}>
-                <span className="text-cream-200">
-                  {reader.charAt(0).toLowerCase() + reader.slice(1)}
-                </span>
-                {i < TARGET_READERS.length - 2
-                  ? ", "
-                  : i === TARGET_READERS.length - 2
-                    ? ", and "
-                    : "."}
-              </span>
-            ))}
+            Written for {joinReaders(TARGET_READERS)}.
           </p>
           <dl className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {STATS.map((stat) => (
