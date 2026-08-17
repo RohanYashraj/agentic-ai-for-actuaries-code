@@ -147,6 +147,23 @@
   h3 {
     @apply font-serif text-cream-100;
   }
+  h2 {
+    @apply text-2xl leading-snug sm:text-3xl;
+  }
+  h3 {
+    @apply text-lg leading-snug;
+  }
+}
+
+/* The one permitted eyebrow/metadata label style. Any mono-uppercase
+ * label on the site uses this class; per-page improvised tracking
+ * values are retired. */
+@utility label-mono {
+  font-family: var(--font-plex-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--gold-400);
 }
 
 /* Reader-facing prose (agent output) */
@@ -249,41 +266,6 @@
   pointer-events: none;
 }
 
-/* Shimmer sweep for the hero "Run the code" CTA */
-.btn-shimmer {
-  position: relative;
-  overflow: hidden;
-}
-.btn-shimmer::after {
-  content: "";
-  position: absolute;
-  top: -40%;
-  bottom: -40%;
-  left: -75%;
-  width: 45%;
-  background: linear-gradient(
-    105deg,
-    transparent 0%,
-    rgba(242, 236, 223, 0.06) 30%,
-    rgba(226, 180, 102, 0.28) 50%,
-    rgba(242, 236, 223, 0.06) 70%,
-    transparent 100%
-  );
-  transform: skewX(-18deg);
-  animation: btn-shimmer-sweep 2.8s ease-in-out infinite;
-  pointer-events: none;
-}
-@keyframes btn-shimmer-sweep {
-  0% {
-    left: -75%;
-  }
-  55% {
-    left: 130%;
-  }
-  100% {
-    left: 130%;
-  }
-}
 
 @media (prefers-reduced-motion: reduce) {
   *,

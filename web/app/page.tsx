@@ -158,7 +158,7 @@ export default function LandingPage() {
             {/* Stacked and full-width on a phone; side by side once
                 both fit on one line. */}
             <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-              <Button asChild size="lg" className="btn-shimmer w-full sm:w-auto">
+              <Button asChild size="lg" className="w-full sm:w-auto">
                 <Link href="/code">
                   <Terminal size={16} aria-hidden="true" />
                   Explore &amp; run the code
