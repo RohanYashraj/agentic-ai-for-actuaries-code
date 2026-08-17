@@ -48,7 +48,8 @@ export default function FaqPage() {
           Frequently asked questions
         </h1>
         <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-          {DESCRIPTION}
+          The questions readers ask before and while reading, answered
+          plainly. Domain-specific questions live on each practice page.
         </p>
       </header>
 

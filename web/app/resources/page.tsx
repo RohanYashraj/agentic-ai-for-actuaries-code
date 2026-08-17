@@ -108,7 +108,7 @@ export default function ResourcesPage() {
                           />
                         </a>
                       </h3>
-                      <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.14em] text-gold-400">
+                      <p className="label-mono mt-1 text-muted-foreground">
                         {reference.jurisdiction} · {reference.publisher}
                       </p>
                       <p className="mt-2.5 max-w-3xl text-sm leading-relaxed text-muted-foreground">
