@@ -88,9 +88,19 @@ function isActive(pathname: string, href: string): boolean {
 export function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   // Close on navigation: the panel outlives the click that follows a link.
   useEffect(() => setOpen(false), [pathname]);
+
+  // The bar is transparent over the top of the page and only frosts once
+  // content starts passing underneath it.
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -109,15 +119,16 @@ export function SiteHeader() {
   const barLinks = NAV.filter((item) => !item.mobileOnly);
 
   return (
-    <header className="sticky top-0 z-40">
-      {/* The bar floats, so the page needs to fade out under it rather
-          than slide cleanly behind a hard edge. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 h-[calc(100%+1.5rem)] bg-gradient-to-b from-navy-900 via-navy-900/85 to-transparent"
-      />
-      <div className={cn(CONTAINER, "relative py-3")}>
-        <div className="flex h-12 items-center gap-1 rounded-full border border-border bg-navy-850/80 pl-4 pr-1.5 shadow-[0_10px_30px_-18px_rgba(0,0,0,0.9)] backdrop-blur-md">
+    <header
+      className={cn(
+        "sticky top-0 z-40 border-b transition-colors duration-200",
+        scrolled || open
+          ? "border-border bg-navy-900/70 backdrop-blur-xl backdrop-saturate-150"
+          : "border-transparent bg-transparent"
+      )}
+    >
+      <div className={cn(CONTAINER, "relative")}>
+        <div className="flex h-16 items-center gap-1">
           <Link
             href="/"
             className="mr-auto whitespace-nowrap font-serif text-[15px] text-cream-100 sm:text-base"
@@ -187,7 +198,7 @@ export function SiteHeader() {
           <nav
             id="mobile-menu"
             aria-label="Site"
-            className="absolute inset-x-5 top-full z-50 mt-1 max-h-[calc(100svh-6rem)] overflow-y-auto rounded-2xl border border-border bg-navy-850/95 p-2 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.9)] backdrop-blur-md sm:inset-x-8 md:hidden"
+            className="absolute inset-x-0 top-full z-50 max-h-[calc(100svh-4rem)] overflow-y-auto border-b border-border bg-navy-900/95 p-2 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.9)] backdrop-blur-xl md:hidden"
           >
             <Link
               href="/code"
