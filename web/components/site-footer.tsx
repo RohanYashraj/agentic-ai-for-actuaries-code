@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { GITHUB_REPO } from "@/lib/links";
+import { ACTEX_BOOK_URL, GITHUB_REPO } from "@/lib/links";
 import { cn, CONTAINER } from "@/lib/utils";
 
 /** The secondary navigation. The header carries only the primary routes,
@@ -34,7 +34,7 @@ const FOOTER_LINKS: { title: string; links: { label: string; href: string }[] }[
     {
       title: "Stay close",
       links: [
-        { label: "Get launch updates", href: "/#notify" },
+        { label: "Get the book at ACTEX", href: ACTEX_BOOK_URL },
         { label: "GitHub", href: GITHUB_REPO },
       ],
     },

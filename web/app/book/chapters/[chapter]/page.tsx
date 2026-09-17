@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { CHAPTER_CONCEPTS } from "@/lib/book";
 import { CHAPTER_CONTENT } from "@/lib/chapter-content";
 import { getChapter } from "@/lib/chapters";
+import { ACTEX_BOOK_URL } from "@/lib/links";
 import { conceptPath } from "@/lib/concepts";
 import { domainForChapter, domainPath } from "@/lib/domains";
 import { glossarySlug } from "@/lib/glossary";
@@ -252,9 +253,9 @@ export default async function BookChapterPage({
       ) : (
         <NextStep
           heading="You've reached the end of the outline"
-          description="The full edition arrives later this year, free from ACTEX."
-          href="/#notify"
-          cta="Get launch updates"
+          description="The full edition is out now, free from ACTEX Learning."
+          href={ACTEX_BOOK_URL}
+          cta="Get the book"
           secondaryHref="/actuarial-ai"
           secondaryLabel="Explore the practice domains"
         />

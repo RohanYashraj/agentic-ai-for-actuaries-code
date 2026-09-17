@@ -118,8 +118,8 @@ export default function PrimerPage() {
           Get the primer
         </h2>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-          Leave your email and we will send the primer when it is released,
-          along with news of the full edition. In the meantime, every chapter
+          Leave your email and we will send the primer when it is released.
+          The full edition is already out, free from ACTEX Learning, and every chapter
           on this site carries its opening, its argument in summary, and its
           closing.
         </p>

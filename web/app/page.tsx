@@ -9,7 +9,6 @@ import {
   Terminal,
 } from "@phosphor-icons/react/dist/ssr";
 import { JsonLd } from "@/components/json-ld";
-import { NotifyForm } from "@/components/notify-form";
 import { HeroIntro } from "@/components/motion/hero-intro";
 import { RevealOnScroll } from "@/components/motion/reveal-on-scroll";
 import { PartAccordion, type AccordionPart } from "@/components/part-accordion";
@@ -19,7 +18,8 @@ import { Button } from "@/components/ui/button";
 import { cn, CONTAINER } from "@/lib/utils";
 import { AGENT_SCRIPTS } from "@/lib/agents";
 import { getChapter } from "@/lib/chapters";
-import { GITHUB_REPO } from "@/lib/links";
+import { LaunchSeal } from "@/components/launch-seal";
+import { ACTEX_BOOK_URL, GITHUB_REPO } from "@/lib/links";
 import {
   BOOK_PROMISE,
   chapterPath,
@@ -67,6 +67,15 @@ const STRUCTURED_DATA = {
       bookFormat: "https://schema.org/Hardcover",
       publisher: { "@type": "Organization", name: "ACTEX Learning" },
       datePublished: "2026",
+      sameAs: ACTEX_BOOK_URL,
+      offers: {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "USD",
+        availability: "https://schema.org/InStock",
+        url: ACTEX_BOOK_URL,
+        seller: { "@type": "Organization", name: "ACTEX Learning" },
+      },
       inLanguage: "en",
       keywords: BOOK_KEYWORDS.join(", "),
       about: BOOK_KEYWORDS.map((k) => ({ "@type": "Thing", name: k })),
@@ -153,6 +162,39 @@ export default function LandingPage() {
       <JsonLd data={STRUCTURED_DATA} />
       {/* Hero: the book itself. */}
       <section className="overflow-x-clip border-b border-border">
+        {/* The launch strip runs edge to edge above the hero and is one
+            big link to the book's page. The same run repeats six times
+            and the track slides by exactly one run, so the loop is
+            seamless on any viewport up to five runs wide. Only the first
+            run is read out. */}
+        <a
+          href={ACTEX_BOOK_URL}
+          target="_blank"
+          rel="noreferrer"
+          className="launch-strip"
+          aria-label="Book launch: Agentic AI for Actuaries is out now, free from ACTEX Learning. Open the book's page"
+        >
+          <div className="launch-strip-track">
+            {Array.from({ length: 6 }, (_, run) => (
+              <div
+                key={run}
+                className="launch-strip-run"
+                aria-hidden={run > 0 ? "true" : undefined}
+              >
+                <span>Book launch</span>
+                <span className="launch-star">★</span>
+                <span>Out now</span>
+                <span className="launch-star">★</span>
+                <span>Agentic AI for Actuaries</span>
+                <span className="launch-star">★</span>
+                <span>Free from ACTEX Learning</span>
+                <span className="launch-star">★</span>
+                <span>Get your copy</span>
+                <span className="launch-star">★</span>
+              </div>
+            ))}
+          </div>
+        </a>
         <HeroIntro
           className={cn(
             CONTAINER,
@@ -160,8 +202,11 @@ export default function LandingPage() {
           )}
         >
           <div>
-            <p data-hero-item className="label-mono">
-              ACTEX, First edition, 2026
+            <p data-hero-item className="label-mono launch-line flex items-center gap-2.5">
+              <span className="launch-dot" aria-hidden="true" />
+              <span className="launch-shimmer">
+                Out now · Free from ACTEX Learning
+              </span>
             </p>
             <h1 data-hero-item className="mt-4 text-4xl leading-[1.08] sm:text-6xl">
               Agentic AI
@@ -175,29 +220,58 @@ export default function LandingPage() {
               A practical guide to building AI agents that price, reserve, and
               report. You still sign the opinion.
             </p>
-            {/* Two co-equal actions, both of which deliver something now.
-                Launch updates are the tertiary action further down the
-                page: asking a first-time visitor only to wait wastes the
-                strongest thing here, which is that the code runs. */}
+            {/* The book is published, so the primary action is the book
+                itself at ACTEX. The code stays beside it because it is the
+                strongest proof on the page that the book delivers. */}
             {/* Stacked and full-width on a phone; side by side once
                 both fit on one line. */}
             <div data-hero-item className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-              <Button asChild size="lg" className="w-full sm:w-auto">
+              <Button asChild size="lg" className="launch-cta w-full sm:w-auto">
+                <a href={ACTEX_BOOK_URL} target="_blank" rel="noreferrer">
+                  <BookOpenText size={16} weight="bold" aria-hidden="true" />
+                  Get the book, free
+                  <ArrowUpRight size={14} weight="bold" aria-hidden="true" />
+                </a>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
                 <Link href="/code">
                   <Terminal size={16} aria-hidden="true" />
                   Run the code
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
-                <Link href="/book">
-                  <BookOpenText size={16} aria-hidden="true" />
-                  Read the chapters
-                </Link>
-              </Button>
             </div>
+            {/* The publisher's mark and the address in plain sight, for
+                readers who want to see where the button goes before they
+                press it. One link, so the logo and the URL act as one. */}
+            <a
+              data-hero-item
+              href={ACTEX_BOOK_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="launch-publisher mt-5"
+            >
+              <span className="label-mono launch-publisher-label">
+                Published by
+              </span>
+              <Image
+                src="/actex-learning-logo.svg"
+                alt="ACTEX Learning"
+                width={200}
+                height={29}
+                className="launch-publisher-logo"
+              />
+              <span className="launch-url">
+                actexlearning.com/textbooks/agentic-ai-for-actuaries
+                <ArrowUpRight size={14} weight="bold" aria-hidden="true" />
+              </span>
+            </a>
             <p data-hero-item className="mt-4 text-sm text-muted-foreground">
-              Eighteen chapters, nine with code that runs in your browser. Short on
-              time? Start with the{" "}
+              First edition, 2026. Or{" "}
+              <Link href="/book" className="text-cream-200 underline decoration-border underline-offset-4 hover:decoration-gold-400">
+                read the chapters
+              </Link>{" "}
+              here: eighteen of them, nine with code that runs in your browser.
+              Short on time? Start with the{" "}
               <Link href="/book/primer" className="text-cream-200 underline decoration-border underline-offset-4 hover:decoration-gold-400">
                 primer
               </Link>
@@ -206,15 +280,20 @@ export default function LandingPage() {
           </div>
           <div data-hero-cover className="relative flex justify-center lg:justify-end">
             <div className="book-glow" aria-hidden="true" />
-            <div className="book-cover">
-              <Image
-                src="/book-cover-photo.png"
-                alt="Cover of Agentic AI for Actuaries"
-                width={520}
-                height={716}
-                priority
-                className="h-auto w-[300px] rounded-sm sm:w-[400px] lg:w-[480px] xl:w-[520px]"
-              />
+            {/* The seal sits on the wrapper, not inside .book-cover, so the
+                cover's perspective tilt does not skew it. */}
+            <div className="relative">
+              <div className="book-cover">
+                <Image
+                  src="/book-cover-photo.png"
+                  alt="Cover of Agentic AI for Actuaries"
+                  width={520}
+                  height={716}
+                  priority
+                  className="h-auto w-[300px] rounded-sm sm:w-[400px] lg:w-[480px] xl:w-[520px]"
+                />
+              </div>
+              <LaunchSeal />
             </div>
           </div>
         </HeroIntro>
@@ -433,28 +512,6 @@ export default function LandingPage() {
             </a>
             .
           </p>
-        </RevealOnScroll>
-      </section>
-
-      {/* Launch notify */}
-      <section id="notify" className="scroll-mt-24">
-        <RevealOnScroll className={cn(CONTAINER, "flex flex-col gap-4 py-16")}>
-          <h2 className="text-xl text-cream-100">
-            Available later this year, free from ACTEX
-          </h2>
-          <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
-            We will email you when the full edition is released. In the
-            meantime the{" "}
-            <Link
-              href="/book/primer"
-              className="text-cream-200 underline decoration-border underline-offset-4 hover:decoration-gold-400"
-            >
-              abridged primer
-            </Link>{" "}
-            covers the argument in eighteen short chapters, and the code is
-            already here.
-          </p>
-          <NotifyForm />
         </RevealOnScroll>
       </section>
     </div>

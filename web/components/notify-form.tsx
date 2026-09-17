@@ -13,7 +13,7 @@ export function NotifyForm({ onSuccess }: { onSuccess?: () => void }) {
   if (state === "done") {
     return (
       <p className="text-sm text-run-ok">
-        Thank you. We will email you when the book is released.
+        Thank you. We will email you when the primer is released.
       </p>
     );
   }
@@ -21,7 +21,7 @@ export function NotifyForm({ onSuccess }: { onSuccess?: () => void }) {
   if (state === "already") {
     return (
       <p className="text-sm text-cream-200">
-        You are already on the list. We will email you when the book is
+        You are already on the list. We will email you when the primer is
         released.
       </p>
     );
@@ -80,7 +80,7 @@ export function NotifyForm({ onSuccess }: { onSuccess?: () => void }) {
           disabled={state === "sending"}
         >
           <PaperPlaneTilt size={15} aria-hidden="true" />
-          {state === "sending" ? "Sending…" : "Get launch updates"}
+          {state === "sending" ? "Sending…" : "Send me the primer"}
         </Button>
       </form>
       <p className="mt-1.5 text-xs text-muted-foreground">

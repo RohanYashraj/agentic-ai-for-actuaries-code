@@ -8,3 +8,7 @@ export function colabUrl(chapter: string): string {
 export function githubFileUrl(repoPath: string): string {
   return `${GITHUB_REPO}/blob/main/${repoPath}`;
 }
+
+/** The published book's page at ACTEX Learning, where the free edition lives. */
+export const ACTEX_BOOK_URL =
+  "https://www.actexlearning.com/textbooks/agentic-ai-for-actuaries";

@@ -28,7 +28,13 @@ export function NextStep({
       )}
       <div className="mt-4 flex flex-wrap gap-3">
         <Button asChild size="sm">
-          <Link href={href}>{cta}</Link>
+          {href.startsWith("http") ? (
+            <a href={href} target="_blank" rel="noreferrer">
+              {cta}
+            </a>
+          ) : (
+            <Link href={href}>{cta}</Link>
+          )}
         </Button>
         {secondaryHref && secondaryLabel && (
           <Button asChild size="sm" variant="outline">

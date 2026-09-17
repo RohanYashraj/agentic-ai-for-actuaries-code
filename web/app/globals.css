@@ -253,6 +253,280 @@
   pointer-events: none;
 }
 
+/* Launch palette: a tangerine-and-charcoal scheme deliberately foreign
+ * to the navy ledger, so the announcement cannot be mistaken for
+ * furniture. Used only by the launch elements. */
+:root {
+  --launch: #ff9f1a;
+  --launch-hot: #ff4d1f;
+  --launch-ink: #14100a;
+  --launch-paper: #fff4e0;
+}
+
+/* The launch strip: a full-width band that runs across the top of the
+ * hero and scrolls its announcement. The whole band is the link. */
+.launch-strip {
+  display: block;
+  overflow: hidden;
+  background: var(--launch);
+  color: var(--launch-ink);
+  border-bottom: 3px solid var(--launch-ink);
+  text-decoration: none;
+  outline: none;
+}
+.launch-strip:focus-visible {
+  box-shadow: inset 0 0 0 3px var(--launch-ink);
+}
+.launch-strip:hover {
+  background: var(--launch-hot);
+  color: var(--launch-paper);
+}
+.launch-strip-track {
+  display: flex;
+  width: max-content;
+  animation: launch-marquee 40s linear infinite;
+}
+.launch-strip:hover .launch-strip-track {
+  animation-play-state: paused;
+}
+.launch-strip-run {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 1.75rem;
+  padding: 0.7rem 0.875rem;
+  font-family: var(--font-plex-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.launch-strip-run .launch-star {
+  font-size: 1rem;
+  line-height: 1;
+}
+/* Six identical runs, so one run is a sixth of the track. */
+@keyframes launch-marquee {
+  to { transform: translateX(calc(-100% / 6)); }
+}
+
+/* The "out now" line inside the hero: a live dot, and one light sweep. */
+.launch-dot {
+  position: relative;
+  display: inline-block;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 9999px;
+  background: var(--launch);
+  box-shadow: 0 0 0 0 rgba(255, 159, 26, 0.7);
+  animation: launch-pulse 2s ease-out infinite;
+}
+@keyframes launch-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(255, 159, 26, 0.7); }
+  70% { box-shadow: 0 0 0 12px rgba(255, 159, 26, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 159, 26, 0); }
+}
+.launch-line {
+  color: var(--launch);
+  font-weight: 700;
+}
+.launch-shimmer {
+  color: var(--launch);
+  background-image: linear-gradient(
+    100deg,
+    var(--launch) 0%,
+    var(--launch) 40%,
+    var(--launch-paper) 50%,
+    var(--launch) 60%,
+    var(--launch) 100%
+  );
+  background-size: 250% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: launch-sweep 1.8s cubic-bezier(0.4, 0, 0.2, 1) 0.7s 1 both;
+}
+@keyframes launch-sweep {
+  from { background-position: 100% 0; }
+  to { background-position: -50% 0; }
+}
+
+/* The main button, in the launch colours, with a breathing halo. */
+.launch-cta {
+  background: var(--launch) !important;
+  color: var(--launch-ink) !important;
+  border-color: var(--launch) !important;
+  font-weight: 700;
+  animation: launch-halo 2.2s ease-in-out infinite;
+}
+.launch-cta:hover {
+  background: var(--launch-hot) !important;
+  border-color: var(--launch-hot) !important;
+  color: var(--launch-paper) !important;
+}
+@keyframes launch-halo {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 159, 26, 0.55), 0 8px 24px rgba(255, 159, 26, 0.25); }
+  50% { box-shadow: 0 0 0 8px rgba(255, 159, 26, 0), 0 8px 32px rgba(255, 159, 26, 0.45); }
+}
+
+/* The publisher lockup: "Published by", the ACTEX Learning mark, and the
+ * address, all one link. The mark is white on transparent, so it sits on
+ * the navy as it does on ACTEX's own site. */
+.launch-publisher {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  width: fit-content;
+  max-width: 100%;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid rgba(255, 159, 26, 0.35);
+  border-left: 4px solid var(--launch);
+  border-radius: 0.25rem;
+  background: rgba(255, 159, 26, 0.06);
+  text-decoration: none;
+  outline: none;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.launch-publisher:hover {
+  background: rgba(255, 159, 26, 0.12);
+  border-color: rgba(255, 159, 26, 0.7);
+}
+.launch-publisher:focus-visible {
+  box-shadow: 0 0 0 3px var(--navy-900), 0 0 0 5px var(--launch);
+}
+.launch-publisher-label {
+  color: var(--cream-400);
+  font-size: 0.65rem;
+}
+.launch-publisher-logo {
+  height: 1.5rem;
+  width: auto;
+}
+@media (min-width: 640px) {
+  .launch-publisher-logo {
+    height: 1.75rem;
+  }
+}
+
+/* The address itself, printed so nobody has to guess where the book is. */
+.launch-url {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  max-width: 100%;
+  font-family: var(--font-plex-mono);
+  font-size: 0.8rem;
+  color: var(--launch);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 5px;
+  text-decoration-color: rgba(255, 159, 26, 0.5);
+  overflow-wrap: anywhere;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+.launch-url:hover {
+  color: var(--launch-paper);
+  text-decoration-color: var(--launch-hot);
+}
+
+/* The seal on the cover corner: a tangerine sticker with a turning ring
+ * of text and a hot core. */
+.launch-seal {
+  position: absolute;
+  top: -1.5rem;
+  right: -1.5rem;
+  z-index: 2;
+  display: block;
+  width: 7rem;
+  height: 7rem;
+  border-radius: 9999px;
+  outline: none;
+}
+@media (min-width: 640px) {
+  .launch-seal {
+    width: 9rem;
+    height: 9rem;
+    top: -2.25rem;
+    right: -2.25rem;
+  }
+}
+@media (min-width: 1024px) {
+  .launch-seal {
+    width: 10.5rem;
+    height: 10.5rem;
+    top: -2.75rem;
+    /* Stays inside the page gutter so the section's overflow clip
+       never slices the seal at narrow desktop widths. */
+    right: -1.25rem;
+  }
+}
+.launch-seal:focus-visible .launch-seal-body {
+  box-shadow: 0 0 0 3px var(--navy-900), 0 0 0 6px var(--launch);
+}
+.launch-seal-body {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 9999px;
+  color: var(--launch-ink);
+  box-shadow:
+    0 22px 50px rgba(6, 10, 20, 0.65),
+    0 0 40px rgba(255, 159, 26, 0.35);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+.launch-seal:hover .launch-seal-body {
+  transform: scale(1.08) rotate(-6deg);
+  box-shadow:
+    0 26px 60px rgba(6, 10, 20, 0.7),
+    0 0 60px rgba(255, 77, 31, 0.5);
+}
+.launch-seal-body > svg {
+  width: 100%;
+  height: 100%;
+  animation: launch-turn 22s linear infinite;
+}
+.launch-seal-disc {
+  fill: var(--launch);
+  stroke: var(--launch-ink);
+  stroke-width: 2.5;
+}
+.launch-seal-inner {
+  fill: var(--launch-hot);
+}
+.launch-seal-text {
+  font-family: var(--font-plex-mono);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  fill: var(--launch-ink);
+}
+.launch-seal-core {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.1rem;
+  color: var(--launch-paper);
+  font-family: var(--font-source-serif);
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+}
+@media (min-width: 640px) {
+  .launch-seal-core {
+    font-size: 1.15rem;
+  }
+}
+@keyframes launch-turn {
+  to { transform: rotate(360deg); }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -262,5 +536,18 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+  .launch-shimmer {
+    animation: none;
+    background-image: none;
+    -webkit-text-fill-color: var(--gold-400);
+  }
+  .launch-seal-body > svg {
+    animation: none;
+  }
+  .launch-strip-track,
+  .launch-cta,
+  .launch-dot {
+    animation: none;
   }
 }
