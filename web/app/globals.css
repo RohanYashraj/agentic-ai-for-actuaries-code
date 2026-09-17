@@ -311,48 +311,6 @@
   to { transform: translateX(calc(-100% / 6)); }
 }
 
-/* The "out now" line inside the hero: a live dot, and one light sweep. */
-.launch-dot {
-  position: relative;
-  display: inline-block;
-  width: 0.6rem;
-  height: 0.6rem;
-  border-radius: 9999px;
-  background: var(--launch);
-  box-shadow: 0 0 0 0 rgba(255, 159, 26, 0.7);
-  animation: launch-pulse 2s ease-out infinite;
-}
-@keyframes launch-pulse {
-  0% { box-shadow: 0 0 0 0 rgba(255, 159, 26, 0.7); }
-  70% { box-shadow: 0 0 0 12px rgba(255, 159, 26, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(255, 159, 26, 0); }
-}
-.launch-line {
-  color: var(--launch);
-  font-weight: 700;
-}
-.launch-shimmer {
-  color: var(--launch);
-  background-image: linear-gradient(
-    100deg,
-    var(--launch) 0%,
-    var(--launch) 40%,
-    var(--launch-paper) 50%,
-    var(--launch) 60%,
-    var(--launch) 100%
-  );
-  background-size: 250% 100%;
-  background-position: 100% 0;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: launch-sweep 1.8s cubic-bezier(0.4, 0, 0.2, 1) 0.7s 1 both;
-}
-@keyframes launch-sweep {
-  from { background-position: 100% 0; }
-  to { background-position: -50% 0; }
-}
-
 /* The main button, in the launch colours, with a breathing halo. */
 .launch-cta {
   background: var(--launch) !important;
@@ -537,17 +495,11 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  .launch-shimmer {
-    animation: none;
-    background-image: none;
-    -webkit-text-fill-color: var(--gold-400);
-  }
   .launch-seal-body > svg {
     animation: none;
   }
   .launch-strip-track,
-  .launch-cta,
-  .launch-dot {
+  .launch-cta {
     animation: none;
   }
 }

@@ -202,13 +202,7 @@ export default function LandingPage() {
           )}
         >
           <div>
-            <p data-hero-item className="label-mono launch-line flex items-center gap-2.5">
-              <span className="launch-dot" aria-hidden="true" />
-              <span className="launch-shimmer">
-                Out now · Free from ACTEX Learning
-              </span>
-            </p>
-            <h1 data-hero-item className="mt-4 text-4xl leading-[1.08] sm:text-6xl">
+            <h1 data-hero-item className="text-4xl leading-[1.08] sm:text-6xl">
               Agentic AI
               <br />
               for Actuaries
@@ -278,7 +272,10 @@ export default function LandingPage() {
               .
             </p>
           </div>
-          <div data-hero-cover className="relative flex justify-center lg:justify-end">
+          {/* On a phone the cover leads and the words follow; from lg
+              the grid puts the words on the left and the cover on the
+              right. */}
+          <div data-hero-cover className="relative order-first flex justify-center lg:order-none lg:justify-end">
             <div className="book-glow" aria-hidden="true" />
             {/* The seal sits on the wrapper, not inside .book-cover, so the
                 cover's perspective tilt does not skew it. */}

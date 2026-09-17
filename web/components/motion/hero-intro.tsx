@@ -21,34 +21,47 @@ export function HeroIntro({
   useGSAP(
     () => {
       const mm = gsap.matchMedia();
+      // Below lg the cover sits above the words, so it enters first;
+      // from lg the words lead and the cover on the right follows.
+      const coverFirst = window.matchMedia("(max-width: 1023px)").matches;
       mm.add("(prefers-reduced-motion: no-preference)", () => {
         const tl = gsap.timeline({
           defaults: { ease: "power2.out", duration: 0.5 },
         });
-        tl.from("[data-hero-item]", { opacity: 0, y: 14, stagger: 0.06 });
-        tl.from(
-          "[data-hero-cover]",
-          { opacity: 0, y: 10, duration: 0.6 },
-          "-=0.3"
-        );
-        // The spotlight blooms as the cover lands, then the seal is
-        // pressed onto the corner with a little overshoot.
-        tl.from(
-          "[data-hero-cover] .book-glow",
-          { opacity: 0, scale: 0.7, duration: 1.4, ease: "power2.out" },
-          "<"
-        );
-        tl.from(
-          "[data-hero-seal]",
-          {
-            opacity: 0,
-            scale: 0.3,
-            rotate: -35,
-            duration: 0.7,
-            ease: "back.out(2.2)",
-          },
-          "-=1.0"
-        );
+        const items = () =>
+          tl.from("[data-hero-item]", { opacity: 0, y: 14, stagger: 0.06 }, coverFirst ? "-=0.3" : undefined);
+        const cover = () => {
+          tl.from(
+            "[data-hero-cover]",
+            { opacity: 0, y: 10, duration: 0.6 },
+            coverFirst ? undefined : "-=0.3"
+          );
+          // The spotlight blooms as the cover lands, then the seal is
+          // pressed onto the corner with a little overshoot.
+          tl.from(
+            "[data-hero-cover] .book-glow",
+            { opacity: 0, scale: 0.7, duration: 1.4, ease: "power2.out" },
+            "<"
+          );
+          tl.from(
+            "[data-hero-seal]",
+            {
+              opacity: 0,
+              scale: 0.3,
+              rotate: -35,
+              duration: 0.7,
+              ease: "back.out(2.2)",
+            },
+            "-=1.0"
+          );
+        };
+        if (coverFirst) {
+          cover();
+          items();
+        } else {
+          items();
+          cover();
+        }
       });
     },
     { scope: ref }
