@@ -28,7 +28,7 @@ openai = ["openai>=1.60"]
 
 [dependency-groups]
 # Local website development (`npm run dev:all` starts uvicorn from
-# .venv; the waitlist/rate limits use Upstash when configured). uv
+# .venv; the rate limits use Upstash when configured). uv
 # installs this group by default with `uv sync`.
 dev = [
     "uvicorn>=0.30",

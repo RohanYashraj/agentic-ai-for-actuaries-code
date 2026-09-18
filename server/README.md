@@ -53,10 +53,22 @@ hold across serverless instances), else in process memory.
 
 ## Environment
 
-- `GOOGLE_API_KEY` — required for agent runs (from the repo-root
-  `.env` locally, Vercel env vars in production).
+The repo-root `.env.example` lists only what a reader of the book
+needs. The server reads these in addition, from `.env` locally and
+from Vercel env vars in production:
+
+- `GOOGLE_API_KEY` — required for agent runs. `MODEL_PROVIDER`,
+  `MODEL_ID`, `ANTHROPIC_API_KEY` and `OPENAI_API_KEY` pass through to
+  the chapter scripts exactly as they do locally.
 - `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` — recommended
-  in production: durable rate limits.
+  in production: durable rate limits. The Vercel KV-style names
+  `KV_REST_API_URL` / `KV_REST_API_TOKEN` work as aliases.
+- `RATE_LIMIT_ENFORCE`, `RATE_LIMIT_PER_IP_MIN`, `RATE_LIMIT_PER_IP_DAY`,
+  `RATE_LIMIT_GLOBAL_DAY` — see Rate limiting above.
+- `ALLOWED_ORIGINS` — optional extra comma-separated Origin allowlist
+  for the run endpoint, on top of the site's own origin.
+- `BOOK_REPO_ROOT` — where the sandbox copies chapter code from, if not
+  the repository root.
 
 ## Run locally
 
