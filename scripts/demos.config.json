@@ -8,7 +8,7 @@
       "packages": ["pandas"],
       "data": ["ialm_2012_14_ulp.csv"],
       "title": "Mortality lookup tool",
-      "description": "Looks up q(x) from the IALM 2012-14 ULT mortality table with input validation."
+      "description": "Looks up q(x) from the IALM 2012-14 ULP mortality table with input validation."
     },
     "ch10-02": {
       "chapter_dir": "ch10_tool_use",
