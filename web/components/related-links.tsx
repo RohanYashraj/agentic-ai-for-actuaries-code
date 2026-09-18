@@ -30,7 +30,7 @@ export function RelatedLinks({ groups }: { groups: RelatedGroup[] }) {
       <div className="mt-5 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {live.map((group) => (
           <div key={group.title}>
-            <h3 className="font-mono text-[11px] uppercase tracking-[0.16em] text-slate">
+            <h3 className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
               {group.title}
             </h3>
             {/* Looser on a phone: these are thumb targets there, not
@@ -40,7 +40,7 @@ export function RelatedLinks({ groups }: { groups: RelatedGroup[] }) {
                 <li key={`${group.title}-${link.href}-${link.label}`}>
                   <Link
                     href={link.href}
-                    className="text-ink underline decoration-line underline-offset-4 transition-colors hover:decoration-gold"
+                    className="text-cream-100 underline decoration-border underline-offset-4 transition-colors hover:decoration-gold-400"
                   >
                     {link.label}
                   </Link>

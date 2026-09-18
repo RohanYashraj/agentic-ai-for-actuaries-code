@@ -95,17 +95,17 @@ export default function CodeIndexPage() {
           return (
             <article
               key={chapter.slug}
-              className="group flex flex-col rounded-md border border-line bg-card p-5 transition-colors hover:border-gold"
+              className="group flex flex-col rounded-md border border-border bg-card p-5 transition-colors hover:border-gold-400"
             >
               <p className="flex items-center gap-3">
-                <span className="inline-flex size-8 items-center justify-center rounded-sm bg-gold font-mono text-sm font-medium text-ink-2">
+                <span className="inline-flex size-8 items-center justify-center rounded-sm bg-gold-400 font-mono text-sm font-medium text-navy-950">
                   {chapter.number}
                 </span>
-                <span className="rounded-sm bg-gold-tint px-1.5 py-0.5 font-mono text-[11px] text-gold-ink">
+                <span className="rounded-sm bg-gold-400/10 px-1.5 py-0.5 font-mono text-[11px] text-gold-300">
                   {chapter.domain}
                 </span>
               </p>
-              <h2 className="mt-3 text-lg leading-snug text-ink">
+              <h2 className="mt-3 text-lg leading-snug text-cream-100">
                 <Link href={`/code/${chapter.slug}`} className="hover:underline">
                   {chapter.title}
                 </Link>
@@ -115,7 +115,7 @@ export default function CodeIndexPage() {
               </p>
               {outline && (
                 <p className="mt-2.5 text-xs leading-relaxed text-muted-foreground">
-                  <span className="text-ink">Case study.</span>{" "}
+                  <span className="text-cream-100">Case study.</span>{" "}
                   {outline.caseStudy}
                 </p>
               )}
@@ -130,7 +130,7 @@ export default function CodeIndexPage() {
                   <span className="inline-flex items-center gap-1">
                     <Sparkle
                       size={11}
-                      className="text-gold-ink"
+                      className="text-gold-300"
                       aria-hidden="true"
                     />
                     {agentCount} live agent{agentCount > 1 ? "s" : ""}
@@ -142,7 +142,7 @@ export default function CodeIndexPage() {
               <p className="mt-auto flex flex-wrap gap-x-4 pt-3 font-mono text-[11px]">
                 <Link
                   href={`/code/${chapter.slug}`}
-                  className="py-1 text-gold-ink transition-colors hover:text-gold-ink hover:underline"
+                  className="py-1 text-gold-300 transition-colors hover:text-gold-300 hover:underline"
                 >
                   Run it
                 </Link>
@@ -150,7 +150,7 @@ export default function CodeIndexPage() {
                   href={colabUrl(chapter.slug)}
                   target="_blank"
                   rel="noreferrer"
-                  className="py-1 text-muted-foreground transition-colors hover:text-ink"
+                  className="py-1 text-muted-foreground transition-colors hover:text-cream-100"
                 >
                   Colab
                 </a>
@@ -161,7 +161,7 @@ export default function CodeIndexPage() {
       </section>
 
       <section className="mt-12 max-w-3xl text-sm leading-relaxed text-muted-foreground">
-        <h2 className="text-xl text-ink">Before you run</h2>
+        <h2 className="text-xl text-cream-100">Before you run</h2>
         <p className="mt-3">
           Browser demos run on Pyodide, a full CPython compiled to WebAssembly.
           The first run downloads the runtime (about 10 MB, more with pandas);
@@ -175,7 +175,7 @@ export default function CodeIndexPage() {
           limit runs out, the Colab notebooks take over: they are the
           full-fidelity path and always available. Limits and install steps
           are on the{" "}
-          <Link href="/setup" className="text-ink underline decoration-line underline-offset-4 hover:decoration-gold">
+          <Link href="/setup" className="text-cream-100 underline decoration-border underline-offset-4 hover:decoration-gold-400">
             setup page
           </Link>
           .

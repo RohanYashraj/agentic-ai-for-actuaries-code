@@ -32,11 +32,11 @@ const FOOTER_LINKS: {
   },
 ];
 
-const LINK = "text-paper transition-colors hover:text-gold";
+const LINK = "text-cream-100 transition-colors hover:text-gold-400";
 
 export function SiteFooter() {
   return (
-    <footer className="bg-ink-2 text-paper-dim">
+    <footer className="bg-navy-950 text-cream-400">
       <div className={cn(CONTAINER, "relative py-12")}>
         <GridMotif
           tone="dark"
@@ -51,7 +51,7 @@ export function SiteFooter() {
         >
           {FOOTER_LINKS.map((group) => (
             <div key={group.title}>
-              <h2 className="label-mono text-gold">{group.title}</h2>
+              <h2 className="label-mono text-gold-400">{group.title}</h2>
               <ul className="mt-3 space-y-2 text-sm">
                 {group.links.map((link) => (
                   <li key={link.href}>
@@ -75,8 +75,8 @@ export function SiteFooter() {
             </div>
           ))}
           <div className="max-w-sm text-sm leading-relaxed lg:justify-self-end lg:text-right">
-            <p className="font-serif text-base text-paper">
-              Agentic AI <span className="text-gold">for Actuaries</span>
+            <p className="font-serif text-base text-cream-100">
+              Agentic AI <span className="text-gold-400">for Actuaries</span>
             </p>
             <p className="mt-2">
               Companion code for the book. Every listing from chapters 9 to
@@ -85,7 +85,7 @@ export function SiteFooter() {
           </div>
         </nav>
 
-        <div className="mt-10 flex flex-col gap-2 border-t border-paper/15 pt-6 text-xs sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-10 flex flex-col gap-2 border-t border-cream-100/15 pt-6 text-xs sm:flex-row sm:items-center sm:justify-between">
           <p>
             Code is MIT licensed. The book text is © 2026 Satya Sai
             Mudigonda and Rohan Yashraj Gupta.

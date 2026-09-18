@@ -7,7 +7,8 @@ import { useGSAP } from "@gsap/react";
 gsap.registerPlugin(useGSAP);
 
 /** Homepage hero entrance. Staggers [data-hero-item] elements top to
- * bottom, then brings in [data-hero-cover]. Reduced motion: everything stays static. */
+ * bottom, then brings in [data-hero-cover], its glow, and [data-hero-seal]. Replaces the CSS hero-rise
+ * animation. Reduced motion: everything stays static. */
 export function HeroIntro({
   children,
   className,
@@ -34,6 +35,24 @@ export function HeroIntro({
             "[data-hero-cover]",
             { opacity: 0, y: 10, duration: 0.6 },
             coverFirst ? undefined : "-=0.3"
+          );
+          // The spotlight blooms as the cover lands, then the seal is
+          // pressed onto the corner with a little overshoot.
+          tl.from(
+            "[data-hero-cover] .book-glow",
+            { opacity: 0, scale: 0.7, duration: 1.4, ease: "power2.out" },
+            "<"
+          );
+          tl.from(
+            "[data-hero-seal]",
+            {
+              opacity: 0,
+              scale: 0.3,
+              rotate: -35,
+              duration: 0.7,
+              ease: "back.out(2.2)",
+            },
+            "-=1.0"
           );
         };
         if (coverFirst) {

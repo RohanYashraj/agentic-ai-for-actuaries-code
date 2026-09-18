@@ -68,8 +68,8 @@ export function SiteHeader() {
   // Close on navigation: the panel outlives the click that follows a link.
   useEffect(() => setOpen(false), [pathname]);
 
-  // Over the navy hero on the homepage the bar is dark; everywhere else,
-  // and once the page scrolls, it is frosted paper.
+  // The bar is transparent over the top of the page and only frosts once
+  // content starts passing underneath it.
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
     onScroll();
@@ -91,15 +91,15 @@ export function SiteHeader() {
     };
   }, [open]);
 
-  const onDark = pathname === "/" && !scrolled && !open;
+  const onDark = !scrolled && !open;
 
   return (
     <header
       className={cn(
         "sticky top-0 z-40 border-b transition-colors duration-200",
         onDark
-          ? "border-transparent bg-ink-2 text-paper"
-          : "border-line bg-paper/85 text-ink backdrop-blur-xl backdrop-saturate-150"
+          ? "border-transparent bg-transparent text-cream-100"
+          : "border-border bg-navy-900/70 text-cream-100 backdrop-blur-xl backdrop-saturate-150"
       )}
     >
       <div className={cn(CONTAINER, "relative")}>
@@ -109,7 +109,7 @@ export function SiteHeader() {
             className="mr-auto whitespace-nowrap font-serif text-[15px] sm:text-base"
           >
             Agentic AI{" "}
-            <span className={onDark ? "text-gold" : "text-gold-ink"}>
+            <span className="text-gold-400">
               for Actuaries
             </span>
           </Link>
@@ -126,11 +126,11 @@ export function SiteHeader() {
                     "rounded-full px-3 py-1.5 text-sm transition-colors",
                     onDark
                       ? active
-                        ? "bg-paper/15 text-paper"
-                        : "text-paper-dim hover:bg-paper/10 hover:text-paper"
+                        ? "bg-cream-100/15 text-cream-100"
+                        : "text-cream-400 hover:bg-cream-100/10 hover:text-cream-100"
                       : active
-                        ? "bg-gold-tint text-ink"
-                        : "text-slate hover:bg-paper-2 hover:text-ink"
+                        ? "bg-gold-400/10 text-cream-100"
+                        : "text-muted-foreground hover:bg-navy-800 hover:text-cream-100"
                   )}
                 >
                   {item.label}
@@ -147,8 +147,8 @@ export function SiteHeader() {
             className={cn(
               "hidden size-9 shrink-0 items-center justify-center rounded-full transition-colors sm:inline-flex",
               onDark
-                ? "text-paper-dim hover:bg-paper/10 hover:text-paper"
-                : "text-slate hover:bg-paper-2 hover:text-ink"
+                ? "text-cream-400 hover:bg-cream-100/10 hover:text-cream-100"
+                : "text-muted-foreground hover:bg-navy-800 hover:text-cream-100"
             )}
           >
             <GithubLogo size={18} aria-hidden="true" />
@@ -158,7 +158,7 @@ export function SiteHeader() {
             href={ACTEX_BOOK_URL}
             target="_blank"
             rel="noreferrer"
-            className="hidden h-9 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-gold px-3.5 text-sm font-medium text-ink-2 transition-colors hover:bg-gold-deep focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep sm:inline-flex"
+            className="hidden h-9 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-gold-400 px-3.5 text-sm font-medium text-navy-950 transition-colors hover:bg-gold-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-400 sm:inline-flex"
           >
             <BookOpenText size={16} weight="bold" aria-hidden="true" />
             Get the book
@@ -172,8 +172,8 @@ export function SiteHeader() {
             aria-controls="mobile-menu"
             aria-label={open ? "Close menu" : "Open menu"}
             className={cn(
-              "inline-flex size-9 shrink-0 items-center justify-center rounded-full transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep md:hidden",
-              onDark ? "text-paper hover:bg-paper/10" : "text-ink hover:bg-paper-2"
+              "inline-flex size-9 shrink-0 items-center justify-center rounded-full transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-400 md:hidden",
+              onDark ? "text-cream-100 hover:bg-cream-100/10" : "text-cream-100 hover:bg-navy-800"
             )}
           >
             {open ? (
@@ -188,20 +188,20 @@ export function SiteHeader() {
           <nav
             id="mobile-menu"
             aria-label="Site"
-            className="absolute inset-x-0 top-full z-50 max-h-[calc(100svh-4rem)] overflow-y-auto border-b border-line bg-paper/97 p-2 shadow-[0_24px_60px_-20px_rgba(13,22,38,0.35)] backdrop-blur-xl md:hidden"
+            className="absolute inset-x-0 top-full z-50 max-h-[calc(100svh-4rem)] overflow-y-auto border-b border-border bg-navy-900/95 p-2 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.9)] backdrop-blur-xl md:hidden"
           >
             <a
               href={ACTEX_BOOK_URL}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-3 rounded-xl bg-gold px-3 py-3 text-ink-2"
+              className="flex items-center gap-3 rounded-xl bg-gold-400 px-3 py-3 text-navy-950"
             >
               <BookOpenText size={20} weight="duotone" aria-hidden="true" />
               <span>
                 <span className="block text-[15px] leading-tight font-medium">
                   Get the book, free
                 </span>
-                <span className="block text-xs text-ink-2/70">
+                <span className="block text-xs text-navy-950/70">
                   Published by ACTEX Learning
                 </span>
               </span>
@@ -224,7 +224,7 @@ export function SiteHeader() {
                       aria-current={active ? "page" : undefined}
                       className={cn(
                         "flex items-center gap-3 rounded-xl px-3 py-3 transition-colors",
-                        active ? "bg-gold-tint" : "hover:bg-paper-2"
+                        active ? "bg-gold-400/10" : "hover:bg-navy-800"
                       )}
                     >
                       <Icon
@@ -233,14 +233,14 @@ export function SiteHeader() {
                         aria-hidden="true"
                         className={cn(
                           "shrink-0",
-                          active ? "text-gold-ink" : "text-slate"
+                          active ? "text-gold-300" : "text-muted-foreground"
                         )}
                       />
                       <span>
-                        <span className="block text-[15px] leading-tight text-ink">
+                        <span className="block text-[15px] leading-tight text-cream-100">
                           {item.label}
                         </span>
-                        <span className="block text-xs text-slate">
+                        <span className="block text-xs text-muted-foreground">
                           {item.blurb}
                         </span>
                       </span>
@@ -253,19 +253,19 @@ export function SiteHeader() {
                   href={GITHUB_REPO}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center gap-3 rounded-xl px-3 py-3 transition-colors hover:bg-paper-2"
+                  className="flex items-center gap-3 rounded-xl px-3 py-3 transition-colors hover:bg-navy-800"
                 >
                   <GithubLogo
                     size={20}
                     weight="duotone"
                     aria-hidden="true"
-                    className="shrink-0 text-slate"
+                    className="shrink-0 text-muted-foreground"
                   />
                   <span>
-                    <span className="block text-[15px] leading-tight text-ink">
+                    <span className="block text-[15px] leading-tight text-cream-100">
                       GitHub
                     </span>
-                    <span className="block text-xs text-slate">
+                    <span className="block text-xs text-muted-foreground">
                       The companion repository
                     </span>
                   </span>

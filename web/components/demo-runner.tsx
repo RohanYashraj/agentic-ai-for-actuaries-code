@@ -179,7 +179,7 @@ export function DemoRunner({
       ) : (
         <pre
           className={cn(
-            "overflow-auto whitespace-pre bg-ink-2 px-4 py-3 font-mono text-[12px] leading-relaxed text-foreground",
+            "overflow-auto whitespace-pre bg-navy-950 px-4 py-3 font-mono text-[12px] leading-relaxed text-foreground",
             expanded ? "min-h-0 flex-1" : "max-h-[480px]"
           )}
         >

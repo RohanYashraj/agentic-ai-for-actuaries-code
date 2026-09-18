@@ -1,5 +1,13 @@
 # Code-companion rebrand: design (2026-09-18)
 
+> **Amendment, same day.** After seeing the light version, the author kept the
+> **navy theme** (the cover's own palette) and the launch decorations: the
+> tangerine marquee strip, the rotating seal on the cover, and a headline that
+> announces the launch ("The book is out.", with the last word in the launch
+> gradient). Section A5's light-paper tokens are therefore **not** in force;
+> the navy tokens from `globals.css` on main remain the single theme. Every
+> other section (A1 to A4, A6) stands.
+
 
 ## A1. Why
 

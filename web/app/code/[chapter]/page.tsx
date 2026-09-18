@@ -111,11 +111,11 @@ export default async function ChapterPage({
       <header className="mt-6 max-w-3xl">
         <p className="flex flex-wrap items-center gap-2">
           <span className="label-mono">Chapter {chapter.number}</span>
-          <span className="text-slate" aria-hidden="true">
+          <span className="text-muted-foreground" aria-hidden="true">
             ·
           </span>
           <span className="label-mono">Part {chapter.part}</span>
-          <span className="rounded-sm bg-gold-tint px-1.5 py-0.5 font-mono text-[11px] text-gold-ink">
+          <span className="rounded-sm bg-gold-400/10 px-1.5 py-0.5 font-mono text-[11px] text-gold-300">
             {chapter.domain}
           </span>
         </p>
@@ -126,12 +126,12 @@ export default async function ChapterPage({
           {chapter.blurb}
         </p>
         {part && (
-          <p className="mt-2 text-sm text-slate">
+          <p className="mt-2 text-sm text-muted-foreground">
             In the book: Part {part.roman}, {part.title}.
           </p>
         )}
         <div className="mt-5 flex flex-wrap gap-3">
-          <Button asChild size="sm" className="bg-gold text-ink-2 hover:bg-gold-deep">
+          <Button asChild size="sm" className="bg-gold-400 text-navy-950 hover:bg-gold-300">
             <a href="#listings">Run it here</a>
           </Button>
           <Button asChild size="sm" variant="outline">
@@ -152,11 +152,11 @@ export default async function ChapterPage({
       </header>
 
       {concepts.length > 0 && (
-        <section className="mt-8 max-w-3xl rounded-md border border-line bg-card px-5 py-4">
+        <section className="mt-8 max-w-3xl rounded-md border border-border bg-card px-5 py-4">
           <h3 className="text-base font-semibold">What you&rsquo;ll build</h3>
           <ul className="mt-3 space-y-1.5 text-sm text-muted-foreground">
             {concepts.map((c) => (
-              <li key={c} className="list-disc marker:text-gold ml-4">
+              <li key={c} className="list-disc marker:text-gold-400 ml-4">
                 {c}
               </li>
             ))}
@@ -198,7 +198,7 @@ export default async function ChapterPage({
                 href={`${GITHUB_REPO}/blob/main/${chapter.folder}/${f}`}
                 target="_blank"
                 rel="noreferrer"
-                className="font-mono text-ink underline underline-offset-2"
+                className="font-mono text-cream-100 underline underline-offset-2"
               >
                 {f}
               </a>
@@ -214,7 +214,7 @@ export default async function ChapterPage({
         {prev ? (
           <Link
             href={`/code/${prev.slug}`}
-            className="inline-flex items-center gap-1.5 text-slate transition-colors hover:text-ink"
+            className="inline-flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-cream-100"
           >
             <ArrowLeft size={14} aria-hidden="true" />
             Chapter {prev.number}: {prev.title}
@@ -225,7 +225,7 @@ export default async function ChapterPage({
         {next ? (
           <Link
             href={`/code/${next.slug}`}
-            className="inline-flex items-center gap-1.5 text-right text-slate transition-colors hover:text-ink"
+            className="inline-flex items-center gap-1.5 text-right text-muted-foreground transition-colors hover:text-cream-100"
           >
             Chapter {next.number}: {next.title}
             <ArrowRight size={14} aria-hidden="true" />

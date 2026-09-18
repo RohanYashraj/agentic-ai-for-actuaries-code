@@ -26,7 +26,7 @@ const TRAIL = [
 ];
 
 const LINK =
-  "text-ink underline decoration-line underline-offset-4 hover:decoration-gold";
+  "text-cream-100 underline decoration-border underline-offset-4 hover:decoration-gold-400";
 
 function ChapterLink({ n }: { n: number }) {
   const ch = CHAPTERS.find((c) => c.number === n);
@@ -70,12 +70,12 @@ export default function DataPage() {
       <Breadcrumbs trail={TRAIL} />
       <header className="mt-6 max-w-3xl">
         <h1 className="text-3xl leading-tight sm:text-4xl">The data</h1>
-        <p className="mt-4 text-base leading-relaxed text-slate">
+        <p className="mt-4 text-base leading-relaxed text-muted-foreground">
           {DESCRIPTION}
         </p>
-        <p className="mt-3 text-sm leading-relaxed text-slate">
+        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
           Everything in{" "}
-          <code className="rounded bg-paper-2 px-1 font-mono text-[13px] text-ink">
+          <code className="rounded bg-navy-800 px-1 font-mono text-[13px] text-cream-100">
             data/
           </code>{" "}
           is written by{" "}
@@ -93,7 +93,7 @@ export default function DataPage() {
         </p>
       </header>
 
-      <ul className="mt-12 divide-y divide-line border-t border-line">
+      <ul className="mt-12 divide-y divide-border border-t border-border">
         {DATASETS.map((d) => (
           <li
             key={d.file}
@@ -105,7 +105,7 @@ export default function DataPage() {
                   href={githubFileUrl(`data/${d.file}`)}
                   target="_blank"
                   rel="noreferrer"
-                  className="break-all font-mono text-base text-ink hover:underline"
+                  className="break-all font-mono text-base text-cream-100 hover:underline"
                 >
                   {d.file}
                   <ArrowUpRight
@@ -114,26 +114,26 @@ export default function DataPage() {
                     aria-hidden="true"
                   />
                 </a>
-                <span className="rounded-sm bg-gold-tint px-1.5 py-0.5 font-mono text-[11px] uppercase text-gold-ink">
+                <span className="rounded-sm bg-gold-400/10 px-1.5 py-0.5 font-mono text-[11px] uppercase text-gold-300">
                   {d.kind}
                 </span>
                 {d.rows && (
-                  <span className="font-mono text-xs text-slate">
+                  <span className="font-mono text-xs text-muted-foreground">
                     {d.rows} rows
                   </span>
                 )}
               </h2>
-              <p className="mt-2 text-base leading-relaxed text-slate">
+              <p className="mt-2 text-base leading-relaxed text-muted-foreground">
                 {d.summary}
               </p>
               {d.columns && (
-                <p className="mt-2 break-words font-mono text-xs leading-relaxed text-slate">
+                <p className="mt-2 break-words font-mono text-xs leading-relaxed text-muted-foreground">
                   {d.columns.join(" · ")}
                 </p>
               )}
-              {d.note && <p className="mt-2 text-sm text-slate">{d.note}</p>}
+              {d.note && <p className="mt-2 text-sm text-muted-foreground">{d.note}</p>}
             </div>
-            <p className="text-sm text-slate lg:text-right">
+            <p className="text-sm text-muted-foreground lg:text-right">
               {d.usedBy.length
                 ? d.usedBy.map((n, i) => (
                     <span key={n}>

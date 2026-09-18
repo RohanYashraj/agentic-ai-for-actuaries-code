@@ -175,7 +175,7 @@ function ToolChip({ block }: { block: Extract<Block, { type: "tool" }> }) {
     <Collapsible className="my-2">
       <CollapsibleTrigger className="group flex w-full items-center gap-2 rounded-sm border border-border bg-muted px-2.5 py-1.5 text-left font-mono text-xs text-foreground">
         {!block.done ? (
-          <Spinner className="size-3.5 shrink-0 animate-spin text-gold" />
+          <Spinner className="size-3.5 shrink-0 animate-spin text-gold-400" />
         ) : block.error ? (
           <WarningCircle className="size-3.5 shrink-0 text-run-err" />
         ) : (
@@ -192,7 +192,7 @@ function ToolChip({ block }: { block: Extract<Block, { type: "tool" }> }) {
         )}
         <CaretDown className="ml-auto size-3 shrink-0 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
       </CollapsibleTrigger>
-      <CollapsibleContent className="rounded-b-sm border-x border-b border-border bg-ink-2 px-3 py-2 font-mono text-[11.5px] leading-relaxed text-muted-foreground">
+      <CollapsibleContent className="rounded-b-sm border-x border-b border-border bg-navy-950 px-3 py-2 font-mono text-[11.5px] leading-relaxed text-muted-foreground">
         {block.detail && (
           <p className="mb-1 whitespace-pre-wrap break-all text-run-err">
             {block.detail}
@@ -504,7 +504,7 @@ export function AgentRunner({
         </div>
       )}
       {state === "truncated" && notice && (
-        <div className="border-b border-border px-4 py-3 text-sm text-gold">
+        <div className="border-b border-border px-4 py-3 text-sm text-gold-400">
           {notice}
         </div>
       )}
@@ -538,7 +538,7 @@ export function AgentRunner({
                 return (
                   <p
                     key={i}
-                    className="my-2 border-l-2 border-gold/60 pl-3 font-mono text-xs text-muted-foreground"
+                    className="my-2 border-l-2 border-gold-400/60 pl-3 font-mono text-xs text-muted-foreground"
                   >
                     {block.text}
                   </p>
@@ -547,7 +547,7 @@ export function AgentRunner({
                 return (
                   <p
                     key={i}
-                    className="mt-4 mb-1 font-mono text-[11px] uppercase tracking-[0.16em] text-gold"
+                    className="mt-4 mb-1 font-mono text-[11px] uppercase tracking-[0.16em] text-gold-400"
                   >
                     {block.name}
                   </p>
@@ -559,7 +559,7 @@ export function AgentRunner({
                   <p
                     key={i}
                     className={`my-1.5 font-mono text-[11.5px] ${
-                      block.level === "error" ? "text-run-err" : "text-gold"
+                      block.level === "error" ? "text-run-err" : "text-gold-400"
                     }`}
                   >
                     {block.level === "error" ? "error" : "warning"} ·{" "}
@@ -570,7 +570,7 @@ export function AgentRunner({
                 return (
                   <pre
                     key={i}
-                    className="my-2 overflow-x-auto rounded-sm bg-ink-2 p-2.5 font-mono text-[12px] leading-relaxed text-foreground"
+                    className="my-2 overflow-x-auto rounded-sm bg-navy-950 p-2.5 font-mono text-[12px] leading-relaxed text-foreground"
                   >
                     {block.lines.join("\n")}
                   </pre>

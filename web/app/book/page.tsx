@@ -32,7 +32,7 @@ const TRAIL = [
 ];
 
 const LINK =
-  "text-ink underline decoration-line underline-offset-4 hover:decoration-gold";
+  "text-cream-100 underline decoration-border underline-offset-4 hover:decoration-gold-400";
 
 export default function BookPage() {
   const structuredData = graph(breadcrumbList(TRAIL), {
@@ -56,15 +56,15 @@ export default function BookPage() {
           <h1 className="mt-2 text-3xl leading-tight sm:text-4xl">
             Agentic AI for Actuaries
           </h1>
-          <p className="mt-2 font-serif text-lg text-slate">{BOOK_SUBTITLE}</p>
-          <p className="mt-5 text-base leading-relaxed text-slate">
+          <p className="mt-2 font-serif text-lg text-muted-foreground">{BOOK_SUBTITLE}</p>
+          <p className="mt-5 text-base leading-relaxed text-muted-foreground">
             {BOOK_PROMISE}
           </p>
-          <p className="mt-3 text-sm leading-relaxed text-slate">
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
             Written for {joinReaders(TARGET_READERS)}.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <Button asChild className="bg-gold text-ink-2 hover:bg-gold-deep">
+            <Button asChild className="bg-gold-400 text-navy-950 hover:bg-gold-300">
               <a href={ACTEX_BOOK_URL} target="_blank" rel="noreferrer">
                 Get the book, free
                 <ArrowUpRight size={14} weight="bold" aria-hidden="true" />
@@ -95,27 +95,27 @@ export default function BookPage() {
         <h2>What&rsquo;s inside</h2>
         <div className="mt-6 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {OUTLINE.map((part) => (
-            <div key={part.roman} className="border-t-2 border-gold pt-4">
+            <div key={part.roman} className="border-t-2 border-gold-400 pt-4">
               <p className="label-mono">Part {part.roman}</p>
-              <h3 className="mt-1 font-serif text-lg text-ink">{part.title}</h3>
+              <h3 className="mt-1 font-serif text-lg text-cream-100">{part.title}</h3>
               <ol className="mt-3 space-y-1.5 text-sm">
                 {part.chapters.map((ch) => (
                   <li
                     key={ch.number}
                     className="grid grid-cols-[28px_1fr] gap-x-2 leading-snug"
                   >
-                    <span className="font-mono text-xs text-slate">
+                    <span className="font-mono text-xs text-muted-foreground">
                       {ch.number}
                     </span>
                     {ch.slug ? (
                       <Link href={`/code/${ch.slug}`} className={LINK}>
                         {ch.title}
-                        <span className="ml-1.5 rounded-sm bg-gold-tint px-1 font-mono text-[10px] text-gold-ink">
+                        <span className="ml-1.5 rounded-sm bg-gold-400/10 px-1 font-mono text-[10px] text-gold-300">
                           code
                         </span>
                       </Link>
                     ) : (
-                      <span className="text-slate">{ch.title}</span>
+                      <span className="text-muted-foreground">{ch.title}</span>
                     )}
                   </li>
                 ))}
@@ -136,22 +136,22 @@ export default function BookPage() {
                   alt={`Portrait of ${author.name}`}
                   width={96}
                   height={96}
-                  className="size-24 shrink-0 rounded-sm border border-line object-cover"
+                  className="size-24 shrink-0 rounded-sm border border-border object-cover"
                 />
               )}
               <div>
-                <h3 className="font-serif text-lg text-ink">
+                <h3 className="font-serif text-lg text-cream-100">
                   {[author.honorificPrefix, author.name]
                     .filter(Boolean)
                     .join(" ")}
                 </h3>
                 {author.honorificSuffix && (
-                  <p className="font-mono text-[11px] text-gold-ink">
+                  <p className="font-mono text-[11px] text-gold-300">
                     {author.honorificSuffix}
                   </p>
                 )}
                 {author.jobTitle && (
-                  <p className="mt-1 text-sm text-slate">
+                  <p className="mt-1 text-sm text-muted-foreground">
                     {author.jobTitle}
                     {author.affiliation ? `, ${author.affiliation}` : ""}
                   </p>
@@ -162,7 +162,7 @@ export default function BookPage() {
                   .map((para, i) => (
                     <p
                       key={i}
-                      className="mt-2 text-sm leading-relaxed text-slate"
+                      className="mt-2 text-sm leading-relaxed text-muted-foreground"
                     >
                       {para}
                     </p>
@@ -173,7 +173,7 @@ export default function BookPage() {
                     href={link.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="mt-2 inline-flex items-center gap-1 text-xs text-slate hover:text-ink"
+                    className="mt-2 inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-cream-100"
                   >
                     {link.label}
                     <ArrowUpRight size={12} aria-hidden="true" />
@@ -183,13 +183,13 @@ export default function BookPage() {
             </article>
           ))}
         </div>
-        <p className="mt-8 text-sm text-slate">
+        <p className="mt-8 text-sm text-muted-foreground">
           Foreword by, and in collaboration with, the{" "}
           <a
             href="https://sssia.org"
             target="_blank"
             rel="noreferrer"
-            className="text-ink underline underline-offset-2"
+            className="text-cream-100 underline underline-offset-2"
           >
             Sri Sathya Sai Institute of Actuaries
           </a>

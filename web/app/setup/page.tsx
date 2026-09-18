@@ -50,12 +50,12 @@ const FAQ = [
 ];
 
 const LINK =
-  "text-ink underline decoration-line underline-offset-4 hover:decoration-gold";
-const INLINE = "rounded bg-paper-2 px-1 font-mono text-[13px] text-ink";
+  "text-cream-100 underline decoration-border underline-offset-4 hover:decoration-gold-400";
+const INLINE = "rounded bg-navy-800 px-1 font-mono text-[13px] text-cream-100";
 
 function Code({ children }: { children: string }) {
   return (
-    <pre className="mt-3 overflow-x-auto rounded-md bg-ink-2 px-4 py-3 font-mono text-[13px] leading-relaxed text-paper">
+    <pre className="mt-3 overflow-x-auto rounded-md bg-navy-950 px-4 py-3 font-mono text-[13px] leading-relaxed text-cream-100">
       <code>{children}</code>
     </pre>
   );
@@ -94,7 +94,7 @@ export default function SetupPage() {
       <Breadcrumbs trail={TRAIL} />
       <header className="mt-6 max-w-3xl">
         <h1 className="text-3xl leading-tight sm:text-4xl">Setup</h1>
-        <p className="mt-4 text-base leading-relaxed text-slate">
+        <p className="mt-4 text-base leading-relaxed text-muted-foreground">
           {DESCRIPTION}
         </p>
       </header>
@@ -104,7 +104,7 @@ export default function SetupPage() {
           <section id="browser" className="scroll-mt-24">
             <p className="label-mono">Option 1</p>
             <h2 className="mt-2">On this site, no setup</h2>
-            <p className="mt-3 text-base leading-relaxed text-slate">
+            <p className="mt-3 text-base leading-relaxed text-muted-foreground">
               Every{" "}
               <Link href="/code" className={LINK}>
                 code chapter
@@ -119,7 +119,7 @@ export default function SetupPage() {
           <section id="colab" className="scroll-mt-24">
             <p className="label-mono">Option 2</p>
             <h2 className="mt-2">In Colab, with your own free key</h2>
-            <ol className="mt-4 list-decimal space-y-3 pl-5 text-base leading-relaxed text-slate marker:text-gold-ink">
+            <ol className="mt-4 list-decimal space-y-3 pl-5 text-base leading-relaxed text-muted-foreground marker:text-gold-300">
               <li>
                 Get a key at{" "}
                 <a
@@ -156,7 +156,7 @@ export default function SetupPage() {
           <section id="local" className="scroll-mt-24">
             <p className="label-mono">Option 3</p>
             <h2 className="mt-2">Locally, with uv</h2>
-            <p className="mt-3 text-base leading-relaxed text-slate">
+            <p className="mt-3 text-base leading-relaxed text-muted-foreground">
               Python 3.11 or later. uv installs one for you if needed.
             </p>
             <Code>{`# Install uv (skip if you have it)
@@ -171,7 +171,7 @@ cp .env.example .env    # then paste your key: GOOGLE_API_KEY=...
 
 cd ch09_agentic_foundations
 uv run --env-file ../.env python 01_column_agent.py`}</Code>
-            <p className="mt-4 text-sm leading-relaxed text-slate">
+            <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
               Prefer plain pip, as printed in the book?{" "}
               <code className={INLINE}>python -m venv .venv</code>, activate
               it, then <code className={INLINE}>pip install -r requirements.txt</code>.
@@ -187,11 +187,11 @@ uv run --env-file ../.env python 01_column_agent.py`}</Code>
 
           <section id="questions" className="scroll-mt-24">
             <h2>Questions</h2>
-            <dl className="mt-6 divide-y divide-line">
+            <dl className="mt-6 divide-y divide-border">
               {FAQ.map((item) => (
                 <div key={item.q} className="py-5">
-                  <dt className="font-serif text-lg text-ink">{item.q}</dt>
-                  <dd className="mt-2 text-base leading-relaxed text-slate">
+                  <dt className="font-serif text-lg text-cream-100">{item.q}</dt>
+                  <dd className="mt-2 text-base leading-relaxed text-muted-foreground">
                     {item.a}
                   </dd>
                 </div>
@@ -201,17 +201,17 @@ uv run --env-file ../.env python 01_column_agent.py`}</Code>
         </div>
 
         <aside className="lg:sticky lg:top-24 lg:self-start">
-          <div className="rounded-md border border-line bg-card p-5">
+          <div className="rounded-md border border-border bg-card p-5">
             <p className="label-mono">Live runs on this site</p>
             <dl className="mt-4 space-y-3">
               {LIMITS.map(([n, label]) => (
                 <div key={label} className="flex items-baseline gap-3">
-                  <dt className="font-serif text-2xl text-ink">{n}</dt>
-                  <dd className="text-sm text-slate">{label}</dd>
+                  <dt className="font-serif text-2xl text-cream-100">{n}</dt>
+                  <dd className="text-sm text-muted-foreground">{label}</dd>
                 </div>
               ))}
             </dl>
-            <p className="mt-4 text-xs leading-relaxed text-slate">
+            <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
               Counters reset on UTC days. Your address is hashed before it is
               counted and never stored. When a limit is reached, the
               chapter&rsquo;s Colab notebook is the unlimited path.
