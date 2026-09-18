@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
+  ArrowUpRight,
   BookOpenText,
   GithubLogo,
   List,
@@ -13,7 +14,7 @@ import {
   X,
 } from "@phosphor-icons/react";
 import type { Icon } from "@phosphor-icons/react";
-import { GITHUB_REPO } from "@/lib/links";
+import { ACTEX_BOOK_URL, GITHUB_REPO } from "@/lib/links";
 import { cn, CONTAINER } from "@/lib/utils";
 
 type NavItem = {
@@ -24,6 +25,8 @@ type NavItem = {
   blurb: string;
 };
 
+/** Every route the site has, all visible from md up. Nothing hides in a
+ * mobile-only list. */
 const NAV: NavItem[] = [
   {
     href: "/code",
@@ -52,7 +55,7 @@ const NAV: NavItem[] = [
 ];
 
 /** True for the page itself and anything beneath it, so a chapter page
- * still lights up "The book". `/` never matches by prefix. */
+ * still lights up "Run the code". `/` never matches by prefix. */
 function isActive(pathname: string, href: string): boolean {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
@@ -65,8 +68,8 @@ export function SiteHeader() {
   // Close on navigation: the panel outlives the click that follows a link.
   useEffect(() => setOpen(false), [pathname]);
 
-  // The bar is transparent over the top of the page and only frosts once
-  // content starts passing underneath it.
+  // Over the navy hero on the homepage the bar is dark; everywhere else,
+  // and once the page scrolls, it is frosted paper.
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
     onScroll();
@@ -88,22 +91,27 @@ export function SiteHeader() {
     };
   }, [open]);
 
+  const onDark = pathname === "/" && !scrolled && !open;
+
   return (
     <header
       className={cn(
         "sticky top-0 z-40 border-b transition-colors duration-200",
-        scrolled || open
-          ? "border-border bg-navy-900/70 backdrop-blur-xl backdrop-saturate-150"
-          : "border-transparent bg-transparent"
+        onDark
+          ? "border-transparent bg-ink-2 text-paper"
+          : "border-line bg-paper/85 text-ink backdrop-blur-xl backdrop-saturate-150"
       )}
     >
       <div className={cn(CONTAINER, "relative")}>
         <div className="flex h-16 items-center gap-1">
           <Link
             href="/"
-            className="mr-auto whitespace-nowrap font-serif text-[15px] text-cream-100 sm:text-base"
+            className="mr-auto whitespace-nowrap font-serif text-[15px] sm:text-base"
           >
-            Agentic AI <span className="text-gold-400">for Actuaries</span>
+            Agentic AI{" "}
+            <span className={onDark ? "text-gold" : "text-gold-ink"}>
+              for Actuaries
+            </span>
           </Link>
 
           <nav aria-label="Main" className="hidden items-center gap-0.5 md:flex">
@@ -116,9 +124,13 @@ export function SiteHeader() {
                   aria-current={active ? "page" : undefined}
                   className={cn(
                     "rounded-full px-3 py-1.5 text-sm transition-colors",
-                    active
-                      ? "bg-navy-800 text-cream-100"
-                      : "text-foreground hover:bg-navy-800/70 hover:text-cream-100"
+                    onDark
+                      ? active
+                        ? "bg-paper/15 text-paper"
+                        : "text-paper-dim hover:bg-paper/10 hover:text-paper"
+                      : active
+                        ? "bg-gold-tint text-ink"
+                        : "text-slate hover:bg-paper-2 hover:text-ink"
                   )}
                 >
                   {item.label}
@@ -132,21 +144,26 @@ export function SiteHeader() {
             target="_blank"
             rel="noreferrer"
             aria-label="GitHub repository"
-            className="hidden size-9 shrink-0 items-center justify-center rounded-full text-foreground transition-colors hover:bg-navy-800 hover:text-cream-100 sm:inline-flex"
+            className={cn(
+              "hidden size-9 shrink-0 items-center justify-center rounded-full transition-colors sm:inline-flex",
+              onDark
+                ? "text-paper-dim hover:bg-paper/10 hover:text-paper"
+                : "text-slate hover:bg-paper-2 hover:text-ink"
+            )}
           >
             <GithubLogo size={18} aria-hidden="true" />
           </a>
 
-          <Link
-            href="/code"
-            className={cn(
-              "hidden h-9 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-gold-400/40 px-3.5 text-sm text-gold-300 transition-colors hover:border-gold-400/70 hover:bg-gold-400/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-400 sm:inline-flex",
-              isActive(pathname, "/code") && "border-gold-400/70 bg-gold-400/10"
-            )}
+          <a
+            href={ACTEX_BOOK_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="hidden h-9 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-gold px-3.5 text-sm font-medium text-ink-2 transition-colors hover:bg-gold-deep focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep sm:inline-flex"
           >
-            <Terminal size={16} aria-hidden="true" />
-            Run the code
-          </Link>
+            <BookOpenText size={16} weight="bold" aria-hidden="true" />
+            Get the book
+            <ArrowUpRight size={14} weight="bold" aria-hidden="true" />
+          </a>
 
           <button
             type="button"
@@ -154,7 +171,10 @@ export function SiteHeader() {
             aria-expanded={open}
             aria-controls="mobile-menu"
             aria-label={open ? "Close menu" : "Open menu"}
-            className="inline-flex size-9 shrink-0 items-center justify-center rounded-full text-cream-100 transition-colors hover:bg-navy-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-400 md:hidden"
+            className={cn(
+              "inline-flex size-9 shrink-0 items-center justify-center rounded-full transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep md:hidden",
+              onDark ? "text-paper hover:bg-paper/10" : "text-ink hover:bg-paper-2"
+            )}
           >
             {open ? (
               <X size={20} aria-hidden="true" />
@@ -168,22 +188,30 @@ export function SiteHeader() {
           <nav
             id="mobile-menu"
             aria-label="Site"
-            className="absolute inset-x-0 top-full z-50 max-h-[calc(100svh-4rem)] overflow-y-auto border-b border-border bg-navy-900/95 p-2 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.9)] backdrop-blur-xl md:hidden"
+            className="absolute inset-x-0 top-full z-50 max-h-[calc(100svh-4rem)] overflow-y-auto border-b border-line bg-paper/97 p-2 shadow-[0_24px_60px_-20px_rgba(13,22,38,0.35)] backdrop-blur-xl md:hidden"
           >
-            <Link
-              href="/code"
-              className="flex items-center gap-3 rounded-xl border border-gold-400/40 bg-gold-400/10 px-3 py-3 text-gold-300"
+            <a
+              href={ACTEX_BOOK_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-3 rounded-xl bg-gold px-3 py-3 text-ink-2"
             >
-              <Terminal size={20} weight="duotone" aria-hidden="true" />
+              <BookOpenText size={20} weight="duotone" aria-hidden="true" />
               <span>
-                <span className="block text-[15px] leading-tight">
-                  Run the code
+                <span className="block text-[15px] leading-tight font-medium">
+                  Get the book, free
                 </span>
-                <span className="block text-xs text-gold-300/70">
-                  Nine chapters, runnable in the browser
+                <span className="block text-xs text-ink-2/70">
+                  Published by ACTEX Learning
                 </span>
               </span>
-            </Link>
+              <ArrowUpRight
+                size={16}
+                weight="bold"
+                aria-hidden="true"
+                className="ml-auto"
+              />
+            </a>
 
             <ul className="mt-1">
               {NAV.map((item) => {
@@ -196,7 +224,7 @@ export function SiteHeader() {
                       aria-current={active ? "page" : undefined}
                       className={cn(
                         "flex items-center gap-3 rounded-xl px-3 py-3 transition-colors",
-                        active ? "bg-navy-800" : "hover:bg-navy-800/70"
+                        active ? "bg-gold-tint" : "hover:bg-paper-2"
                       )}
                     >
                       <Icon
@@ -205,14 +233,14 @@ export function SiteHeader() {
                         aria-hidden="true"
                         className={cn(
                           "shrink-0",
-                          active ? "text-gold-400" : "text-cream-400"
+                          active ? "text-gold-ink" : "text-slate"
                         )}
                       />
                       <span>
-                        <span className="block text-[15px] leading-tight text-cream-100">
+                        <span className="block text-[15px] leading-tight text-ink">
                           {item.label}
                         </span>
-                        <span className="block text-xs text-muted-foreground">
+                        <span className="block text-xs text-slate">
                           {item.blurb}
                         </span>
                       </span>
@@ -225,19 +253,19 @@ export function SiteHeader() {
                   href={GITHUB_REPO}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center gap-3 rounded-xl px-3 py-3 transition-colors hover:bg-navy-800/70"
+                  className="flex items-center gap-3 rounded-xl px-3 py-3 transition-colors hover:bg-paper-2"
                 >
                   <GithubLogo
                     size={20}
                     weight="duotone"
                     aria-hidden="true"
-                    className="shrink-0 text-cream-400"
+                    className="shrink-0 text-slate"
                   />
                   <span>
-                    <span className="block text-[15px] leading-tight text-cream-100">
+                    <span className="block text-[15px] leading-tight text-ink">
                       GitHub
                     </span>
-                    <span className="block text-xs text-muted-foreground">
+                    <span className="block text-xs text-slate">
                       The companion repository
                     </span>
                   </span>
