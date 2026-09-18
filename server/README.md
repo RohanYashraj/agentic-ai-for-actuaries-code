@@ -39,7 +39,6 @@ too heavy for a serverless function. The site points it at Colab.
 | `GET /api/py/agents` | the script registry with metadata |
 | `GET /api/py/limits` | remaining quota for the caller |
 | `POST /api/py/agents/{id}/run` | run a script, streamed as SSE |
-| `POST /api/py/waitlist` | store a launch-waitlist email |
 
 ## Rate limiting
 
@@ -57,7 +56,7 @@ hold across serverless instances), else in process memory.
 - `GOOGLE_API_KEY` — required for agent runs (from the repo-root
   `.env` locally, Vercel env vars in production).
 - `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` — recommended
-  in production: durable rate limits and waitlist storage.
+  in production: durable rate limits.
 
 ## Run locally
 

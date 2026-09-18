@@ -121,7 +121,7 @@ _store = _make_store()
 
 
 def store():
-    """Shared counter store (also used by the waitlist signup guard)."""
+    """Shared counter store."""
     return _store
 
 

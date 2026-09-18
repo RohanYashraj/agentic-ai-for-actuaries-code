@@ -46,8 +46,7 @@ Import the repository into Vercel with:
    of the Root Directory in the Build Step".
 2. Environment variables: `GOOGLE_API_KEY` (required for agent runs),
    `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN` (recommended:
-   makes rate limits durable across function instances and stores the
-   waitlist; add Upstash from the Vercel Marketplace, free tier).
+   makes rate limits durable across function instances; add Upstash from the Vercel Marketplace, free tier).
    Optional tuning: `RATE_LIMIT_PER_IP_MIN` (default 4),
    `RATE_LIMIT_PER_IP_DAY` (default 75), `RATE_LIMIT_GLOBAL_DAY`
    (default 750). Rate limits only apply when deployed; local dev is
@@ -60,15 +59,3 @@ Import the repository into Vercel with:
 Without the env vars the site still works: agent runs report that the
 runner is unavailable and point at Colab; everything else is static.
 
-## Waitlist form
-
-`components/notify-form.tsx` posts to `POST /api/py/waitlist`, which
-stores emails in the same Upstash Redis used for rate limiting (no
-third-party form service). Export the list any time with:
-
-```bash
-uv run --env-file .env python scripts/export_waitlist.py > waitlist.csv
-```
-
-Locally without Upstash env vars, signups go to an in-memory store so
-the form still works in dev.

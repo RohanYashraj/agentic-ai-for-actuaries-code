@@ -11,14 +11,13 @@ import asyncio
 import json
 import os
 import sys
-import time
 from pathlib import Path
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, StreamingResponse
 
-from . import ratelimit, waitlist
+from . import ratelimit
 from .registry import AGENTS, RUNNABLE
 from .sandbox import cleanup_workspace, prepare_workspace
 
@@ -149,47 +148,6 @@ async def limits(request: Request) -> dict:
     }
 
 
-@app.post("/api/py/waitlist")
-async def join_waitlist(request: Request):
-    # Requiring the JSON content type forces cross-site senders into a
-    # CORS preflight (which fails — no CORS headers exist). Without it, a
-    # text/plain "simple request" from any page could post signups.
-    ctype = request.headers.get("content-type", "").split(";")[0].strip().lower()
-    if ctype != "application/json":
-        return JSONResponse(
-            {"error": "bad_request", "detail": "Send JSON with an email field."},
-            status_code=415,
-        )
-    try:
-        body = await request.json()
-        email_raw = str(body.get("email", ""))
-    except Exception:
-        return JSONResponse({"error": "bad_request", "detail": "Send JSON with an email field."}, status_code=400)
-    email = waitlist.normalize(email_raw)
-    if email is None:
-        return JSONResponse(
-            {"error": "invalid_email", "detail": "That does not look like an email address."},
-            status_code=422,
-        )
-    # Light abuse guard: a handful of signups per IP per day is plenty.
-    # The IP is hashed before it becomes a store key — no PII at rest.
-    ip = _client_ip(request)
-    day = time.strftime("%Y-%m-%d")
-    try:
-        count = ratelimit.store().incr(f"wl:ip:{ratelimit.ip_key(ip)}:{day}", 172800)
-        if count > 5:
-            return JSONResponse(
-                {"error": "rate_limited", "detail": "Too many signups from this connection today."},
-                status_code=429,
-            )
-        added = waitlist.signup(email)
-    except Exception:  # noqa: BLE001 — a store outage must not become a 500
-        return JSONResponse(
-            {"error": "unavailable",
-             "detail": "Could not save your signup right now — please try again in a minute."},
-            status_code=503,
-        )
-    return {"ok": True, "already": not added}
 
 
 def _sse(obj: dict) -> str:

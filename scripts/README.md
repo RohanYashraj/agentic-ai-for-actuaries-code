@@ -37,11 +37,3 @@ original's `__main__` block runs an agent, add a
 `overrides/<id>_main.py` with a plain-Python equivalent and reference
 it as `main_override`.
 
-## `export_waitlist.py`
-
-Exports the launch waitlist collected by the website
-(`POST /api/py/waitlist`, stored in Upstash Redis) as CSV:
-
-```bash
-uv run --env-file .env python scripts/export_waitlist.py > waitlist.csv
-```

@@ -333,7 +333,7 @@ agent runs on preview deployments):
 | Variable | Required | Purpose |
 |---|---|---|
 | `GOOGLE_API_KEY` | Yes, for live agent runs | Gemini key used by the serverless agent runner |
-| `UPSTASH_REDIS_REST_URL` | Recommended | Durable rate-limit counters and waitlist storage |
+| `UPSTASH_REDIS_REST_URL` | Recommended | Durable rate-limit counters |
 | `UPSTASH_REDIS_REST_TOKEN` | Recommended | Auth token for the above |
 | `RATE_LIMIT_PER_IP_MIN` | No (default 4) | Agent runs allowed per IP per minute |
 | `RATE_LIMIT_PER_IP_DAY` | No (default 75) | Agent runs allowed per IP per day |
@@ -342,8 +342,8 @@ agent runs on preview deployments):
 The site **degrades gracefully without any of these**: with no
 `GOOGLE_API_KEY`, agent runs report that the runner is unavailable and
 point visitors at Colab, while the in-browser Pyodide demos and all
-static content keep working. Without Upstash, rate-limit counters and
-waitlist signups fall back to per-instance process memory (fine for
+static content keep working. Without Upstash, rate-limit counters
+fall back to per-instance process memory (fine for
 trying things out, not durable).
 
 ### 4. Add Upstash Redis (recommended)
@@ -351,12 +351,7 @@ trying things out, not durable).
 From the Vercel **Marketplace**, add the **Upstash Redis** integration
 to the project (free tier is sufficient). It injects
 `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` automatically.
-This makes rate limits hold across serverless instances and stores
-waitlist emails, which you can export any time:
-
-```bash
-uv run --env-file .env python scripts/export_waitlist.py > waitlist.csv
-```
+This makes rate limits hold across serverless instances.
 
 ### 5. Deploy
 
