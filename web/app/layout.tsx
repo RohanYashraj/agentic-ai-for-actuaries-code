@@ -61,7 +61,6 @@ export const metadata: Metadata = {
     title: `${SITE_NAME}: ${BOOK_SUBTITLE}`,
     description: SITE_DESCRIPTION,
   },
-  icons: { icon: "/favicon.png" },
 };
 
 export default function RootLayout({

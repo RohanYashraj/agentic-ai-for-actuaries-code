@@ -20,7 +20,7 @@ export function Editor({ source, fill }: { source: string; fill?: boolean }) {
   if (!mounted) {
     return (
       <pre
-        className={`overflow-auto whitespace-pre bg-navy-950 px-4 py-3 font-mono text-[12px] leading-relaxed text-foreground ${
+        className={`panel-dark overflow-auto whitespace-pre px-4 py-3 font-mono text-[12px] leading-relaxed text-foreground ${
           fill ? "h-full" : "max-h-[420px]"
         }`}
       >

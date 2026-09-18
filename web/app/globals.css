@@ -2,8 +2,6 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@custom-variant dark (&:is(.dark *));
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -35,72 +33,85 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  /* Book palette, carried over from the first edition of the site */
-  --color-navy-950: var(--navy-950);
-  --color-navy-900: var(--navy-900);
-  --color-navy-850: var(--navy-850);
-  --color-navy-800: var(--navy-800);
-  --color-navy-700: var(--navy-700);
-  --color-cream-100: var(--cream-100);
-  --color-cream-200: var(--cream-200);
-  --color-cream-400: var(--cream-400);
-  --color-gold-300: var(--gold-300);
-  --color-gold-400: var(--gold-400);
-  --color-gold-500: var(--gold-500);
+  /* The cover's palette: paper for the page, navy ink for text and the
+   * hero band, slate for secondary text, gold as the one accent. */
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-paper-dim: var(--paper-dim);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-slate: var(--slate);
+  --color-line: var(--line);
+  --color-gold: var(--gold);
+  --color-gold-deep: var(--gold-deep);
+  --color-gold-ink: var(--gold-ink);
+  --color-gold-tint: var(--gold-tint);
   --color-run-ok: var(--run-ok);
   --color-run-err: var(--run-err);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* Single locked theme: the book's navy ledger. No light variant. */
 :root {
-  --navy-950: #0d1626;
-  --navy-900: #152238;
-  --navy-850: #182741;
-  --navy-800: #1e2f4c;
-  --navy-700: #2a3d5e;
-  --cream-100: #f2ecdf;
-  --cream-200: #ece4d4;
-  --cream-400: #cfc7b6;
-  --gold-300: #e2b466;
-  --gold-400: #d3a253;
-  --gold-500: #c3913f;
-  --run-ok: #7dbb8a;
-  --run-err: #d98a7a;
+  --paper: #fbfaf6;
+  --paper-2: #f3f1ea;
+  --paper-dim: #b9c0cc;
+  --ink: #152238;
+  --ink-2: #0d1626;
+  --slate: #5b6b82;
+  --line: #d9d5c9;
+  --gold: #e4a531;
+  --gold-deep: #c98d1b;
+  /* Gold that passes as text on paper (6.4:1). Gold itself never is. */
+  --gold-ink: #8a5c0a;
+  --gold-tint: #fbf1d8;
+  --run-ok: #2f8f5b;
+  --run-err: #c4472e;
 
-  --background: var(--navy-900);
-  --foreground: #c3cad8;
-  --card: var(--navy-850);
-  --card-foreground: #c3cad8;
-  --popover: var(--navy-800);
-  --popover-foreground: var(--cream-200);
-  --primary: var(--gold-400);
-  --primary-foreground: var(--navy-950);
-  --secondary: var(--navy-800);
-  --secondary-foreground: var(--cream-200);
-  --muted: var(--navy-800);
-  --muted-foreground: #8e99ad;
-  --accent: var(--navy-800);
-  --accent-foreground: var(--cream-100);
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: #ffffff;
+  --card-foreground: var(--ink);
+  --popover: #ffffff;
+  --popover-foreground: var(--ink);
+  --primary: var(--gold);
+  --primary-foreground: var(--ink-2);
+  --secondary: var(--paper-2);
+  --secondary-foreground: var(--ink);
+  --muted: var(--paper-2);
+  --muted-foreground: var(--slate);
+  --accent: var(--gold-tint);
+  --accent-foreground: var(--ink);
   --destructive: var(--run-err);
-  --border: rgba(236, 228, 212, 0.14);
-  --input: rgba(236, 228, 212, 0.2);
-  --ring: var(--gold-400);
+  --border: var(--line);
+  --input: var(--line);
+  --ring: var(--gold-deep);
   --radius: 0.25rem;
-  --sidebar: var(--navy-850);
-  --sidebar-foreground: #c3cad8;
-  --sidebar-primary: var(--gold-400);
-  --sidebar-primary-foreground: var(--navy-950);
-  --sidebar-accent: var(--navy-800);
-  --sidebar-accent-foreground: var(--cream-100);
-  --sidebar-border: rgba(236, 228, 212, 0.14);
-  --sidebar-ring: var(--gold-400);
+  --sidebar: var(--paper-2);
+  --sidebar-foreground: var(--ink);
+  --sidebar-primary: var(--gold);
+  --sidebar-primary-foreground: var(--ink-2);
+  --sidebar-accent: var(--gold-tint);
+  --sidebar-accent-foreground: var(--ink);
+  --sidebar-border: var(--line);
+  --sidebar-ring: var(--gold-deep);
+}
+
+/* Code panels stay dark on the light page: the listing reads like a
+ * terminal. Applied to the outer box of every runner; the shadcn token
+ * utilities inside resolve against these values, so the runners need no
+ * colour classes of their own. */
+.panel-dark {
+  --background: var(--ink-2);
+  --foreground: var(--paper);
+  --card: var(--ink-2);
+  --card-foreground: var(--paper);
+  --muted: rgba(251, 250, 246, 0.08);
+  --muted-foreground: var(--paper-dim);
+  --border: rgba(251, 250, 246, 0.14);
+  --input: rgba(251, 250, 246, 0.2);
+  --ring: var(--gold);
+  background: var(--ink-2);
+  color: var(--paper);
+  color-scheme: dark;
 }
 
 @layer base {
@@ -109,17 +120,16 @@
   }
   html {
     @apply font-sans;
-    color-scheme: dark;
+    color-scheme: light;
   }
   body {
     @apply bg-background text-foreground antialiased;
   }
   ::selection {
-    background: rgba(211, 162, 83, 0.35);
+    background: rgba(228, 165, 49, 0.35);
   }
-  /* Scrollbars follow the navy ledger theme */
   * {
-    scrollbar-color: var(--navy-700) transparent;
+    scrollbar-color: var(--line) transparent;
   }
   ::-webkit-scrollbar {
     width: 10px;
@@ -129,13 +139,13 @@
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: var(--navy-700);
+    background: var(--line);
     border-radius: 8px;
     border: 2px solid transparent;
     background-clip: padding-box;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #3a5074;
+    background: #c5c0b2;
     border: 2px solid transparent;
     background-clip: padding-box;
   }
@@ -145,7 +155,7 @@
   h1,
   h2,
   h3 {
-    @apply font-serif text-cream-100;
+    @apply font-serif text-ink;
   }
   h2 {
     @apply text-2xl leading-snug sm:text-3xl;
@@ -163,10 +173,10 @@
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.16em;
-  color: var(--gold-400);
+  color: var(--gold-ink);
 }
 
-/* Reader-facing prose (agent output) */
+/* Reader-facing prose (agent output), always inside a .panel-dark */
 .agent-prose {
   @apply text-sm leading-relaxed;
 }
@@ -174,7 +184,7 @@
 .agent-prose h2,
 .agent-prose h3,
 .agent-prose h4 {
-  @apply mt-4 mb-2 font-serif text-cream-100 text-base font-semibold;
+  @apply mt-4 mb-2 font-serif text-foreground text-base font-semibold;
 }
 .agent-prose p {
   @apply my-2;
@@ -187,10 +197,10 @@
   @apply list-decimal;
 }
 .agent-prose code {
-  @apply font-mono text-[0.85em] text-cream-200 bg-navy-950/70 px-1 py-0.5 rounded-sm;
+  @apply font-mono text-[0.85em] text-foreground bg-muted px-1 py-0.5 rounded-sm;
 }
 .agent-prose pre {
-  @apply my-2 overflow-x-auto rounded-sm bg-navy-950/70 p-3;
+  @apply my-2 overflow-x-auto rounded-sm bg-muted p-3;
 }
 .agent-prose pre code {
   @apply bg-transparent p-0;
@@ -203,287 +213,40 @@
   @apply border border-border px-2 py-1 text-left;
 }
 .agent-prose th {
-  @apply text-cream-200;
+  @apply text-foreground;
 }
 .agent-prose a {
-  @apply text-gold-300 underline underline-offset-2;
+  @apply text-gold underline underline-offset-2;
 }
 .agent-prose blockquote {
-  @apply my-2 border-l-2 border-gold-400/50 pl-3 text-muted-foreground;
+  @apply my-2 border-l-2 border-gold/50 pl-3 text-muted-foreground;
 }
 
-/* CodeMirror chrome: navy code panels matching the page */
+/* CodeMirror chrome: the editor shares the dark panel */
 .cm-editor {
   @apply text-[13px];
-  background: var(--navy-950) !important;
+  background: var(--ink-2) !important;
 }
 .cm-editor .cm-gutters {
-  background: var(--navy-950) !important;
-  border-right: 1px solid rgba(236, 228, 212, 0.1) !important;
+  background: var(--ink-2) !important;
+  border-right: 1px solid rgba(251, 250, 246, 0.1) !important;
 }
 .cm-editor.cm-focused {
   outline: none !important;
 }
 
-/* Hero */
+/* The cover, on the hero and the book page */
 .book-cover {
   position: relative;
   border-radius: 0.25rem;
-  border: 1px solid rgba(211, 162, 83, 0.45);
   box-shadow:
-    0 40px 90px rgba(6, 10, 20, 0.7),
-    0 10px 30px rgba(6, 10, 20, 0.55);
+    0 30px 60px -20px rgba(13, 22, 38, 0.7),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
   transform: perspective(1200px) rotateY(-6deg);
-  transition: transform 0.4s ease;
+  transition: transform 300ms ease;
 }
 .book-cover:hover {
   transform: perspective(1200px) rotateY(0deg);
-}
-/* Soft spotlight behind the hero cover */
-.book-glow {
-  position: absolute;
-  inset: -12% -8%;
-  background: radial-gradient(
-    ellipse at 60% 45%,
-    rgba(211, 162, 83, 0.22) 0%,
-    rgba(211, 162, 83, 0.08) 45%,
-    transparent 70%
-  );
-  filter: blur(40px);
-  pointer-events: none;
-}
-
-/* Launch palette: a tangerine-and-charcoal scheme deliberately foreign
- * to the navy ledger, so the announcement cannot be mistaken for
- * furniture. Used only by the launch elements. */
-:root {
-  --launch: #ff9f1a;
-  --launch-hot: #ff4d1f;
-  --launch-ink: #14100a;
-  --launch-paper: #fff4e0;
-}
-
-/* The launch strip: a full-width band that runs across the top of the
- * hero and scrolls its announcement. The whole band is the link. */
-.launch-strip {
-  display: block;
-  overflow: hidden;
-  background: var(--launch);
-  color: var(--launch-ink);
-  border-bottom: 3px solid var(--launch-ink);
-  text-decoration: none;
-  outline: none;
-}
-.launch-strip:focus-visible {
-  box-shadow: inset 0 0 0 3px var(--launch-ink);
-}
-.launch-strip:hover {
-  background: var(--launch-hot);
-  color: var(--launch-paper);
-}
-.launch-strip-track {
-  display: flex;
-  width: max-content;
-  animation: launch-marquee 40s linear infinite;
-}
-.launch-strip:hover .launch-strip-track {
-  animation-play-state: paused;
-}
-.launch-strip-run {
-  display: flex;
-  flex: 0 0 auto;
-  align-items: center;
-  gap: 1.75rem;
-  padding: 0.7rem 0.875rem;
-  font-family: var(--font-plex-mono);
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-.launch-strip-run .launch-star {
-  font-size: 1rem;
-  line-height: 1;
-}
-/* Six identical runs, so one run is a sixth of the track. */
-@keyframes launch-marquee {
-  to { transform: translateX(calc(-100% / 6)); }
-}
-
-/* The main button, in the launch colours, with a breathing halo. */
-.launch-cta {
-  background: var(--launch) !important;
-  color: var(--launch-ink) !important;
-  border-color: var(--launch) !important;
-  font-weight: 700;
-  animation: launch-halo 2.2s ease-in-out infinite;
-}
-.launch-cta:hover {
-  background: var(--launch-hot) !important;
-  border-color: var(--launch-hot) !important;
-  color: var(--launch-paper) !important;
-}
-@keyframes launch-halo {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 159, 26, 0.55), 0 8px 24px rgba(255, 159, 26, 0.25); }
-  50% { box-shadow: 0 0 0 8px rgba(255, 159, 26, 0), 0 8px 32px rgba(255, 159, 26, 0.45); }
-}
-
-/* The publisher lockup: "Published by", the ACTEX Learning mark, and the
- * address, all one link. The mark is white on transparent, so it sits on
- * the navy as it does on ACTEX's own site. */
-.launch-publisher {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.5rem;
-  width: fit-content;
-  max-width: 100%;
-  padding: 0.75rem 0.9rem;
-  border: 1px solid rgba(255, 159, 26, 0.35);
-  border-left: 4px solid var(--launch);
-  border-radius: 0.25rem;
-  background: rgba(255, 159, 26, 0.06);
-  text-decoration: none;
-  outline: none;
-  transition: background 0.2s ease, border-color 0.2s ease;
-}
-.launch-publisher:hover {
-  background: rgba(255, 159, 26, 0.12);
-  border-color: rgba(255, 159, 26, 0.7);
-}
-.launch-publisher:focus-visible {
-  box-shadow: 0 0 0 3px var(--navy-900), 0 0 0 5px var(--launch);
-}
-.launch-publisher-label {
-  color: var(--cream-400);
-  font-size: 0.65rem;
-}
-.launch-publisher-logo {
-  height: 1.5rem;
-  width: auto;
-}
-@media (min-width: 640px) {
-  .launch-publisher-logo {
-    height: 1.75rem;
-  }
-}
-
-/* The address itself, printed so nobody has to guess where the book is. */
-.launch-url {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  max-width: 100%;
-  font-family: var(--font-plex-mono);
-  font-size: 0.8rem;
-  color: var(--launch);
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 5px;
-  text-decoration-color: rgba(255, 159, 26, 0.5);
-  overflow-wrap: anywhere;
-  transition: color 0.2s ease, text-decoration-color 0.2s ease;
-}
-.launch-url:hover {
-  color: var(--launch-paper);
-  text-decoration-color: var(--launch-hot);
-}
-
-/* The seal on the cover corner: a tangerine sticker with a turning ring
- * of text and a hot core. */
-.launch-seal {
-  position: absolute;
-  top: -1.5rem;
-  right: -1.5rem;
-  z-index: 2;
-  display: block;
-  width: 7rem;
-  height: 7rem;
-  border-radius: 9999px;
-  outline: none;
-}
-@media (min-width: 640px) {
-  .launch-seal {
-    width: 9rem;
-    height: 9rem;
-    top: -2.25rem;
-    right: -2.25rem;
-  }
-}
-@media (min-width: 1024px) {
-  .launch-seal {
-    width: 10.5rem;
-    height: 10.5rem;
-    top: -2.75rem;
-    /* Stays inside the page gutter so the section's overflow clip
-       never slices the seal at narrow desktop widths. */
-    right: -1.25rem;
-  }
-}
-.launch-seal:focus-visible .launch-seal-body {
-  box-shadow: 0 0 0 3px var(--navy-900), 0 0 0 6px var(--launch);
-}
-.launch-seal-body {
-  position: relative;
-  display: block;
-  width: 100%;
-  height: 100%;
-  border-radius: 9999px;
-  color: var(--launch-ink);
-  box-shadow:
-    0 22px 50px rgba(6, 10, 20, 0.65),
-    0 0 40px rgba(255, 159, 26, 0.35);
-  transition: transform 0.35s ease, box-shadow 0.35s ease;
-}
-.launch-seal:hover .launch-seal-body {
-  transform: scale(1.08) rotate(-6deg);
-  box-shadow:
-    0 26px 60px rgba(6, 10, 20, 0.7),
-    0 0 60px rgba(255, 77, 31, 0.5);
-}
-.launch-seal-body > svg {
-  width: 100%;
-  height: 100%;
-  animation: launch-turn 22s linear infinite;
-}
-.launch-seal-disc {
-  fill: var(--launch);
-  stroke: var(--launch-ink);
-  stroke-width: 2.5;
-}
-.launch-seal-inner {
-  fill: var(--launch-hot);
-}
-.launch-seal-text {
-  font-family: var(--font-plex-mono);
-  font-size: 11.5px;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  fill: var(--launch-ink);
-}
-.launch-seal-core {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.1rem;
-  color: var(--launch-paper);
-  font-family: var(--font-source-serif);
-  font-size: 0.95rem;
-  font-weight: 700;
-  line-height: 1;
-  text-align: center;
-}
-@media (min-width: 640px) {
-  .launch-seal-core {
-    font-size: 1.15rem;
-  }
-}
-@keyframes launch-turn {
-  to { transform: rotate(360deg); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -494,12 +257,5 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
-  }
-  .launch-seal-body > svg {
-    animation: none;
-  }
-  .launch-strip-track,
-  .launch-cta {
-    animation: none;
   }
 }

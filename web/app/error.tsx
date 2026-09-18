@@ -21,7 +21,7 @@ export default function Error({
       <p className="label-mono text-run-err">
         something went wrong
       </p>
-      <h1 className="mt-3 font-serif text-3xl text-cream-100">
+      <h1 className="mt-3 font-serif text-3xl text-ink">
         The page hit an unexpected error.
       </h1>
       <p className="mt-3 max-w-md text-sm text-muted-foreground">
@@ -34,7 +34,7 @@ export default function Error({
         </Button>
         <Link
           href="/"
-          className="text-sm text-cream-200 underline decoration-border underline-offset-4 hover:decoration-gold-400"
+          className="text-sm text-ink underline decoration-border underline-offset-4 hover:decoration-gold"
         >
           Go to the homepage
         </Link>

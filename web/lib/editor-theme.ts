@@ -3,7 +3,7 @@
 import { EditorView } from "@codemirror/view";
 import { githubDarkInit } from "@uiw/codemirror-theme-github";
 
-/** Code panels share the site's navy ledger: GitHub dark syntax colors on navy-950. */
+/** Code panels stay dark on ink-2 so the listing reads like a terminal on the light page. */
 export const codeTheme = [
   githubDarkInit({
     settings: {

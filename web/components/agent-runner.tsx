@@ -173,9 +173,9 @@ function ToolChip({ block }: { block: Extract<Block, { type: "tool" }> }) {
   const result = prettyJson(block.result);
   return (
     <Collapsible className="my-2">
-      <CollapsibleTrigger className="group flex w-full items-center gap-2 rounded-sm border border-border bg-navy-800/60 px-2.5 py-1.5 text-left font-mono text-xs text-cream-200">
+      <CollapsibleTrigger className="group flex w-full items-center gap-2 rounded-sm border border-border bg-muted px-2.5 py-1.5 text-left font-mono text-xs text-foreground">
         {!block.done ? (
-          <Spinner className="size-3.5 shrink-0 animate-spin text-gold-300" />
+          <Spinner className="size-3.5 shrink-0 animate-spin text-gold" />
         ) : block.error ? (
           <WarningCircle className="size-3.5 shrink-0 text-run-err" />
         ) : (
@@ -192,7 +192,7 @@ function ToolChip({ block }: { block: Extract<Block, { type: "tool" }> }) {
         )}
         <CaretDown className="ml-auto size-3 shrink-0 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
       </CollapsibleTrigger>
-      <CollapsibleContent className="rounded-b-sm border-x border-b border-border bg-navy-950/60 px-3 py-2 font-mono text-[11.5px] leading-relaxed text-muted-foreground">
+      <CollapsibleContent className="rounded-b-sm border-x border-b border-border bg-ink-2 px-3 py-2 font-mono text-[11.5px] leading-relaxed text-muted-foreground">
         {block.detail && (
           <p className="mb-1 whitespace-pre-wrap break-all text-run-err">
             {block.detail}
@@ -200,13 +200,13 @@ function ToolChip({ block }: { block: Extract<Block, { type: "tool" }> }) {
         )}
         {args && (
           <div className="break-all">
-            <span className="text-cream-400">args</span>
+            <span className="text-muted-foreground">args</span>
             <pre className="mt-0.5 overflow-x-auto whitespace-pre-wrap">{args}</pre>
           </div>
         )}
         {result && (
           <div className="mt-1 break-all">
-            <span className="text-cream-400">result</span>
+            <span className="text-muted-foreground">result</span>
             <pre className="mt-0.5 overflow-x-auto whitespace-pre-wrap">{result}</pre>
           </div>
         )}
@@ -398,7 +398,7 @@ export function AgentRunner({
   const runner = (
     <div
       className={cn(
-        "overflow-hidden rounded-md border border-border bg-navy-950/60",
+        "panel-dark overflow-hidden rounded-md border border-border",
         expanded && "flex h-full flex-col rounded-none border-0"
       )}
     >
@@ -439,7 +439,7 @@ export function AgentRunner({
           href={colabUrl(chapter)}
           target="_blank"
           rel="noreferrer"
-          className="ml-auto inline-flex shrink-0 items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-cream-100"
+          className="ml-auto inline-flex shrink-0 items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
         >
           Open in Colab
           <ArrowSquareOut className="size-3" />
@@ -481,7 +481,7 @@ export function AgentRunner({
         <div className="border-b border-border px-4 py-3 text-sm">
           {notice === "minute" ? (
             <>
-              <p className="text-cream-200">
+              <p className="text-foreground">
                 A few runs launched in under a minute.
               </p>
               <p className="mt-1 text-muted-foreground">
@@ -490,7 +490,7 @@ export function AgentRunner({
             </>
           ) : (
             <>
-              <p className="text-cream-200">
+              <p className="text-foreground">
                 {notice === "global"
                   ? "The site's shared run budget is spent for today."
                   : "You have used today's runs on this connection."}
@@ -504,7 +504,7 @@ export function AgentRunner({
         </div>
       )}
       {state === "truncated" && notice && (
-        <div className="border-b border-border px-4 py-3 text-sm text-gold-300">
+        <div className="border-b border-border px-4 py-3 text-sm text-gold">
           {notice}
         </div>
       )}
@@ -538,7 +538,7 @@ export function AgentRunner({
                 return (
                   <p
                     key={i}
-                    className="my-2 border-l-2 border-gold-400/60 pl-3 font-mono text-xs text-cream-400"
+                    className="my-2 border-l-2 border-gold/60 pl-3 font-mono text-xs text-muted-foreground"
                   >
                     {block.text}
                   </p>
@@ -547,7 +547,7 @@ export function AgentRunner({
                 return (
                   <p
                     key={i}
-                    className="mt-4 mb-1 font-mono text-[11px] uppercase tracking-[0.16em] text-gold-300"
+                    className="mt-4 mb-1 font-mono text-[11px] uppercase tracking-[0.16em] text-gold"
                   >
                     {block.name}
                   </p>
@@ -559,7 +559,7 @@ export function AgentRunner({
                   <p
                     key={i}
                     className={`my-1.5 font-mono text-[11.5px] ${
-                      block.level === "error" ? "text-run-err" : "text-gold-300"
+                      block.level === "error" ? "text-run-err" : "text-gold"
                     }`}
                   >
                     {block.level === "error" ? "error" : "warning"} ·{" "}
@@ -570,7 +570,7 @@ export function AgentRunner({
                 return (
                   <pre
                     key={i}
-                    className="my-2 overflow-x-auto rounded-sm bg-navy-950 p-2.5 font-mono text-[12px] leading-relaxed text-foreground"
+                    className="my-2 overflow-x-auto rounded-sm bg-ink-2 p-2.5 font-mono text-[12px] leading-relaxed text-foreground"
                   >
                     {block.lines.join("\n")}
                   </pre>
