@@ -5,25 +5,18 @@ import Link from "next/link";
 import {
   ArrowUpRight,
   BookOpenText,
-  GithubLogo,
   Terminal,
 } from "@phosphor-icons/react/dist/ssr";
+import { GridMotif } from "@/components/grid-motif";
 import { JsonLd } from "@/components/json-ld";
 import { HeroIntro } from "@/components/motion/hero-intro";
 import { RevealOnScroll } from "@/components/motion/reveal-on-scroll";
-import { StatValue } from "@/components/stat-value";
 import { ScriptCard } from "@/components/script-card";
 import { Button } from "@/components/ui/button";
-import { cn, CONTAINER } from "@/lib/utils";
 import { AGENT_SCRIPTS } from "@/lib/agents";
-import { getChapter } from "@/lib/chapters";
-import { ACTEX_BOOK_URL, GITHUB_REPO } from "@/lib/links";
-import {
-  BOOK_PROMISE,
-  joinReaders,
-  OUTLINE,
-  TARGET_READERS,
-} from "@/lib/outline";
+import { CHAPTERS, getChapter } from "@/lib/chapters";
+import { ACTEX_BOOK_URL } from "@/lib/links";
+import { BOOK_PROMISE, OUTLINE } from "@/lib/outline";
 import {
   AUTHORS,
   BOOK_DESCRIPTION,
@@ -33,6 +26,7 @@ import {
   SITE_NAME,
   SITE_URL,
 } from "@/lib/site";
+import { cn, CONTAINER } from "@/lib/utils";
 
 // Person nodes are referenced by @id from the Book so authors are one
 // entity in the graph rather than two copies.
@@ -83,19 +77,21 @@ const STRUCTURED_DATA = {
       image: `${SITE_URL}/book-cover-photo.png`,
       url: SITE_URL,
       author: AUTHOR_NODES.map((a) => ({ "@id": a["@id"] })),
-      // Every chapter now has a page of its own, so each part references
-      // the @id of that page's node rather than pointing only the coded
-      // chapters at their /code URL. Matching ids lets the Book node and
-      // the chapter pages merge into one entity.
+      // Chapters with code point at their /code page; the rest at /book.
       hasPart: OUTLINE.flatMap((part) =>
-        part.chapters.map((ch) => ({
-          "@type": "Chapter",
-          "@id": ch.slug ? `${SITE_URL}/code/${ch.slug}` : `${SITE_URL}/book`,
-          position: ch.number,
-          name: `Chapter ${ch.number}: ${ch.title}`,
-          abstract: ch.oneLiner,
-          url: ch.slug ? `${SITE_URL}/code/${ch.slug}` : `${SITE_URL}/book`,
-        }))
+        part.chapters.map((ch) => {
+          const url = ch.slug
+            ? `${SITE_URL}/code/${ch.slug}`
+            : `${SITE_URL}/book`;
+          return {
+            "@type": "Chapter",
+            "@id": url,
+            position: ch.number,
+            name: `Chapter ${ch.number}: ${ch.title}`,
+            abstract: ch.oneLiner,
+            url,
+          };
+        })
       ),
     },
     {
@@ -113,28 +109,34 @@ const STRUCTURED_DATA = {
 
 export const metadata = { alternates: { canonical: "/" } };
 
-const STATS = [
+const WAYS = [
   {
-    value: "18",
-    label: "chapters",
-    note: "each opening with a vignette that grounds the concept in a concrete actuarial situation",
+    title: "In your browser",
+    body: "Tool scripts run on a Python runtime loaded into the page. Edit them and run again; nothing leaves your machine.",
   },
   {
-    value: "5",
-    label: "parts",
-    note: "foundations, LLMs, agentic architecture, actuarial practice, production and governance",
+    title: "Live on our server",
+    body: "Agent scripts run against Gemini with every tool call streamed as it happens. A shared key and modest limits.",
   },
   {
-    value: "4",
-    label: "practice domains",
-    note: "pricing and underwriting, reserving and claims, life and pensions, risk and compliance",
-  },
-  {
-    value: "9",
-    label: "chapters with code",
-    note: "runnable Python for every listing in Parts III to V, from your first agent to governance dashboards",
+    title: "In Colab",
+    body: "Every chapter opens as a notebook. Bring your own free Google AI Studio key and run without limits.",
   },
 ];
+
+const FACTS: [string, string, string][] = [
+  ["18", "chapters", "in five parts, from AI literacy to production governance"],
+  ["9", "with code", "chapters 9 to 17, every listing runnable"],
+  ["4", "practice domains", "pricing, reserving, life and pensions, risk"],
+  [
+    "1",
+    "fictional reinsurer",
+    "Meridian Re, whose synthetic data every example uses",
+  ],
+];
+
+const LINK =
+  "text-ink underline decoration-line underline-offset-4 hover:decoration-gold";
 
 function readOriginal(folder: string, file: string): string | undefined {
   try {
@@ -157,236 +159,194 @@ export default function LandingPage() {
   return (
     <div>
       <JsonLd data={STRUCTURED_DATA} />
-      {/* Hero: the book itself. */}
-      <section className="overflow-x-clip border-b border-border">
-        {/* The launch strip runs edge to edge above the hero and is one
-            big link to the book's page. The same run repeats six times
-            and the track slides by exactly one run, so the loop is
-            seamless on any viewport up to five runs wide. Only the first
-            run is read out. */}
-        <a
-          href={ACTEX_BOOK_URL}
-          target="_blank"
-          rel="noreferrer"
-          className="launch-strip"
-          aria-label="Book launch: Agentic AI for Actuaries is out now, free from ACTEX Learning. Open the book's page"
-        >
-          <div className="launch-strip-track">
-            {Array.from({ length: 6 }, (_, run) => (
-              <div
-                key={run}
-                className="launch-strip-run"
-                aria-hidden={run > 0 ? "true" : undefined}
-              >
-                <span>Book launch</span>
-                <span className="launch-star">★</span>
-                <span>Out now</span>
-                <span className="launch-star">★</span>
-                <span>Agentic AI for Actuaries</span>
-                <span className="launch-star">★</span>
-                <span>Free from ACTEX Learning</span>
-                <span className="launch-star">★</span>
-                <span>Get your copy</span>
-                <span className="launch-star">★</span>
-              </div>
-            ))}
-          </div>
-        </a>
+
+      {/* Hero: the cover's world. Navy band, the announcement, the book. */}
+      <section className="relative overflow-hidden bg-ink-2 text-paper">
+        <GridMotif
+          tone="dark"
+          tile={28}
+          gap={8}
+          className="pointer-events-none absolute -right-8 -top-8 hidden opacity-30 sm:block lg:right-6 lg:top-6"
+        />
         <HeroIntro
           className={cn(
             CONTAINER,
-            "grid items-center gap-12 pb-20 pt-16 lg:grid-cols-[1fr_1.05fr] lg:gap-8"
+            "relative grid items-center gap-12 pb-20 pt-14 lg:grid-cols-[1.1fr_1fr] lg:gap-8 lg:pt-20"
           )}
         >
           <div>
-            <h1 data-hero-item className="text-4xl leading-[1.08] sm:text-6xl">
-              Agentic AI
+            <p data-hero-item className="label-mono text-gold">
+              First edition · Out now
+            </p>
+            <h1
+              data-hero-item
+              className="mt-4 text-4xl leading-[1.08] text-paper sm:text-6xl"
+            >
+              The book is out.
               <br />
-              for Actuaries
+              The code is here.
             </h1>
-            <p data-hero-item className="mt-3 font-serif text-lg text-cream-300">
-              From AI foundations to autonomous actuarial systems
+            <p
+              data-hero-item
+              className="mt-6 max-w-xl text-base leading-relaxed text-paper-dim sm:text-lg"
+            >
+              <em className="font-serif not-italic text-paper">
+                Agentic AI for Actuaries
+              </em>{" "}
+              is published by ACTEX Learning and free to read. This site is
+              its companion: every listing from chapters 9 to 17, runnable in
+              your browser, live on our server, or in Colab.
             </p>
-            <p data-hero-item className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground">
-              A practical guide to building AI agents that price, reserve, and
-              report. You still sign the opinion.
-            </p>
-            {/* The book is published, so the primary action is the book
-                itself at ACTEX. The code stays beside it because it is the
-                strongest proof on the page that the book delivers. */}
-            {/* Stacked and full-width on a phone; side by side once
-                both fit on one line. */}
-            <div data-hero-item className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-              <Button asChild size="lg" className="launch-cta w-full sm:w-auto">
+            <div
+              data-hero-item
+              className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap"
+            >
+              <Button
+                asChild
+                size="lg"
+                className="w-full bg-gold text-ink-2 hover:bg-gold-deep sm:w-auto"
+              >
                 <a href={ACTEX_BOOK_URL} target="_blank" rel="noreferrer">
                   <BookOpenText size={16} weight="bold" aria-hidden="true" />
                   Get the book, free
                   <ArrowUpRight size={14} weight="bold" aria-hidden="true" />
                 </a>
               </Button>
-              <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="w-full border-paper/30 bg-transparent text-paper hover:bg-paper/10 hover:text-paper sm:w-auto"
+              >
                 <Link href="/code">
                   <Terminal size={16} aria-hidden="true" />
                   Run the code
                 </Link>
               </Button>
             </div>
-            {/* The publisher's mark and the address in plain sight, for
-                readers who want to see where the button goes before they
-                press it. One link, so the logo and the URL act as one. */}
             <a
               data-hero-item
               href={ACTEX_BOOK_URL}
               target="_blank"
               rel="noreferrer"
-              className="launch-publisher mt-5"
+              className="mt-8 inline-flex items-center gap-3 text-sm text-paper-dim transition-colors hover:text-paper"
             >
-              <span className="label-mono launch-publisher-label">
-                Published by
-              </span>
+              <span className="label-mono text-gold">Published by</span>
               <Image
                 src="/actex-learning-logo.svg"
                 alt="ACTEX Learning"
-                width={200}
-                height={29}
-                className="launch-publisher-logo"
+                width={150}
+                height={22}
+                className="h-5 w-auto brightness-0 invert"
               />
-              <span className="launch-url">
-                actexlearning.com/textbooks/agentic-ai-for-actuaries
-                <ArrowUpRight size={14} weight="bold" aria-hidden="true" />
-              </span>
             </a>
-            <p data-hero-item className="mt-4 text-sm text-muted-foreground">
-              First edition, 2026. Or{" "}
-              <Link href="/book" className="text-cream-200 underline decoration-border underline-offset-4 hover:decoration-gold-400">
-                read the chapters
-              </Link>{" "}
-              here: eighteen of them, nine with code that runs in your browser.
-              Everything else is on the{" "}
-              <Link href="/book" className="text-cream-200 underline decoration-border underline-offset-4 hover:decoration-gold-400">
-                book page
-              </Link>
-              .
-            </p>
           </div>
           {/* On a phone the cover leads and the words follow; from lg
-              the grid puts the words on the left and the cover on the
-              right. */}
-          <div data-hero-cover className="relative order-first flex justify-center lg:order-none lg:justify-end">
-            <div className="book-glow" aria-hidden="true" />
-            {/* The seal sits on the wrapper, not inside .book-cover, so the
-                cover's perspective tilt does not skew it. */}
-            <div className="relative">
-              <div className="book-cover">
-                <Image
-                  src="/book-cover-photo.png"
-                  alt="Cover of Agentic AI for Actuaries"
-                  width={520}
-                  height={716}
-                  priority
-                  className="h-auto w-[300px] rounded-sm sm:w-[400px] lg:w-[480px] xl:w-[520px]"
-                />
-              </div>
+              the words sit left and the cover right. */}
+          <div
+            data-hero-cover
+            className="relative order-first flex justify-center lg:order-none lg:justify-end"
+          >
+            <div className="book-cover">
+              <Image
+                src="/book-cover-photo.png"
+                alt="Cover of Agentic AI for Actuaries"
+                width={520}
+                height={716}
+                priority
+                className="h-auto w-[260px] rounded-sm sm:w-[360px] lg:w-[420px]"
+              />
             </div>
           </div>
         </HeroIntro>
       </section>
 
-      {/* Overview: what the book promises, and to whom */}
-      <section className="border-b border-border">
+      {/* The nine code chapters */}
+      <section className="border-b border-line">
         <RevealOnScroll className={cn(CONTAINER, "py-16")}>
-          <h2 className="max-w-2xl text-2xl leading-snug sm:text-3xl">
-            A hands-on guide, structured as a single journey
-          </h2>
-          <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted-foreground">
-            {BOOK_PROMISE}
-          </p>
-          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-            Written for {joinReaders(TARGET_READERS)}.
-          </p>
-          <dl className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {STATS.map((stat) => (
-              <div key={stat.label}>
-                <dt className="sr-only">{stat.label}</dt>
-                <dd>
-                  <StatValue value={stat.value} />
-                  <span className="label-mono ml-2">
-                    {stat.label}
-                  </span>
-                  <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-                    {stat.note}
-                  </p>
-                </dd>
-              </div>
-            ))}
-          </dl>
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="label-mono">Parts III to V</p>
+              <h2 className="mt-2">Nine chapters of runnable code</h2>
+            </div>
+            <Button asChild variant="outline">
+              <Link href="/code">Run the code</Link>
+            </Button>
+          </div>
+          <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {CHAPTERS.map((chapter) => {
+              const demos = chapter.scripts.filter((s) => s.demoId).length;
+              const agents = chapter.scripts.filter(
+                (s) =>
+                  s.agentId &&
+                  AGENT_SCRIPTS.find((a) => a.id === s.agentId)?.runnable
+              ).length;
+              return (
+                <li key={chapter.slug}>
+                  <Link
+                    href={`/code/${chapter.slug}`}
+                    className="group flex h-full flex-col rounded-md border border-line bg-card p-5 transition-colors hover:border-gold"
+                  >
+                    <span className="inline-flex size-9 items-center justify-center rounded-sm bg-gold font-mono text-sm font-medium text-ink-2">
+                      {chapter.number}
+                    </span>
+                    <span className="mt-3 font-serif text-lg leading-snug text-ink group-hover:underline">
+                      {chapter.title}
+                    </span>
+                    <span className="mt-1.5 text-xs text-slate">
+                      {chapter.domain}
+                    </span>
+                    <span className="mt-auto flex flex-wrap gap-x-3 pt-4 font-mono text-[11px] text-slate">
+                      {demos > 0 && <span>{demos} in the browser</span>}
+                      {agents > 0 && <span>{agents} live</span>}
+                      <span>Colab</span>
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
         </RevealOnScroll>
       </section>
 
-      {/* The outline: five parts, eighteen chapters */}
-      <section id="outline" className="scroll-mt-24 border-b border-border">
+      {/* Three ways to run */}
+      <section className="border-b border-line bg-paper-2">
         <RevealOnScroll className={cn(CONTAINER, "py-16")}>
-          <h2 className="text-2xl leading-snug sm:text-3xl">
-            Inside the book
-          </h2>
-          <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted-foreground">
-            Five parts that build on each other, from AI literacy to production
-            governance. Every chapter closes with a worked case study;
-            chapters 9 to 17 ship runnable companion code.
-          </p>
-          <p className="mt-6 text-sm">
-            <Link href="/book" className="text-cream-200 underline decoration-border underline-offset-4 hover:decoration-gold-400">
-              Browse the outline
-            </Link>
-          </p>
-          <p className="mt-6 text-sm">
-            <Link
-              href="/book"
-              className="text-cream-200 underline decoration-border underline-offset-4 hover:decoration-gold-400"
-            >
-              Browse all chapters
-            </Link>
-          </p>
-        </RevealOnScroll>
-      </section>
-
-      {/* Companion code directory */}
-      <section className="border-b border-border">
-        <div className={cn(CONTAINER, "py-16")}>
-          <h2 className="text-2xl leading-snug sm:text-3xl">
-            Run it before you read it
-          </h2>
-          <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted-foreground">
-            An open repository carries working code for every listing in Parts
-            III to V. All datasets are synthetic; Meridian Re, the reinsurer
-            the case studies follow, is fictional. Tool scripts run right here
-            in your browser, agent scripts run live, and every chapter opens in
-            Colab on a free-tier Gemini key.
-          </p>
-          <div className="mt-8 grid gap-6 lg:grid-cols-3">
-            {[
-              {
-                title: "In your browser",
-                body: "Tool scripts run on a Python runtime loaded into the page. Edit them and run again.",
-              },
-              {
-                title: "Live agents",
-                body: "Agent scripts run on our server against Gemini, with every tool call streamed as it happens.",
-              },
-              {
-                title: "In Colab",
-                body: "Every chapter opens as a notebook where you bring your own free Gemini key.",
-              },
-            ].map((mode) => (
-              <div key={mode.title}>
+          <h2>Three ways to run it</h2>
+          <div className="mt-8 grid gap-8 lg:grid-cols-3">
+            {WAYS.map((mode) => (
+              <div key={mode.title} className="border-t-2 border-gold pt-4">
                 <h3 className="text-base font-semibold">{mode.title}</h3>
-                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                <p className="mt-1.5 text-sm leading-relaxed text-slate">
                   {mode.body}
                 </p>
               </div>
             ))}
           </div>
-          {ch09 && featuredScript && featuredAgent && (
+          <p className="mt-8 text-sm text-slate">
+            Everything you need is on the{" "}
+            <Link href="/setup" className={LINK}>
+              setup page
+            </Link>
+            . All datasets are synthetic; see{" "}
+            <Link href="/data" className={LINK}>
+              the data
+            </Link>
+            .
+          </p>
+        </RevealOnScroll>
+      </section>
+
+      {/* Featured live agent */}
+      {ch09 && featuredScript && featuredAgent && (
+        <section className="border-b border-line">
+          <div className={cn(CONTAINER, "py-16")}>
+            <p className="label-mono">Chapter 9</p>
+            <h2 className="mt-2">Watch an agent work</h2>
+            <p className="mt-3 max-w-2xl text-base leading-relaxed text-slate">
+              The book&rsquo;s first agent, run on our server with every tool
+              call streamed as it happens.
+            </p>
             <div className="mt-8">
               <ScriptCard
                 script={featuredScript}
@@ -397,44 +357,53 @@ export default function LandingPage() {
                 originalSource={readOriginal(ch09.folder, featuredScript.file)}
               />
             </div>
-          )}
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Button asChild variant="outline">
-              <Link href="/code">All nine code chapters</Link>
-            </Button>
-            <Button asChild variant="outline">
-              <a href={GITHUB_REPO} target="_blank" rel="noreferrer">
-                <GithubLogo size={16} aria-hidden="true" />
-                View on GitHub
-              </a>
-            </Button>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      {/* Pull quote */}
-      <section className="border-b border-border">
-        <RevealOnScroll className={cn(CONTAINER, "py-16")}>
-          <blockquote className="mx-auto max-w-2xl text-center">
-            <p className="font-serif text-2xl leading-snug text-cream-100 sm:text-3xl">
-              “The difference is not talent. Both hold the same fellowship
-              qualification. The difference is the system.”
+      {/* About the book */}
+      <section className="border-b border-line">
+        <RevealOnScroll
+          className={cn(CONTAINER, "grid gap-10 py-16 lg:grid-cols-[1fr_1.4fr]")}
+        >
+          <div>
+            <h2>About the book</h2>
+            <p className="mt-3 text-base leading-relaxed text-slate">
+              {BOOK_PROMISE}
             </p>
-            <footer className="mt-4 font-mono text-xs text-muted-foreground">
-              Chapter 1 · The AI Landscape
-            </footer>
-          </blockquote>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Button asChild className="bg-gold text-ink-2 hover:bg-gold-deep">
+                <a href={ACTEX_BOOK_URL} target="_blank" rel="noreferrer">
+                  Get the book, free
+                  <ArrowUpRight size={14} weight="bold" aria-hidden="true" />
+                </a>
+              </Button>
+              <Button asChild variant="outline">
+                <Link href="/book">What&rsquo;s inside</Link>
+              </Button>
+            </div>
+          </div>
+          <dl className="grid gap-6 sm:grid-cols-2">
+            {FACTS.map(([n, label, note]) => (
+              <div key={label} className="border-l-2 border-gold pl-4">
+                <dt className="sr-only">{label}</dt>
+                <dd>
+                  <span className="font-serif text-3xl text-ink">{n}</span>
+                  <span className="label-mono ml-2">{label}</span>
+                  <p className="mt-1 text-sm leading-relaxed text-slate">
+                    {note}
+                  </p>
+                </dd>
+              </div>
+            ))}
+          </dl>
         </RevealOnScroll>
       </section>
 
-      {/* Authors */}
-      <section className="border-b border-border">
+      {/* Authors, in brief */}
+      <section>
         <RevealOnScroll className={cn(CONTAINER, "py-16")}>
-          <h2 className="text-2xl leading-snug sm:text-3xl">The authors</h2>
-          {/* Rendered from AUTHORS rather than written out here: this
-              section used to carry its own copy of each biography, which
-              meant the page and the JSON-LD could describe the same person
-              differently. */}
+          <h2>The authors</h2>
           <div className="mt-8 grid gap-8 sm:grid-cols-2">
             {AUTHORS.map((author) => (
               <div key={author.slug} className="flex gap-4">
@@ -444,51 +413,36 @@ export default function LandingPage() {
                     alt={`Portrait of ${author.name}`}
                     width={72}
                     height={72}
-                    className="size-18 shrink-0 rounded-sm border border-border object-cover"
+                    className="size-18 shrink-0 rounded-sm border border-line object-cover"
                   />
                 )}
                 <div>
-                  <h3 className="font-serif text-lg text-cream-100">
-                    <Link
-                      href="/book#authors"
-                      className="hover:underline"
-                    >
+                  <h3 className="font-serif text-lg text-ink">
+                    <Link href="/book#authors" className="hover:underline">
                       {[author.honorificPrefix, author.name]
                         .filter(Boolean)
                         .join(" ")}
                     </Link>
                   </h3>
                   {author.honorificSuffix && (
-                    <p className="font-mono text-[11px] text-gold-400">
+                    <p className="font-mono text-[11px] text-gold-ink">
                       {author.honorificSuffix}
                     </p>
                   )}
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  <p className="mt-2 text-sm leading-relaxed text-slate">
                     {author.cardBio}
                   </p>
-                  {author.links?.map((link) => (
-                    <a
-                      key={link.url}
-                      href={link.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="mt-2 inline-flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-cream-100"
-                    >
-                      {link.label}
-                      <ArrowUpRight size={12} aria-hidden="true" />
-                    </a>
-                  ))}
                 </div>
               </div>
             ))}
           </div>
-          <p className="mt-8 text-sm text-muted-foreground">
+          <p className="mt-8 text-sm text-slate">
             In collaboration with the{" "}
             <a
               href="https://sssia.org"
               target="_blank"
               rel="noreferrer"
-              className="text-cream-200 underline underline-offset-2"
+              className="text-ink underline underline-offset-2"
             >
               Sri Sathya Sai Institute of Actuaries
             </a>
