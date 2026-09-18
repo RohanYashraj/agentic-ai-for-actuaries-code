@@ -41,7 +41,7 @@ const FAQ = [
   },
   {
     q: "Which framework does the code use?",
-    a: "Agno for agents and Google Gemini as the default model, gemini-3.5-flash-lite. One line in .env switches provider: MODEL_PROVIDER accepts google, anthropic, or openai, and MODEL_ID picks the model.",
+    a: "Agno for agents and Google Gemini as the default model, gemini-3.8-flash. One line in .env switches provider: MODEL_PROVIDER accepts google, anthropic, or openai, and MODEL_ID picks the model.",
   },
   {
     q: "Does the code here match the book?",

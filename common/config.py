@@ -8,7 +8,7 @@
 # provider) for every example at once — no per-script edits:
 #
 #   MODEL_PROVIDER   "google" (default) | "anthropic" | "openai"
-#   MODEL_ID         defaults per provider, e.g. "gemini-3.5-flash-lite"
+#   MODEL_ID         defaults per provider, e.g. "gemini-3.8-flash"
 #   GOOGLE_API_KEY   required for the default Google Gemini provider
 #
 # (See .env.example at the repo root.)
@@ -21,7 +21,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 DEFAULT_MODEL_IDS = {
-    "google": "gemini-3.5-flash-lite",
+    "google": "gemini-3.8-flash",
     "anthropic": "claude-sonnet-5",
     "openai": "gpt-4o-mini",
 }
@@ -30,7 +30,7 @@ DEFAULT_MODEL_IDS = {
 def get_model():
     """Return an Agno model object per MODEL_PROVIDER / MODEL_ID env vars.
 
-    Defaults to Google Gemini with id 'gemini-3.5-flash-lite' when
+    Defaults to Google Gemini with id 'gemini-3.8-flash' when
     neither variable is set.
     """
     provider = os.getenv("MODEL_PROVIDER", "google").lower()
