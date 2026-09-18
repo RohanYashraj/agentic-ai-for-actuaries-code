@@ -12,7 +12,7 @@ import { SITE_NAME } from "@/lib/site";
 import { cn, CONTAINER } from "@/lib/utils";
 
 const DESCRIPTION =
-  "The synthetic Meridian Re datasets every example uses: what each file holds and which chapter reads it. Deterministic, regenerable, and fictional.";
+  "The Meridian Re datasets the examples read: what each file holds and which chapter uses it. All of it is synthetic, generated from a fixed seed, and none of it is real.";
 
 export const metadata: Metadata = pageMetadata({
   title: "Data",
@@ -73,7 +73,7 @@ export default function DataPage() {
       <Breadcrumbs trail={TRAIL} />
 
       <header className="mt-8 max-w-3xl">
-        <p className="label-mono">Synthetic Data Catalog</p>
+        <p className="label-mono">Synthetic data</p>
         <h1 className="mt-2 text-3xl sm:text-5xl font-serif text-white font-bold tracking-tight">The data</h1>
         <p className="mt-4 text-base sm:text-lg leading-relaxed text-slate-300">
           {DESCRIPTION}

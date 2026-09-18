@@ -113,24 +113,24 @@ export const metadata = { alternates: { canonical: "/" } };
 const WAYS = [
   {
     title: "In your browser",
-    tag: "Instant & Local",
+    tag: "No setup",
     color: "from-emerald-400 to-teal-500",
     badge: "border-emerald-500/30 text-emerald-400 bg-emerald-500/10",
-    body: "Tool scripts run on a full CPython runtime loaded into the page via WebAssembly. Edit parameters and run immediately; nothing leaves your machine.",
+    body: "The tool scripts run on Python compiled to WebAssembly, right in the page. Change a number, run it again. Nothing leaves your machine.",
   },
   {
     title: "Live on our server",
-    tag: "Gemini 2.5 + Agno",
+    tag: "Gemini + Agno",
     color: "from-cyan-400 to-blue-500",
     badge: "border-cyan-500/30 text-cyan-400 bg-cyan-500/10",
-    body: "Watch autonomous agents execute against Gemini with every tool call, reasoning step, and structured output streamed live.",
+    body: "The agent scripts need a model, so they run on our server against Gemini. You see each tool call and the reply as they happen.",
   },
   {
     title: "In Google Colab",
-    tag: "Full Freedom",
+    tag: "Your own key",
     color: "from-amber-400 to-orange-500",
     badge: "border-amber-500/30 text-amber-400 bg-amber-500/10",
-    body: "Every chapter opens as an interactive notebook. Bring your own free Google AI Studio key and experiment without shared server limits.",
+    body: "Every chapter opens as a notebook. Add a free Google AI Studio key and run the whole thing, with no shared limits.",
   },
 ];
 
@@ -186,15 +186,13 @@ export default function LandingPage() {
                 className="launch-strip-run"
                 aria-hidden={run > 0 ? "true" : undefined}
               >
-                <span>Official Book Launch</span>
-                <span className="launch-star">★</span>
-                <span>Out Now · First Edition 2026</span>
+                <span>The book is out</span>
                 <span className="launch-star">★</span>
                 <span>Agentic AI for Actuaries</span>
                 <span className="launch-star">★</span>
-                <span>Free from ACTEX Learning</span>
+                <span>First edition, 2026</span>
                 <span className="launch-star">★</span>
-                <span>Get Your Copy</span>
+                <span>Free from ACTEX Learning</span>
                 <span className="launch-star">★</span>
               </div>
             ))}
@@ -216,54 +214,54 @@ export default function LandingPage() {
           <HeroIntro
             className={cn(
               CONTAINER,
-              "grid items-center gap-12 pb-20 pt-12 lg:grid-cols-[1.1fr_1fr] lg:gap-12"
+              "grid items-center gap-8 pb-12 pt-8 sm:pt-10 lg:grid-cols-[1.1fr_1fr] lg:gap-10 lg:pb-14"
             )}
           >
             <div>
               {/* Celebratory Pill */}
-              <div data-hero-item className="mb-4">
+              <div data-hero-item className="mb-3">
                 <span className="launch-pill">
                   <Sparkle size={13} weight="fill" className="text-amber-300" />
-                  <span>First Edition 2026 · Published by ACTEX Learning</span>
+                  <span>First edition 2026 · ACTEX Learning</span>
                 </span>
               </div>
 
               {/* Bold Title */}
               <h1
                 data-hero-item
-                className="text-4xl sm:text-6xl lg:text-7xl font-serif font-bold tracking-tight text-white leading-[1.04]"
+                className="text-4xl sm:text-5xl lg:text-6xl xl:text-[4.25rem] font-serif font-bold tracking-tight text-white leading-[1.05]"
               >
                 The book is{" "}
-                <span className="launch-word">launched.</span>
+                <span className="launch-word">out.</span>
               </h1>
 
               {/* Sub-headline */}
               <p
                 data-hero-item
-                className="mt-4 font-serif text-xl sm:text-2xl text-slate-100 font-medium leading-snug"
+                className="mt-3 font-serif text-lg sm:text-xl text-slate-100 font-medium leading-snug"
               >
                 Agentic AI for Actuaries{" "}
-                <span className="text-amber-400 font-sans text-sm sm:text-base font-normal block sm:inline">
-                  — Free to Read & Download
+                <span className="text-amber-400 font-sans text-sm font-normal block sm:inline">
+                  free to read and download
                 </span>
               </p>
 
               {/* Body explanation */}
               <p
                 data-hero-item
-                className="mt-4 max-w-lg text-base sm:text-lg leading-relaxed text-slate-300"
+                className="mt-3 max-w-lg text-base leading-relaxed text-slate-300"
               >
-                A hands-on, practitioner guide taking actuaries from zero AI
-                background to designing, deploying, and governing autonomous
-                systems. This site is its runnable companion.
+                A practical guide for actuaries who want to build, run, and
+                govern AI agents, starting from no AI background at all. This
+                site holds the book&rsquo;s code, and you can run it here.
               </p>
 
               {/* Dual Action CTAs */}
               <div
                 data-hero-item
-                className="mt-8 flex flex-col gap-3.5 sm:flex-row sm:items-center sm:flex-wrap"
+                className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:flex-wrap"
               >
-                <Button asChild size="lg" className="launch-cta w-full sm:w-auto h-12 px-6 text-sm sm:text-base">
+                <Button asChild size="lg" className="launch-cta w-full sm:w-auto h-11 px-5 text-sm">
                   <a href={ACTEX_BOOK_URL} target="_blank" rel="noreferrer">
                     <BookOpenText size={20} weight="bold" aria-hidden="true" />
                     <span>Get the book, free</span>
@@ -274,7 +272,7 @@ export default function LandingPage() {
                   asChild
                   size="lg"
                   variant="outline"
-                  className="w-full sm:w-auto h-12 px-6 text-sm sm:text-base border-white/15 bg-white/5 text-white hover:bg-white/10 hover:border-white/30"
+                  className="w-full sm:w-auto h-11 px-5 text-sm border-white/15 bg-white/5 text-white hover:bg-white/10 hover:border-white/30"
                 >
                   <Link href="/code">
                     <Terminal size={18} aria-hidden="true" />
@@ -289,10 +287,10 @@ export default function LandingPage() {
                 href={ACTEX_BOOK_URL}
                 target="_blank"
                 rel="noreferrer"
-                className="launch-publisher mt-7"
+                className="launch-publisher mt-5"
               >
                 <span className="launch-publisher-label">
-                  OFFICIAL PUBLISHER
+                  Published by
                 </span>
                 <Image
                   src="/actex-learning-logo.svg"
@@ -322,7 +320,7 @@ export default function LandingPage() {
                     width={520}
                     height={716}
                     priority
-                    className="h-auto w-[290px] rounded-[0.35rem] sm:w-[390px] lg:w-[460px] xl:w-[500px]"
+                    className="h-auto w-[260px] rounded-[0.35rem] sm:w-[340px] lg:w-[420px] xl:w-[460px]"
                   />
                 </div>
                 <LaunchSeal />
@@ -336,10 +334,10 @@ export default function LandingPage() {
       <div className="border-b border-white/10 bg-[#060913]/70 backdrop-blur-xl py-6">
         <div className={cn(CONTAINER, "grid grid-cols-2 gap-6 sm:grid-cols-4")}>
           {[
-            { n: "18", label: "Chapters", desc: "Five parts: literacy to governance" },
-            { n: "9", label: "Runnable Labs", desc: "Chapters 9 to 17 with working code" },
-            { n: "4", label: "Practice Domains", desc: "Pricing, reserving, life, risk" },
-            { n: "100%", label: "Free & Open", desc: "Book at ACTEX, code on GitHub" },
+            { n: "18", label: "Chapters", desc: "Five parts, from first principles to governance" },
+            { n: "9", label: "With code", desc: "Chapters 9 to 17, every listing runs" },
+            { n: "4", label: "Practice areas", desc: "Pricing, reserving, life, risk" },
+            { n: "0", label: "Cost", desc: "Book free at ACTEX, code on GitHub" },
           ].map((stat) => (
             <div key={stat.label} className="border-l-2 border-amber-500/70 pl-3.5">
               <div className="flex items-baseline gap-1.5">
@@ -362,11 +360,11 @@ export default function LandingPage() {
                 Nine chapters of runnable code
               </h2>
               <p className="mt-2 text-sm text-slate-400">
-                Explore real actuarial use cases with interactive tools and autonomous agents.
+                Each chapter works a case at Meridian Re, a fictional reinsurer. Pick one and press Run.
               </p>
             </div>
             <Button asChild variant="outline" className="border-white/15 bg-white/5 text-white hover:bg-white/10">
-              <Link href="/code">View all listings →</Link>
+              <Link href="/code">All listings →</Link>
             </Button>
           </div>
 
@@ -429,10 +427,10 @@ export default function LandingPage() {
       {/* Three Ways to Run */}
       <section className="border-b border-white/10 bg-[#060913]/60 py-16">
         <RevealOnScroll className={CONTAINER}>
-          <p className="label-mono">Execution Modes</p>
-          <h2 className="mt-2 text-2xl sm:text-3xl font-serif text-white">Three ways to run the companion code</h2>
+          <p className="label-mono">Running it</p>
+          <h2 className="mt-2 text-2xl sm:text-3xl font-serif text-white">Three ways to run the code</h2>
           <p className="mt-2 text-sm text-slate-400">
-            Choose the execution environment that best fits your workflow.
+            Start in the browser. Move to Colab when you want to change more than a few lines.
           </p>
 
           <div className="mt-8 grid gap-6 lg:grid-cols-3">
@@ -461,13 +459,13 @@ export default function LandingPage() {
           </div>
 
           <p className="mt-8 text-sm text-slate-400">
-            For API keys, Colab instructions, and local setup, see the{" "}
+            Keys, Colab steps, and local install are on the{" "}
             <Link href="/setup" className={LINK}>
               setup page
             </Link>
-            . All datasets are synthetic and regenerable; see{" "}
+            . The datasets are synthetic, and described on{" "}
             <Link href="/data" className={LINK}>
-              the data catalog
+              the data page
             </Link>
             .
           </p>
@@ -480,18 +478,18 @@ export default function LandingPage() {
           <div className={CONTAINER}>
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
-                <p className="label-mono">Chapter 9 · Live Showcase</p>
+                <p className="label-mono">Chapter 9</p>
                 <h2 className="mt-2 text-2xl sm:text-3xl font-serif text-white">
                   Watch an agent work live
                 </h2>
                 <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-400">
-                  The book&rsquo;s first autonomous agent, executing live on our server with
-                  every tool call and reasoning cycle streamed in real time.
+                  The first agent in the book. Press Run and it executes on our server,
+                  with each tool call shown as it happens.
                 </p>
               </div>
               <span className="inline-flex items-center gap-1.5 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 font-mono text-xs text-cyan-300">
                 <span className="size-2 rounded-full bg-cyan-400 animate-ping" />
-                Live Agent Server Active
+                Live
               </span>
             </div>
 
@@ -515,9 +513,9 @@ export default function LandingPage() {
           className={cn(CONTAINER, "grid gap-12 lg:grid-cols-[1.1fr_1.3fr] items-center")}
         >
           <div>
-            <p className="label-mono">The Book Overview</p>
+            <p className="label-mono">The book</p>
             <h2 className="mt-2 text-2xl sm:text-3xl font-serif text-white">
-              Why this book matters
+              What the book covers
             </h2>
             <p className="mt-4 text-base leading-relaxed text-slate-300">
               {BOOK_PROMISE}
@@ -531,7 +529,7 @@ export default function LandingPage() {
                 </a>
               </Button>
               <Button asChild variant="outline" className="border-white/15 bg-white/5 text-white hover:bg-white/10">
-                <Link href="/book">Explore table of contents →</Link>
+                <Link href="/book">Table of contents →</Link>
               </Button>
             </div>
           </div>
@@ -564,14 +562,14 @@ export default function LandingPage() {
               <p className="label-mono">Authors</p>
               <h2 className="mt-2 text-2xl sm:text-3xl font-serif text-white">The authors</h2>
               <p className="mt-2 text-sm text-slate-400">
-                Combining three decades of global actuarial leadership with cutting-edge agentic AI engineering.
+                Two actuaries, one who has run actuarial technology teams for thirty years and one who writes the code.
               </p>
             </div>
             <Link
               href="/book#authors"
               className="text-sm text-amber-400 hover:text-amber-300 underline underline-offset-4"
             >
-              Full biographies & publications →
+              Full biographies →
             </Link>
           </div>
 
@@ -612,7 +610,7 @@ export default function LandingPage() {
           </div>
 
           <p className="mt-8 text-xs sm:text-sm text-slate-500">
-            Published in collaboration with the{" "}
+            Written with the{" "}
             <a
               href="https://sssia.org"
               target="_blank"

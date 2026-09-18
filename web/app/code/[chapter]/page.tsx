@@ -133,7 +133,7 @@ export default async function ChapterPage({
 
         {part && (
           <p className="mt-2 text-xs sm:text-sm text-slate-400">
-            In the published book: <strong className="text-slate-200">Part {part.roman} ({part.title})</strong>.
+            In the book this is Part {part.roman}, <strong className="text-slate-200">{part.title}</strong>.
           </p>
         )}
 
@@ -141,7 +141,7 @@ export default async function ChapterPage({
           <Button asChild size="default" className="launch-cta h-10 px-4 text-xs sm:text-sm font-semibold">
             <a href="#listings">
               <Terminal size={16} />
-              <span>Run listings below</span>
+              <span>Run it here</span>
             </a>
           </Button>
           <Button

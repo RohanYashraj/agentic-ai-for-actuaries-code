@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { ArrowUpRight, BookOpenText } from "@phosphor-icons/react/dist/ssr";
-import { GridMotif } from "@/components/grid-motif";
 import { ACTEX_BOOK_URL, GITHUB_REPO } from "@/lib/links";
 import { cn, CONTAINER } from "@/lib/utils";
 
@@ -14,7 +13,7 @@ const FOOTER_LINKS: {
       { label: "Run the code", href: "/code" },
       { label: "Setup", href: "/setup" },
       { label: "Data", href: "/data" },
-      { label: "GitHub Repository", href: GITHUB_REPO, external: true },
+      { label: "GitHub", href: GITHUB_REPO, external: true },
     ],
   },
   {
@@ -41,14 +40,6 @@ export function SiteFooter() {
       />
 
       <div className={cn(CONTAINER, "relative py-14")}>
-        <GridMotif
-          tone="dark"
-          tile={8}
-          gap={3}
-          rows={3}
-          className="absolute right-4 top-12 opacity-60 sm:right-8"
-        />
-
         <nav
           aria-label="Footer"
           className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.2fr_1.2fr_2fr]"
@@ -89,23 +80,19 @@ export function SiteFooter() {
                 <BookOpenText size={14} weight="bold" />
               </span>
               <p className="font-serif text-lg text-white font-semibold">
-                Agentic AI{" "}
-                <span className="bg-gradient-to-r from-gold-400 to-amber-300 bg-clip-text text-transparent">
-                  for Actuaries
-                </span>
+                Agentic AI <span className="text-gold-400">for Actuaries</span>
               </p>
             </div>
             <p className="mt-2.5 text-slate-400 text-xs sm:text-sm">
-              Companion code for the book published by ACTEX Learning. Every listing
-              from chapters 9 to 17, runnable in your browser, live on our server,
-              or in Colab.
+              The code that goes with the book. Every listing from chapters 9 to 17,
+              which you can run here in the browser, on our server, or in Colab.
             </p>
             <div className="mt-4 flex flex-wrap gap-2 lg:justify-end">
               <span className="inline-flex items-center rounded-full border border-amber-500/30 bg-amber-500/10 px-2.5 py-0.5 text-[11px] font-mono text-amber-300">
                 First Edition 2026
               </span>
               <span className="inline-flex items-center rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 text-[11px] font-mono text-emerald-400">
-                100% Free Book
+                Free to read
               </span>
             </div>
           </div>

@@ -56,7 +56,7 @@ export default function BookPage() {
           <div className="mb-3">
             <span className="launch-pill">
               <Sparkle size={13} weight="fill" className="text-amber-300" />
-              <span>First Edition 2026 · Official Book Release</span>
+              <span>First edition 2026 · ACTEX Learning</span>
             </span>
           </div>
 
@@ -72,7 +72,7 @@ export default function BookPage() {
           </p>
 
           <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-4 text-xs sm:text-sm leading-relaxed text-slate-400">
-            <span className="font-semibold text-white">Target Audience:</span> Written for {joinReaders(TARGET_READERS)}.
+            <span className="font-semibold text-white">Who it is for.</span> Written for {joinReaders(TARGET_READERS)}.
           </div>
 
           <div className="mt-8 flex flex-wrap gap-3.5">
@@ -126,11 +126,11 @@ export default function BookPage() {
       {/* What's Inside: Table of Contents */}
       <section className="mt-16 pt-8 border-t border-white/10">
         <div>
-          <p className="label-mono">Five Parts · Eighteen Chapters</p>
+          <p className="label-mono">Five parts, eighteen chapters</p>
           <h2 className="mt-2 text-2xl sm:text-3xl font-serif text-white">What&rsquo;s inside</h2>
           <p className="mt-2 text-sm text-slate-400 max-w-2xl">
-            A progressive journey from mathematical principles of machine learning to autonomous
-            actuarial systems in production.
+            It starts with what AI is and ends with agents in production and who is accountable
+            for them. Chapters with a code tag can be run on this site.
           </p>
         </div>
 
@@ -180,11 +180,11 @@ export default function BookPage() {
       {/* Authors Section */}
       <section id="authors" className="mt-16 scroll-mt-24 pt-8 border-t border-white/10">
         <div>
-          <p className="label-mono">Credentials & Leadership</p>
+          <p className="label-mono">Who wrote it</p>
           <h2 className="mt-2 text-2xl sm:text-3xl font-serif text-white">The authors</h2>
           <p className="mt-2 text-sm text-slate-400 max-w-2xl">
-            Bridging three decades of international actuarial practice, academic research, and
-            contemporary agentic AI engineering.
+            Two actuaries. One has spent thirty years building actuarial technology functions and
+            teaching; the other wrote the code in this repository.
           </p>
         </div>
 

@@ -53,14 +53,14 @@ export default function CodeIndexPage() {
       <Breadcrumbs trail={TRAIL} />
 
       <header className="mt-8 max-w-3xl">
-        <p className="label-mono">The Runnable Companion</p>
+        <p className="label-mono">Chapters 9 to 17</p>
         <h1 className="mt-2 text-3xl sm:text-5xl font-serif text-white font-bold tracking-tight">
           Every listing, runnable
         </h1>
         <p className="mt-4 text-base sm:text-lg leading-relaxed text-slate-300">
-          The companion code for Parts III to V of{" "}
-          <span className="text-white font-medium">Agentic AI for Actuaries</span>:
-          nine chapters of working code across pricing, reserving, life, and risk.
+          The code from Parts III to V of{" "}
+          <span className="text-white font-medium">Agentic AI for Actuaries</span>.
+          Nine chapters across pricing, reserving, life, and risk, each one runnable from this page.
         </p>
 
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
@@ -68,19 +68,19 @@ export default function CodeIndexPage() {
             {
               title: "In your browser",
               tag: "WebAssembly",
-              desc: "Tool scripts run on Pyodide. Edit code and execute entirely locally.",
+              desc: "Tool scripts run in the page. Edit them and run again.",
               color: "border-emerald-500/30 text-emerald-400 bg-emerald-500/10",
             },
             {
               title: "Live on server",
               tag: "Agno + Gemini",
-              desc: "Autonomous agents stream tool calls and reasoning in real time.",
+              desc: "Agent scripts run against Gemini. You watch the tool calls.",
               color: "border-cyan-500/30 text-cyan-400 bg-cyan-500/10",
             },
             {
               title: "In Google Colab",
-              tag: "Cloud Notebook",
-              desc: "Open any chapter with your free key to run full-fidelity pipelines.",
+              tag: "Notebook",
+              desc: "Any chapter, as a notebook, with your own free key.",
               color: "border-amber-500/30 text-amber-400 bg-amber-500/10",
             },
           ].map((mode) => (
@@ -144,7 +144,7 @@ export default function CodeIndexPage() {
 
               {outline && (
                 <div className="mt-3 rounded-lg border border-white/5 bg-white/5 p-2.5 text-xs text-slate-400">
-                  <span className="font-semibold text-amber-400">Case Study:</span>{" "}
+                  <span className="font-semibold text-amber-400">Case study:</span>{" "}
                   {outline.caseStudy}
                 </div>
               )}
@@ -170,7 +170,7 @@ export default function CodeIndexPage() {
                   className="inline-flex items-center gap-1 font-semibold text-amber-400 hover:text-amber-300 transition-colors"
                 >
                   <Terminal size={14} />
-                  <span>Run Chapter Lab →</span>
+                  <span>Open chapter →</span>
                 </Link>
                 <a
                   href={colabUrl(chapter.slug)}
@@ -192,10 +192,10 @@ export default function CodeIndexPage() {
         <h2 className="text-xl font-serif text-white font-semibold">Before you run</h2>
         <div className="mt-3 space-y-3 text-sm leading-relaxed text-slate-300">
           <p>
-            <strong className="text-white">Browser demos:</strong> Run on Pyodide, a full CPython compiled to WebAssembly. The first execution downloads the runtime (approx. 10 MB); subsequent runs are instant and completely local. The demo scripts match the book code line for line.
+            <strong className="text-white">Browser demos</strong> run on Pyodide, which is CPython compiled to WebAssembly. The first run downloads about 10 MB; after that it is quick, and nothing leaves your machine. The demo scripts follow the book code line for line.
           </p>
           <p>
-            <strong className="text-white">Live server agents:</strong> Execute on our server using Google Gemini and Agno with tool calls streamed in real time. Shared daily rate limits apply; when reached, the Colab notebooks provide the unlimited path.
+            <strong className="text-white">Live agents</strong> run on our server with Gemini and Agno, and the tool calls stream back as they happen. There is a shared daily limit. If you hit it, the Colab notebook for the chapter has no limit.
           </p>
         </div>
       </section>

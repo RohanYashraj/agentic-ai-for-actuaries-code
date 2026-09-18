@@ -10,7 +10,7 @@ import { SITE_NAME } from "@/lib/site";
 import { cn, CONTAINER } from "@/lib/utils";
 
 const DESCRIPTION =
-  "Three ways to run the companion code: in the browser on this site, in Colab with a free Google AI Studio key, or locally with uv. Plus the live runner's limits.";
+  "Three ways to run the code: here in the browser, in Colab with a free Google AI Studio key, or on your own machine with uv. Plus the limits on live runs.";
 
 export const metadata: Metadata = pageMetadata({
   title: "Setup",
@@ -33,11 +33,11 @@ const LIMITS: [string, string][] = [
 const FAQ = [
   {
     q: "Can I run the examples without installing anything?",
-    a: "Yes. Tool scripts run in your browser on Pyodide, a full CPython compiled to WebAssembly; edit them and run again, entirely locally. Agent scripts run live on our server against Gemini with their tool calls streamed. Colab is the third path: a Google account and your own free key.",
+    a: "Yes. Tool scripts run in your browser; edit them and run again. Agent scripts run on our server against Gemini, and you watch the tool calls come back. Colab is the third option, and needs only a Google account and a free key.",
   },
   {
     q: "Is the companion code free?",
-    a: "Yes. Every listing is in an open repository under the MIT licence, and every example runs on the Gemini free tier. All datasets are synthetic; Meridian Re, the reinsurer the case studies follow, is fictional.",
+    a: "Yes. The repository is MIT licensed, and every example runs on the Gemini free tier. The datasets are synthetic. Meridian Re, the reinsurer in the case studies, does not exist.",
   },
   {
     q: "Which framework does the code use?",
@@ -45,7 +45,7 @@ const FAQ = [
   },
   {
     q: "Does the code here match the book?",
-    a: "The chapter scripts are the source of truth. Browser demos are generated from them at build time, live runs execute them unmodified, and Colab clones the repository. Corrections to the printed listings are recorded in the repository's errata section.",
+    a: "The chapter scripts are the source of truth. The browser demos are generated from them when the site is built, live runs execute them as they are, and Colab clones the repository. Where a printed listing has been corrected, the repository's errata section says so.",
   },
 ];
 
@@ -94,7 +94,7 @@ export default function SetupPage() {
       <Breadcrumbs trail={TRAIL} />
 
       <header className="mt-8 max-w-3xl">
-        <p className="label-mono">Quickstart & Execution Guide</p>
+        <p className="label-mono">Getting started</p>
         <h1 className="mt-2 text-3xl sm:text-5xl font-serif text-white font-bold tracking-tight">Setup</h1>
         <p className="mt-4 text-base sm:text-lg leading-relaxed text-slate-300">
           {DESCRIPTION}
@@ -108,7 +108,7 @@ export default function SetupPage() {
             <div className="flex items-center justify-between">
               <span className="label-mono text-emerald-400">Option 1</span>
               <span className="rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 font-mono text-[11px] text-emerald-400 font-medium flex items-center gap-1">
-                <Play size={10} weight="fill" /> Zero Setup
+                <Play size={10} weight="fill" /> No setup
               </span>
             </div>
             <h2 className="mt-2 text-xl font-serif text-white font-semibold">On this site, no setup</h2>
@@ -117,9 +117,9 @@ export default function SetupPage() {
               <Link href="/code" className={LINK}>
                 code chapter
               </Link>{" "}
-              has a Run button. Tool scripts execute directly in your browser using Pyodide (CPython WebAssembly); the
-              first execution fetches the runtime (approx. 10 MB) and later runs are instant. Agent scripts run
-              on our server with a shared key, within the limits displayed alongside.
+              has a Run button. Tool scripts run in your browser on Pyodide, which is CPython compiled to
+              WebAssembly. The first run fetches about 10 MB; later runs are quick. Agent scripts run on our
+              server with a shared key, within the limits shown on the right.
             </p>
           </section>
 
@@ -128,13 +128,13 @@ export default function SetupPage() {
             <div className="flex items-center justify-between">
               <span className="label-mono text-amber-400">Option 2</span>
               <span className="rounded-full bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 font-mono text-[11px] text-amber-300 font-medium">
-                Google Colab Free
+                Free tier
               </span>
             </div>
             <h2 className="mt-2 text-xl font-serif text-white font-semibold">In Colab, with your own free key</h2>
             <ol className="mt-4 list-decimal space-y-3.5 pl-5 text-sm leading-relaxed text-slate-300 marker:text-amber-400 marker:font-bold">
               <li>
-                Obtain a free API key at{" "}
+                Get a free API key at{" "}
                 <a
                   href="https://aistudio.google.com/apikey"
                   target="_blank"
@@ -143,7 +143,7 @@ export default function SetupPage() {
                 >
                   aistudio.google.com/apikey
                 </a>
-                . The free tier covers all book scripts.
+                . The free tier is enough for every script in the book.
               </li>
               <li>
                 Open any chapter notebook, for example{" "}
@@ -159,8 +159,8 @@ export default function SetupPage() {
               </li>
               <li>
                 In the Colab left sidebar, open Secrets (the key icon) and add{" "}
-                <code className={INLINE}>GOOGLE_API_KEY</code>. The setup
-                cells install the exact pins and run the book&rsquo;s scripts unchanged.
+                <code className={INLINE}>GOOGLE_API_KEY</code>. The first
+                cells install the pinned packages and then run the book&rsquo;s scripts as written.
               </li>
             </ol>
           </section>
@@ -170,12 +170,12 @@ export default function SetupPage() {
             <div className="flex items-center justify-between">
               <span className="label-mono text-cyan-400">Option 3</span>
               <span className="rounded-full bg-cyan-500/10 border border-cyan-500/20 px-2.5 py-0.5 font-mono text-[11px] text-cyan-300 font-medium">
-                Local Environment
+                Your machine
               </span>
             </div>
             <h2 className="mt-2 text-xl font-serif text-white font-semibold">Locally, with uv</h2>
             <p className="mt-3 text-sm leading-relaxed text-slate-300">
-              Requires Python 3.11 or later. uv automatically provisions the matching Python runtime if needed.
+              You need Python 3.11 or later. If you don&rsquo;t have it, uv will fetch one.
             </p>
             <Code>{`# Install uv (skip if you already have it)
 curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -205,8 +205,8 @@ uv run --env-file ../.env python 01_column_agent.py`}</Code>
 
           {/* FAQ */}
           <section id="questions" className="scroll-mt-24 pt-6 border-t border-white/10">
-            <p className="label-mono">Common Inquiries</p>
-            <h2 className="mt-2 text-2xl font-serif text-white font-semibold">Frequently Asked Questions</h2>
+            <p className="label-mono">Questions</p>
+            <h2 className="mt-2 text-2xl font-serif text-white font-semibold">Questions people ask</h2>
             <div className="mt-6 space-y-4">
               {FAQ.map((item) => (
                 <div key={item.q} className="card-glass p-5">
@@ -233,8 +233,8 @@ uv run --env-file ../.env python 01_column_agent.py`}</Code>
               ))}
             </dl>
             <p className="mt-5 border-t border-white/10 pt-4 text-xs leading-relaxed text-slate-400">
-              Counters reset on UTC days. Your IP address is hashed before counting and never persisted.
-              When a limit is reached, Colab notebooks provide unrestricted runs.
+              Counters reset at midnight UTC. Your IP address is hashed before it is counted and is not stored.
+              If you hit a limit, the Colab notebooks have none.
             </p>
           </div>
 
@@ -244,7 +244,7 @@ uv run --env-file ../.env python 01_column_agent.py`}</Code>
             rel="noreferrer"
             className="mt-4 flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 p-3 text-sm font-medium text-slate-300 transition-colors hover:border-amber-400 hover:text-white"
           >
-            <span>View Source on GitHub</span>
+            <span>Source on GitHub</span>
             <ArrowUpRight size={14} aria-hidden="true" />
           </a>
         </aside>

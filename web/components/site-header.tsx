@@ -26,7 +26,7 @@ type NavItem = {
   blurb: string;
 };
 
-/** Every route the site has, all visible from md up. Nothing hides in a
+/** Every route the site has, all visible from lg up. Nothing hides in a
  * mobile-only list. */
 const NAV: NavItem[] = [
   {
@@ -117,7 +117,7 @@ export function SiteHeader() {
             </span>
           </Link>
 
-          <nav aria-label="Main" className="hidden items-center gap-1 md:flex">
+          <nav aria-label="Main" className="hidden items-center gap-1 lg:flex">
             {NAV.map((item) => {
               const active = isActive(pathname, item.href);
               return (
@@ -166,7 +166,7 @@ export function SiteHeader() {
             aria-expanded={open}
             aria-controls="mobile-menu"
             aria-label={open ? "Close menu" : "Open menu"}
-            className="inline-flex size-9 shrink-0 items-center justify-center rounded-full border border-white/10 text-white transition-colors hover:bg-white/10 md:hidden"
+            className="inline-flex size-9 shrink-0 items-center justify-center rounded-full border border-white/10 text-white transition-colors hover:bg-white/10 lg:hidden"
           >
             {open ? (
               <X size={20} aria-hidden="true" />
@@ -180,7 +180,7 @@ export function SiteHeader() {
           <nav
             id="mobile-menu"
             aria-label="Site"
-            className="absolute inset-x-0 top-full z-50 max-h-[calc(100svh-4rem)] overflow-y-auto border-b border-white/10 bg-[#060913]/95 p-3 shadow-2xl backdrop-blur-2xl md:hidden"
+            className="absolute inset-x-0 top-full z-50 max-h-[calc(100svh-4rem)] overflow-y-auto border-b border-white/10 bg-[#060913]/95 p-3 shadow-2xl backdrop-blur-2xl lg:hidden"
           >
             <a
               href={ACTEX_BOOK_URL}
@@ -196,7 +196,7 @@ export function SiteHeader() {
                   Get the book, free
                 </span>
                 <span className="block text-xs text-white/80">
-                  Published by ACTEX Learning
+                  From ACTEX Learning
                 </span>
               </span>
               <ArrowUpRight
@@ -276,7 +276,7 @@ export function SiteHeader() {
           tabIndex={-1}
           aria-hidden="true"
           onClick={() => setOpen(false)}
-          className="fixed inset-0 -z-10 h-svh w-full cursor-default md:hidden"
+          className="fixed inset-0 -z-10 h-svh w-full cursor-default lg:hidden"
         />
       )}
     </header>
