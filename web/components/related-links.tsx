@@ -24,13 +24,13 @@ export function RelatedLinks({ groups }: { groups: RelatedGroup[] }) {
 
   return (
     <aside className="mt-12 border-t border-border pt-8">
-      <h2 className="font-mono text-xs uppercase tracking-[0.16em] text-gold-300">
+      <h2 className="label-mono">
         Keep reading
       </h2>
       <div className="mt-5 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {live.map((group) => (
           <div key={group.title}>
-            <h3 className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
+            <h3 className="font-mono text-[11px] uppercase tracking-[0.16em] text-slate">
               {group.title}
             </h3>
             {/* Looser on a phone: these are thumb targets there, not
@@ -40,7 +40,7 @@ export function RelatedLinks({ groups }: { groups: RelatedGroup[] }) {
                 <li key={`${group.title}-${link.href}-${link.label}`}>
                   <Link
                     href={link.href}
-                    className="text-cream-200 underline decoration-border underline-offset-4 transition-colors hover:text-cream-100 hover:decoration-gold-400"
+                    className="text-ink underline decoration-line underline-offset-4 transition-colors hover:decoration-gold"
                   >
                     {link.label}
                   </Link>

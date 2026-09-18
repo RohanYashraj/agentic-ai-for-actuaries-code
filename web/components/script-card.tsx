@@ -28,14 +28,14 @@ export function ScriptCard({
   const hasAgent = Boolean(agentEntry?.runnable);
 
   return (
-    <article className="rounded-md border border-border bg-card">
+    <article className="rounded-md border border-line bg-card">
       <header className="flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b border-border px-4 py-3 sm:px-5">
         {/* break-all: filenames like 02_pricing_reconciliation_tool.py
             are wider than a 320px phone and have no break opportunity. */}
-        <h3 className="flex min-w-0 items-baseline gap-1.5 font-mono text-sm font-medium text-cream-100">
+        <h3 className="flex min-w-0 items-baseline gap-1.5 font-mono text-sm font-medium text-ink">
           <FileCode
             size={16}
-            className="shrink-0 translate-y-0.5 text-gold-400"
+            className="shrink-0 translate-y-0.5 text-gold-ink"
             aria-hidden="true"
           />
           <span className="break-all">{script.file}</span>
@@ -46,12 +46,12 @@ export function ScriptCard({
           </Badge>
         )}
         {hasAgent && (
-          <Badge className="bg-gold-400/15 text-gold-300 border-transparent font-mono text-[10px]">
+          <Badge className="bg-gold-tint text-gold-ink border-transparent font-mono text-[10px]">
             live agent
           </Badge>
         )}
         {!hasDemo && !hasAgent && (
-          <Badge className="bg-navy-800 text-muted-foreground border-transparent font-mono text-[10px]">
+          <Badge className="bg-paper-2 text-slate border-transparent font-mono text-[10px]">
             run in Colab
           </Badge>
         )}
@@ -59,7 +59,7 @@ export function ScriptCard({
           href={githubFileUrl(`${chapter.folder}/${script.file}`)}
           target="_blank"
           rel="noreferrer"
-          className="ml-auto inline-flex items-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-cream-100"
+          className="ml-auto inline-flex items-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-ink"
         >
           <GithubLogo size={14} aria-hidden="true" />
           Source on GitHub
@@ -72,7 +72,7 @@ export function ScriptCard({
       <div className="p-3 sm:p-4">
         {hasDemo && hasAgent && agentEntry ? (
           <Tabs defaultValue="demo">
-            <TabsList className="mb-3 bg-navy-800/70">
+            <TabsList className="mb-3 bg-paper-2/70">
               <TabsTrigger value="demo" className="text-xs">
                 Tool, in your browser
               </TabsTrigger>
@@ -110,14 +110,14 @@ export function ScriptCard({
                 title={`${chapter.folder}/${script.file}`}
               />
             )}
-            <p className="border-t border-border bg-navy-950/60 px-4 py-2.5 text-xs text-muted-foreground">
+            <p className="border-t border-border bg-ink-2/60 px-4 py-2.5 text-xs text-muted-foreground">
               {agentEntry?.reason ??
                 "This script needs packages beyond the browser runtime."}{" "}
               <a
                 href={colabUrl(chapter.slug)}
                 target="_blank"
                 rel="noreferrer"
-                className="text-gold-300 underline underline-offset-2"
+                className="text-gold-ink underline underline-offset-2"
               >
                 Open the chapter in Colab
               </a>{" "}

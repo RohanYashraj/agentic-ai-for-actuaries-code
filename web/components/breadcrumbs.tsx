@@ -13,18 +13,18 @@ export function Breadcrumbs({ trail }: { trail: Crumb[] }) {
           return (
             <li key={crumb.path} className="flex items-center gap-1.5">
               {i > 0 && (
-                <span aria-hidden="true" className="text-border">
+                <span aria-hidden="true" className="text-line">
                   /
                 </span>
               )}
               {isLast ? (
-                <span aria-current="page" className="text-cream-200">
+                <span aria-current="page" className="text-ink">
                   {crumb.name}
                 </span>
               ) : (
                 <Link
                   href={crumb.path}
-                  className="transition-colors hover:text-cream-100"
+                  className="transition-colors hover:text-ink"
                 >
                   {crumb.name}
                 </Link>

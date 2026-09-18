@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ArrowLeft, ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { JsonLd } from "@/components/json-ld";
@@ -14,6 +15,7 @@ import { CHAPTERS, getChapter } from "@/lib/chapters";
 import { loadDemoSource, loadManifest } from "@/lib/demos";
 import { relatedForCodeChapter } from "@/lib/graph";
 import { colabUrl, GITHUB_REPO } from "@/lib/links";
+import { getPartOf } from "@/lib/outline";
 import {
   absolute,
   authorRefs,
@@ -67,6 +69,7 @@ export default async function ChapterPage({
   if (!chapter) notFound();
 
   const manifest = loadManifest();
+  const part = getPartOf(chapter.number);
   const concepts = CHAPTER_CONCEPTS[chapter.number] ?? [];
   const index = CHAPTERS.findIndex((c) => c.slug === slug);
   const prev = CHAPTERS[index - 1];
@@ -106,15 +109,29 @@ export default async function ChapterPage({
       <Breadcrumbs trail={trail} />
 
       <header className="mt-6 max-w-3xl">
-        <p className="label-mono">Chapter {chapter.number}</p>
+        <p className="flex flex-wrap items-center gap-2">
+          <span className="label-mono">Chapter {chapter.number}</span>
+          <span className="text-slate" aria-hidden="true">
+            ·
+          </span>
+          <span className="label-mono">Part {chapter.part}</span>
+          <span className="rounded-sm bg-gold-tint px-1.5 py-0.5 font-mono text-[11px] text-gold-ink">
+            {chapter.domain}
+          </span>
+        </p>
         <h1 className="mt-2 text-3xl leading-tight sm:text-4xl">
           {chapter.title}
         </h1>
         <p className="mt-4 text-base leading-relaxed text-muted-foreground">
           {chapter.blurb}
         </p>
+        {part && (
+          <p className="mt-2 text-sm text-slate">
+            In the book: Part {part.roman}, {part.title}.
+          </p>
+        )}
         <div className="mt-5 flex flex-wrap gap-3">
-          <Button asChild size="sm">
+          <Button asChild size="sm" className="bg-gold text-ink-2 hover:bg-gold-deep">
             <a href="#listings">Run it here</a>
           </Button>
           <Button asChild size="sm" variant="outline">
@@ -135,11 +152,11 @@ export default async function ChapterPage({
       </header>
 
       {concepts.length > 0 && (
-        <section className="mt-8 max-w-3xl rounded-md border border-border bg-card px-5 py-4">
+        <section className="mt-8 max-w-3xl rounded-md border border-line bg-card px-5 py-4">
           <h3 className="text-base font-semibold">What you&rsquo;ll build</h3>
           <ul className="mt-3 space-y-1.5 text-sm text-muted-foreground">
             {concepts.map((c) => (
-              <li key={c} className="list-disc marker:text-gold-400 ml-4">
+              <li key={c} className="list-disc marker:text-gold ml-4">
                 {c}
               </li>
             ))}
@@ -181,7 +198,7 @@ export default async function ChapterPage({
                 href={`${GITHUB_REPO}/blob/main/${chapter.folder}/${f}`}
                 target="_blank"
                 rel="noreferrer"
-                className="font-mono text-cream-200 underline underline-offset-2"
+                className="font-mono text-ink underline underline-offset-2"
               >
                 {f}
               </a>
@@ -197,9 +214,10 @@ export default async function ChapterPage({
         {prev ? (
           <Link
             href={`/code/${prev.slug}`}
-            className="text-muted-foreground transition-colors hover:text-cream-100"
+            className="inline-flex items-center gap-1.5 text-slate transition-colors hover:text-ink"
           >
-            ← Chapter {prev.number}: {prev.title}
+            <ArrowLeft size={14} aria-hidden="true" />
+            Chapter {prev.number}: {prev.title}
           </Link>
         ) : (
           <span />
@@ -207,9 +225,10 @@ export default async function ChapterPage({
         {next ? (
           <Link
             href={`/code/${next.slug}`}
-            className="text-right text-muted-foreground transition-colors hover:text-cream-100"
+            className="inline-flex items-center gap-1.5 text-right text-slate transition-colors hover:text-ink"
           >
-            Chapter {next.number}: {next.title} →
+            Chapter {next.number}: {next.title}
+            <ArrowRight size={14} aria-hidden="true" />
           </Link>
         ) : (
           <span />
