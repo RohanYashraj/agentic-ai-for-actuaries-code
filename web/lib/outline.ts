@@ -1,9 +1,5 @@
-/** The book's structure: 5 parts, 18 chapters, paraphrased from the
- * detailed outline. Chapters 9-17 link to their companion-code pages.
- *
- * This module is the skeleton the book pages hang from. Reading material
- * lives in chapter-content.ts, and the practice domain of a Part IV
- * chapter is derived from DOMAINS rather than repeated here. */
+/** The book's structure: 5 parts, 18 chapters. Chapters 9-17 carry a
+ * slug for their /code page. */
 
 export type OutlineChapter = {
   number: number;
@@ -219,12 +215,6 @@ export const CHAPTER_LIST: OutlineChapter[] = OUTLINE.flatMap(
   (part) => part.chapters
 );
 
-/** Chapter numbers are zero-padded in URLs so /book/chapters/01 sorts and
- * reads like a table of contents entry. */
-export function chapterPath(n: number): string {
-  return `/book/chapters/${String(n).padStart(2, "0")}`;
-}
-
 export function getOutlineChapter(n: number): OutlineChapter | undefined {
   return CHAPTER_LIST.find((c) => c.number === n);
 }
@@ -240,13 +230,4 @@ export function joinReaders(readers: string[]): string {
   const items = readers.map((r) => r.charAt(0).toLowerCase() + r.slice(1));
   if (items.length <= 1) return items.join("");
   return `${items.slice(0, -1).join("; ")}; and ${items[items.length - 1]}`;
-}
-
-export function prevNextChapter(n: number): {
-  prev?: OutlineChapter;
-  next?: OutlineChapter;
-} {
-  const i = CHAPTER_LIST.findIndex((c) => c.number === n);
-  if (i === -1) return {};
-  return { prev: CHAPTER_LIST[i - 1], next: CHAPTER_LIST[i + 1] };
 }

@@ -5,16 +5,11 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   BookOpenText,
-  Books,
-  Bookmarks,
-  Compass,
   GithubLogo,
-  Lightbulb,
   List,
-  Notebook,
-  Question,
+  Table,
   Terminal,
-  Users,
+  Wrench,
   X,
 } from "@phosphor-icons/react";
 import type { Icon } from "@phosphor-icons/react";
@@ -27,62 +22,32 @@ type NavItem = {
   icon: Icon;
   /** Shown in the mobile menu only; the bar has no room for it. */
   blurb: string;
-  /** Kept out of the desktop bar, which carries only the primary routes. */
-  mobileOnly?: boolean;
 };
 
 const NAV: NavItem[] = [
   {
+    href: "/code",
+    label: "Run the code",
+    icon: Terminal,
+    blurb: "Nine chapters, three ways to run",
+  },
+  {
+    href: "/setup",
+    label: "Setup",
+    icon: Wrench,
+    blurb: "Colab, local install, limits",
+  },
+  {
+    href: "/data",
+    label: "Data",
+    icon: Table,
+    blurb: "The synthetic datasets",
+  },
+  {
     href: "/book",
     label: "The book",
     icon: BookOpenText,
-    blurb: "Eighteen chapters, five parts",
-  },
-  {
-    href: "/actuarial-ai",
-    label: "Domains",
-    icon: Compass,
-    blurb: "Pricing, reserving, life, risk",
-  },
-  {
-    href: "/concepts",
-    label: "Concepts",
-    icon: Lightbulb,
-    blurb: "Eight ideas, explained in depth",
-  },
-  {
-    href: "/glossary",
-    label: "Glossary",
-    icon: Bookmarks,
-    blurb: "The vocabulary, defined",
-  },
-  {
-    href: "/book/primer",
-    label: "The primer",
-    icon: Notebook,
-    blurb: "The argument, abridged",
-    mobileOnly: true,
-  },
-  {
-    href: "/authors",
-    label: "The authors",
-    icon: Users,
-    blurb: "Who wrote this, and why",
-    mobileOnly: true,
-  },
-  {
-    href: "/faq",
-    label: "Questions",
-    icon: Question,
-    blurb: "What readers ask first",
-    mobileOnly: true,
-  },
-  {
-    href: "/resources",
-    label: "Sources and standards",
-    icon: Books,
-    blurb: "What the book cites",
-    mobileOnly: true,
+    blurb: "Free from ACTEX Learning",
   },
 ];
 
@@ -123,8 +88,6 @@ export function SiteHeader() {
     };
   }, [open]);
 
-  const barLinks = NAV.filter((item) => !item.mobileOnly);
-
   return (
     <header
       className={cn(
@@ -144,7 +107,7 @@ export function SiteHeader() {
           </Link>
 
           <nav aria-label="Main" className="hidden items-center gap-0.5 md:flex">
-            {barLinks.map((item) => {
+            {NAV.map((item) => {
               const active = isActive(pathname, item.href);
               return (
                 <Link

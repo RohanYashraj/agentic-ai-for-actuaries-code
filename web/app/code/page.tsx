@@ -6,9 +6,8 @@ import { JsonLd } from "@/components/json-ld";
 import { RelatedLinks } from "@/components/related-links";
 import { AGENT_SCRIPTS } from "@/lib/agents";
 import { CHAPTERS } from "@/lib/chapters";
-import { DOMAINS } from "@/lib/domains";
 import { colabUrl } from "@/lib/links";
-import { chapterPath, getOutlineChapter } from "@/lib/outline";
+import { getOutlineChapter } from "@/lib/outline";
 import { absolute, breadcrumbList, graph, ID, pageMetadata } from "@/lib/seo";
 import { SITE_NAME } from "@/lib/site";
 import { cn, CONTAINER } from "@/lib/utils";
@@ -92,7 +91,6 @@ export default function CodeIndexPage() {
               s.agentId &&
               AGENT_SCRIPTS.find((a) => a.id === s.agentId)?.runnable
           ).length;
-          const domain = DOMAINS.find((d) => d.chapter === chapter.number);
           const outline = getOutlineChapter(chapter.number);
           return (
             <article
@@ -133,7 +131,7 @@ export default function CodeIndexPage() {
                     {agentCount} live agent{agentCount > 1 ? "s" : ""}
                   </span>
                 )}
-                {domain && <span>{domain.name}</span>}
+                <span>{chapter.domain}</span>
               </p>
               {/* py-1 on each action: at 11px these are otherwise a
                   16px-tall thumb target. */}
@@ -143,12 +141,6 @@ export default function CodeIndexPage() {
                   className="py-1 text-gold-300 transition-colors hover:text-gold-300 hover:underline"
                 >
                   Run it
-                </Link>
-                <Link
-                  href={chapterPath(chapter.number)}
-                  className="py-1 text-muted-foreground transition-colors hover:text-cream-100"
-                >
-                  Read the chapter
                 </Link>
                 <a
                   href={colabUrl(chapter.slug)}
@@ -184,19 +176,15 @@ export default function CodeIndexPage() {
       <RelatedLinks
         groups={[
           {
-            title: "The book",
+            title: "Run it yourself",
             links: [
-              { label: "All eighteen chapters", href: "/book" },
-              {
-                label: "Chapter 9: What is Agentic AI?",
-                href: chapterPath(9),
-                note: "Where the code starts",
-              },
+              { label: "Setup", href: "/setup", note: "Colab, local install, limits" },
+              { label: "Data", href: "/data", note: "The synthetic datasets" },
             ],
           },
           {
-            title: "Reference",
-            links: [{ label: "Glossary", href: "/glossary" }],
+            title: "The book",
+            links: [{ label: "About the book", href: "/book" }],
           },
         ]}
       />

@@ -2,8 +2,8 @@
  *
  * Two things live here. First, `pageMetadata`, so canonical URLs and
  * OpenGraph tags are built one way instead of being retyped on every
- * route. Second, the stable JSON-LD node ids: the book, the primer, the
- * site, and each author are single entities, and every page that mentions
+ * route. Second, the stable JSON-LD node ids: the book, the site, and each
+ * author are single entities, and every page that mentions
  * one must point at the same @id rather than declaring a fresh copy.
  * Search engines and answer engines merge on those ids, so duplicating a
  * node is worse than omitting it. */
@@ -13,17 +13,9 @@ import { AUTHORS, type Author, SITE_NAME, SITE_URL } from "./site";
 
 export const ID = {
   book: `${SITE_URL}/#book`,
-  primer: `${SITE_URL}/#primer`,
   website: `${SITE_URL}/#website`,
   organization: `${SITE_URL}/#sssia`,
 } as const;
-
-export function slugify(value: string): string {
-  return value
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
-}
 
 /** Author @ids predate this module and are referenced by the landing page,
  * so the shape is kept exactly as it was: origin + "/#" + the slug, which
@@ -31,10 +23,6 @@ export function slugify(value: string): string {
  * entities as far as a consumer merging on @id is concerned. */
 export function authorId(author: Author): string {
   return `${SITE_URL}/#${author.slug}`;
-}
-
-export function authorPath(author: Author): string {
-  return `/authors/${author.slug}`;
 }
 
 /** Minimal Person references for embedding in other nodes. The full Person

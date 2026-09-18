@@ -1,227 +1,104 @@
-import { CHAPTER_CONCEPTS, CORE_POSITIONS } from "@/lib/book";
-import { CHAPTER_CONTENT } from "@/lib/chapter-content";
+import { AGENT_SCRIPTS } from "@/lib/agents";
+import { CHAPTER_CONCEPTS } from "@/lib/book";
 import { CHAPTERS } from "@/lib/chapters";
-import { CONCEPTS } from "@/lib/concepts";
-import { DOMAINS, domainForChapter } from "@/lib/domains";
-import { FAQ } from "@/lib/faq";
-import { GLOSSARY } from "@/lib/glossary";
-import { GITHUB_REPO } from "@/lib/links";
-import {
-  BOOK_PROMISE,
-  chapterPath,
-  OUTLINE,
-  TARGET_READERS,
-} from "@/lib/outline";
-import { REFERENCES } from "@/lib/references";
-import {
-  AUTHORS,
-  BOOK_DESCRIPTION,
-  BOOK_SUBTITLE,
-  SITE_NAME,
-  SITE_URL,
-} from "@/lib/site";
+import { DATASETS } from "@/lib/datasets";
+import { ACTEX_BOOK_URL, colabUrl, GITHUB_REPO } from "@/lib/links";
+import { OUTLINE } from "@/lib/outline";
+import { AUTHORS, BOOK_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 
-/** Reading orders for different starting points. Chapter numbers only —
- * the URLs are generated, so these cannot point at a page that moved. */
-const LEARNING_PATHS: { name: string; forWhom: string; chapters: number[] }[] = [
-  {
-    name: "Leader evaluating adoption",
-    forWhom:
-      "No code. What the technology can and cannot do, and what governing it requires.",
-    chapters: [1, 4, 9, 17, 18],
-  },
-  {
-    name: "Practitioner applying it to daily work",
-    forWhom:
-      "Prompting and grounding first, then agents, then your own domain chapter.",
-    chapters: [1, 5, 6, 9, 10, 13, 14],
-  },
-  {
-    name: "Builder writing the systems",
-    forWhom: "The full hands-on path, every chapter with runnable code.",
-    chapters: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
-  },
-];
-
-// llms.txt (https://llmstxt.org): a concise, markdown map of the site
-// for AI crawlers and answer engines. Generated from the same data the
-// pages render, so it cannot drift. Content is drawn from the book
-// itself — outline, chapter concepts, arguments, and glossary — so an
-// engine answering "what does this book say about X" can quote it
-// rather than guess.
 export const dynamic = "force-static";
 
-export function GET(): Response {
-  const fullName = (a: (typeof AUTHORS)[number]) =>
-    [a.honorificPrefix, a.name].filter(Boolean).join(" ");
+/** Plain-text map of the site for answer engines. Regenerated from the
+ * same data modules the pages render from. */
+export function GET() {
+  const lines: string[] = [];
+  const push = (...l: string[]) => lines.push(...l);
 
-  const authorLine = AUTHORS.map(fullName).join(" and ");
+  push(
+    `# ${SITE_NAME}: the code companion`,
+    "",
+    `> Companion site for the book Agentic AI for Actuaries (${AUTHORS.map((a) => a.name).join(" and ")}, ACTEX Learning, first edition 2026). The book is free at ${ACTEX_BOOK_URL}. This site carries the runnable companion code for chapters 9 to 17, the synthetic datasets it uses, and setup instructions.`,
+    "",
+    `Site: ${SITE_URL}`,
+    `Repository: ${GITHUB_REPO} (MIT licence; the book text is not covered)`,
+    `Book: ${ACTEX_BOOK_URL}`,
+    "",
+    "## What the site offers",
+    "",
+    `- ${SITE_URL}/code: nine chapters of companion code. Tool scripts run editable in the browser on Pyodide; agent scripts run live on the server against Gemini with tool calls streamed; every chapter opens in Colab.`,
+    `- ${SITE_URL}/setup: Colab with a free Google AI Studio key, local install with uv, the live runner's limits.`,
+    `- ${SITE_URL}/data: the synthetic Meridian Re datasets and which chapter reads each one.`,
+    `- ${SITE_URL}/book: what the book covers, where to get it, who wrote it.`,
+    "",
+    "## Code chapter pages",
+    ""
+  );
+  for (const c of CHAPTERS) {
+    push(
+      `### Chapter ${c.number}: ${c.title}`,
+      `${SITE_URL}/code/${c.slug}`,
+      c.blurb,
+      ""
+    );
+    for (const s of c.scripts) {
+      const agent = s.agentId
+        ? AGENT_SCRIPTS.find((a) => a.id === s.agentId)
+        : undefined;
+      const mode = s.demoId
+        ? "runs in the browser"
+        : agent?.runnable
+          ? "runs live on the server"
+          : "runs in Colab";
+      push(`- ${s.file}: ${s.description} (${mode})`);
+    }
+    const concepts = CHAPTER_CONCEPTS[c.number] ?? [];
+    if (concepts.length) push(`Builds: ${concepts.join("; ")}.`);
+    push(`Colab: ${colabUrl(c.slug)}`, "");
+  }
 
-  const authorBios = AUTHORS.map((a) => {
-    const credentials = a.honorificSuffix ? `, ${a.honorificSuffix}` : "";
-    const role = [a.jobTitle, a.affiliation].filter(Boolean).join(", ");
-    return `### ${fullName(a)}${credentials}\n\n${role ? `${role}.\n\n` : ""}${a.bio ?? ""}`;
-  }).join("\n\n");
+  push("## Datasets", "", `${SITE_URL}/data`, "");
+  for (const d of DATASETS) {
+    const users = d.usedBy.map((u) => `chapter ${u}`).join(", ");
+    push(
+      `- ${d.file}: ${d.summary} Used by ${users || "no chapter script (generated for completeness)"}.`
+    );
+  }
 
-  const outline = OUTLINE.map((part) => {
-    const chapters = part.chapters
-      .map((ch) => {
-        const page = `\n  Chapter page: ${SITE_URL}${chapterPath(ch.number)}`;
-        const link = ch.slug
-          ? `\n  Runnable code: ${SITE_URL}/code/${ch.slug}`
-          : "";
-        const domain = domainForChapter(ch.number);
-        const domainLine = domain
-          ? `\n  Practice domain: ${domain.name} — ${SITE_URL}/actuarial-ai/${domain.slug}`
-          : "";
-        const related = CONCEPTS.filter((c) =>
-          c.chapters.includes(ch.number)
-        );
-        const conceptLine = related.length
-          ? `\n  Concepts: ${related
-              .map((c) => `${c.title} (${SITE_URL}/concepts/${c.slug})`)
-              .join("; ")}`
-          : "";
-        const summary = CHAPTER_CONTENT[ch.number]?.summary[0];
-        const summaryLine = summary ? `\n  Summary: ${summary}` : "";
-        const concepts = (CHAPTER_CONCEPTS[ch.number] ?? [])
-          .map((c) => `\n  - ${c}`)
-          .join("");
-        return `- **Chapter ${ch.number}: ${ch.title}** — ${ch.oneLiner}\n  Case study: ${ch.caseStudy}.${page}${link}${domainLine}${conceptLine}${summaryLine}${concepts}`;
-      })
-      .join("\n\n");
-    return `### Part ${part.roman}: ${part.title} (${part.approach})\n\n${part.blurb}\n\n${chapters}`;
-  }).join("\n\n");
+  push(
+    "",
+    "## Setup",
+    "",
+    `${SITE_URL}/setup`,
+    "Colab: one notebook per chapter, add GOOGLE_API_KEY as a Colab secret. Local: uv sync, cp .env.example .env, uv run --env-file ../.env python <script>. Live runs on the site: 4 per minute and 75 per day per visitor, 750 per day site-wide, 240 seconds per run.",
+    "",
+    "## The book",
+    "",
+    BOOK_DESCRIPTION,
+    ""
+  );
+  for (const part of OUTLINE) {
+    push(`Part ${part.roman}: ${part.title}`);
+    for (const ch of part.chapters) {
+      push(
+        `- Chapter ${ch.number}: ${ch.title}${ch.slug ? ` (code: ${SITE_URL}/code/${ch.slug})` : ""}`
+      );
+    }
+    push("");
+  }
 
-  const learningPaths = LEARNING_PATHS.map(
-    (path) =>
-      `### ${path.name}\n\n${path.forWhom}\n\n${path.chapters
-        .map((n) => `${n}. ${SITE_URL}${chapterPath(n)}`)
-        .join("\n")}`
-  ).join("\n\n");
+  push("## Authors", "");
+  for (const a of AUTHORS) {
+    push(
+      `- ${a.name}${a.honorificSuffix ? `, ${a.honorificSuffix}` : ""}: ${a.bio ?? ""}`
+    );
+  }
+  push(
+    "",
+    "In collaboration with the Sri Sathya Sai Institute of Actuaries (https://sssia.org).",
+    ""
+  );
 
-  const questions = FAQ.map(
-    (item) => `- **${item.question}** ${item.answer}`
-  ).join("\n");
-
-  const domainPages = DOMAINS.map((d) => {
-    const workflows = d.workflows
-      .map((w) => `  - ${w.title}: ${w.blurb} Human retains: ${w.humanRetains}.`)
-      .join("\n");
-    return `- ${SITE_URL}/actuarial-ai/${d.slug} — ${d.name}. ${d.blurb}\n  Covered in Chapter ${d.chapter}; code at ${d.codeSlugs
-      .map((s) => `${SITE_URL}/code/${s}`)
-      .join(", ")}.\n${workflows}`;
-  }).join("\n\n");
-
-  const conceptPages = CONCEPTS.map(
-    (c) =>
-      `- ${SITE_URL}/concepts/${c.slug} — ${c.title}. ${c.summary}\n  Chapters ${c.chapters.join(
-        ", "
-      )}; domains ${c.domains.join(", ")}.`
-  ).join("\n");
-
-  const references = REFERENCES.map(
-    (r) => `- **${r.title}** (${r.publisher}, ${r.jurisdiction}) — ${r.note} ${r.url}`
-  ).join("\n");
-
-  const codePages = CHAPTERS.map(
-    (c) => `- ${SITE_URL}/code/${c.slug} — Chapter ${c.number}: ${c.title}. ${c.blurb}`
-  ).join("\n");
-
-  const glossary = GLOSSARY.map(
-    (g) => `- **${g.term}.** ${g.definition}`
-  ).join("\n");
-
-  const positions = CORE_POSITIONS.map((p) => `- ${p}`).join("\n");
-
-  const body = `# ${SITE_NAME}: ${BOOK_SUBTITLE}
-
-> ${BOOK_PROMISE}
-
-- Canonical URL: ${SITE_URL}
-- Authors: ${authorLine}
-- Publisher: ACTEX Learning (first edition, 2026); abridged primer published by the Sri Sathya Sai Institute of Actuaries
-- Repository: ${GITHUB_REPO} (MIT licence)
-- Scope: ${OUTLINE.length} parts, 18 chapters, ${CHAPTERS.length} chapters with runnable code, ${CONCEPTS.length} concept pages, ${DOMAINS.length} practice domains, ${GLOSSARY.length} glossary terms
-- Content licence: this file and the site's chapter summaries may be quoted with attribution to the book and a link to the chapter page.
-
-Companion site for the book *${SITE_NAME}* by ${authorLine}.
-${BOOK_DESCRIPTION}
-
-The book's Python examples are built on the Agno agent framework, with
-Google Gemini as the default model and Anthropic or OpenAI selectable
-through environment variables. Every listing in Parts III to V runs — in
-the browser, on this site's server, or in Google Colab.
-
-Written for:
-${TARGET_READERS.map((r) => `- ${r}`).join("\n")}
-
-## What this site offers
-
-- Deterministic actuarial tool scripts run editable in the browser
-  (Pyodide) — no install, no API key.
-- The book's agents run live on a server with their tool calls streamed
-  to the page.
-- Every code chapter opens directly in Google Colab.
-
-## Questions this site answers
-
-${questions}
-
-## What the book argues
-
-${positions}
-
-## Learning paths
-
-${learningPaths}
-
-## Book outline
-
-Each chapter below lists its own page, its practice domain where it has
-one, the concept pages that cover it, and its runnable code. Those four
-links are the relationships between every part of this site.
-
-${outline}
-
-## Practice domains
-
-${domainPages}
-
-## Concept pages
-
-${conceptPages}
-
-## Code chapter pages
-
-${codePages}
-
-## Glossary
-
-${glossary}
-
-## Sources and standards
-
-Cited by the book. Jurisdiction-specific; check each against its current
-version before relying on it. Full list: ${SITE_URL}/resources
-
-${references}
-
-## About the authors
-
-${authorBios}
-
-Full profiles: ${AUTHORS.map((a) => `${SITE_URL}/authors/${a.slug}`).join(", ")}
-
-## Source code
-
-- Repository: ${GITHUB_REPO}
-- Chapter explorer: ${SITE_URL}/code
-- Abridged primer: ${SITE_URL}/book/primer
-- Frequently asked questions: ${SITE_URL}/faq
-`;
-
-  return new Response(body, {
+  return new Response(lines.join("\n"), {
     headers: { "Content-Type": "text/plain; charset=utf-8" },
   });
 }

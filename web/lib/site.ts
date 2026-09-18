@@ -178,7 +178,3 @@ export const AUTHORS: Author[] = [
     links: [{ label: "rohanyashraj.com", url: "https://rohanyashraj.com" }],
   },
 ];
-
-export function getAuthor(slug: string): Author | undefined {
-  return AUTHORS.find((a) => a.slug === slug);
-}

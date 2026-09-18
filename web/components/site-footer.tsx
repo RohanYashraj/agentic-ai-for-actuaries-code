@@ -2,40 +2,25 @@ import Link from "next/link";
 import { ACTEX_BOOK_URL, GITHUB_REPO } from "@/lib/links";
 import { cn, CONTAINER } from "@/lib/utils";
 
-/** The secondary navigation. The header carries only the primary routes,
- * so pages like /resources and /faq are reachable from here rather than
- * only from a related-links rail. */
+/** The secondary navigation: the same routes as the header plus the
+ * external homes of the code and the book. */
 const FOOTER_LINKS: { title: string; links: { label: string; href: string }[] }[] =
   [
     {
-      title: "The book",
+      title: "Code",
       links: [
-        { label: "All chapters", href: "/book" },
-        { label: "The primer", href: "/book/primer" },
-        { label: "The authors", href: "/authors" },
-      ],
-    },
-    {
-      title: "Practice",
-      links: [
-        { label: "Practice domains", href: "/actuarial-ai" },
         { label: "Run the code", href: "/code" },
-      ],
-    },
-    {
-      title: "Reference",
-      links: [
-        { label: "Concepts", href: "/concepts" },
-        { label: "Glossary", href: "/glossary" },
-        { label: "Sources and standards", href: "/resources" },
-        { label: "Questions", href: "/faq" },
-      ],
-    },
-    {
-      title: "Stay close",
-      links: [
-        { label: "Get the book at ACTEX", href: ACTEX_BOOK_URL },
+        { label: "Setup", href: "/setup" },
+        { label: "Data", href: "/data" },
         { label: "GitHub", href: GITHUB_REPO },
+      ],
+    },
+    {
+      title: "Book",
+      links: [
+        { label: "About the book", href: "/book" },
+        { label: "Get it free at ACTEX", href: ACTEX_BOOK_URL },
+        { label: "Sri Sathya Sai Institute of Actuaries", href: "https://sssia.org" },
       ],
     },
   ];

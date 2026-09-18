@@ -49,6 +49,27 @@ const nextConfig: NextConfig = {
     }
     return [];
   },
+  async redirects() {
+    // Book-prose routes retired 2026-09; the book itself lives at ACTEX now.
+    const to = (source: string, destination: string) => ({
+      source,
+      destination,
+      permanent: true,
+    });
+    return [
+      to("/book/chapters/:chapter", "/book"),
+      to("/book/primer", "/book"),
+      to("/concepts", "/code"),
+      to("/concepts/:slug", "/code"),
+      to("/actuarial-ai", "/code"),
+      to("/actuarial-ai/:slug", "/code"),
+      to("/glossary", "/book"),
+      to("/resources", "/book"),
+      to("/faq", "/setup"),
+      to("/authors", "/book"),
+      to("/authors/:slug", "/book"),
+    ];
+  },
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];
   },

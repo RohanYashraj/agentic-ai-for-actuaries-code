@@ -11,18 +11,15 @@ import {
 import { JsonLd } from "@/components/json-ld";
 import { HeroIntro } from "@/components/motion/hero-intro";
 import { RevealOnScroll } from "@/components/motion/reveal-on-scroll";
-import { PartAccordion, type AccordionPart } from "@/components/part-accordion";
 import { StatValue } from "@/components/stat-value";
 import { ScriptCard } from "@/components/script-card";
 import { Button } from "@/components/ui/button";
 import { cn, CONTAINER } from "@/lib/utils";
 import { AGENT_SCRIPTS } from "@/lib/agents";
 import { getChapter } from "@/lib/chapters";
-import { LaunchSeal } from "@/components/launch-seal";
 import { ACTEX_BOOK_URL, GITHUB_REPO } from "@/lib/links";
 import {
   BOOK_PROMISE,
-  chapterPath,
   joinReaders,
   OUTLINE,
   TARGET_READERS,
@@ -93,11 +90,11 @@ const STRUCTURED_DATA = {
       hasPart: OUTLINE.flatMap((part) =>
         part.chapters.map((ch) => ({
           "@type": "Chapter",
-          "@id": `${SITE_URL}${chapterPath(ch.number)}`,
+          "@id": ch.slug ? `${SITE_URL}/code/${ch.slug}` : `${SITE_URL}/book`,
           position: ch.number,
           name: `Chapter ${ch.number}: ${ch.title}`,
           abstract: ch.oneLiner,
-          url: `${SITE_URL}${chapterPath(ch.number)}`,
+          url: ch.slug ? `${SITE_URL}/code/${ch.slug}` : `${SITE_URL}/book`,
         }))
       ),
     },
@@ -265,9 +262,9 @@ export default function LandingPage() {
                 read the chapters
               </Link>{" "}
               here: eighteen of them, nine with code that runs in your browser.
-              Short on time? Start with the{" "}
-              <Link href="/book/primer" className="text-cream-200 underline decoration-border underline-offset-4 hover:decoration-gold-400">
-                primer
+              Everything else is on the{" "}
+              <Link href="/book" className="text-cream-200 underline decoration-border underline-offset-4 hover:decoration-gold-400">
+                book page
               </Link>
               .
             </p>
@@ -290,7 +287,6 @@ export default function LandingPage() {
                   className="h-auto w-[300px] rounded-sm sm:w-[400px] lg:w-[480px] xl:w-[520px]"
                 />
               </div>
-              <LaunchSeal />
             </div>
           </div>
         </HeroIntro>
@@ -338,22 +334,11 @@ export default function LandingPage() {
             governance. Every chapter closes with a worked case study;
             chapters 9 to 17 ship runnable companion code.
           </p>
-          <PartAccordion
-            parts={OUTLINE.map(
-              (part): AccordionPart => ({
-                roman: part.roman,
-                title: part.title,
-                blurb: part.blurb,
-                chapters: part.chapters.map((ch) => ({
-                  number: ch.number,
-                  title: ch.title,
-                  oneLiner: ch.oneLiner,
-                  hasCode: Boolean(ch.slug),
-                  href: chapterPath(ch.number),
-                })),
-              })
-            )}
-          />
+          <p className="mt-6 text-sm">
+            <Link href="/book" className="text-cream-200 underline decoration-border underline-offset-4 hover:decoration-gold-400">
+              Browse the outline
+            </Link>
+          </p>
           <p className="mt-6 text-sm">
             <Link
               href="/book"
@@ -465,7 +450,7 @@ export default function LandingPage() {
                 <div>
                   <h3 className="font-serif text-lg text-cream-100">
                     <Link
-                      href={`/authors/${author.slug}`}
+                      href="/book#authors"
                       className="hover:underline"
                     >
                       {[author.honorificPrefix, author.name]

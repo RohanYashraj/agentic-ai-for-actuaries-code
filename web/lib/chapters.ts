@@ -15,6 +15,10 @@ export interface Chapter {
   number: number;
   title: string;
   blurb: string;
+  /** Where the chapter sits in the book. */
+  part: "III" | "IV" | "V";
+  /** The practice area the chapter's code serves; a label, not a route. */
+  domain: string;
   scripts: ScriptEntry[];
   extras?: string[]; // shared helper files worth pointing at
 }
@@ -22,6 +26,8 @@ export interface Chapter {
 export const CHAPTERS: Chapter[] = [
   {
     slug: "ch09",
+    part: "III",
+    domain: "Agentic architecture",
     folder: "ch09_agentic_foundations",
     number: 9,
     title: "What is Agentic AI?",
@@ -44,6 +50,8 @@ export const CHAPTERS: Chapter[] = [
   },
   {
     slug: "ch10",
+    part: "III",
+    domain: "Agentic architecture",
     folder: "ch10_tool_use",
     number: 10,
     title: "Tool Use and Function Calling",
@@ -53,7 +61,7 @@ export const CHAPTERS: Chapter[] = [
       {
         file: "01_mortality_tool.py",
         description:
-          "Looks up q(x) from the IALM 2012-14 ULT table, rejecting out-of-range inputs.",
+          "Looks up q(x) from the IALM 2012-14 ULP table, rejecting out-of-range inputs.",
         demoId: "ch10-01",
       },
       {
@@ -73,6 +81,8 @@ export const CHAPTERS: Chapter[] = [
   },
   {
     slug: "ch11",
+    part: "III",
+    domain: "Agentic architecture",
     folder: "ch11_multi_agent_workflows",
     number: 11,
     title: "Multi-Agent Systems and Collaboration",
@@ -90,6 +100,8 @@ export const CHAPTERS: Chapter[] = [
   },
   {
     slug: "ch12",
+    part: "III",
+    domain: "Agentic architecture",
     folder: "ch12_memory",
     number: 12,
     title: "Memory, Planning, and Reasoning",
@@ -112,6 +124,8 @@ export const CHAPTERS: Chapter[] = [
   },
   {
     slug: "ch13",
+    part: "IV",
+    domain: "Pricing and underwriting",
     folder: "ch13_underwriting_agent",
     number: 13,
     title: "Pricing and Underwriting",
@@ -140,6 +154,8 @@ export const CHAPTERS: Chapter[] = [
   },
   {
     slug: "ch14",
+    part: "IV",
+    domain: "Reserving and claims",
     folder: "ch14_reserving_reflexion",
     number: 14,
     title: "Reserving and Claims",
@@ -174,6 +190,8 @@ export const CHAPTERS: Chapter[] = [
   },
   {
     slug: "ch15",
+    part: "IV",
+    domain: "Life, health and pensions",
     folder: "ch15_pension_pipeline",
     number: 15,
     title: "Life, Health, and Pensions",
@@ -210,6 +228,8 @@ export const CHAPTERS: Chapter[] = [
   },
   {
     slug: "ch16",
+    part: "IV",
+    domain: "Risk and compliance",
     folder: "ch16_regulatory_capital",
     number: 16,
     title: "Risk Management and Compliance",
@@ -239,6 +259,8 @@ export const CHAPTERS: Chapter[] = [
   },
   {
     slug: "ch17",
+    part: "V",
+    domain: "Production and governance",
     folder: "ch17_governance_monitoring",
     number: 17,
     title: "Deploying and Governing Agentic AI in Practice",

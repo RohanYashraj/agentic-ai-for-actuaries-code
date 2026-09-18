@@ -142,17 +142,3 @@ export const CHAPTER_CONCEPTS: Record<number, string[]> = {
   ],
 };
 
-/** The positions the book argues, stated plainly. These are the claims a
- * reader — or an answer engine — would want attributed to the book. */
-export const CORE_POSITIONS = [
-  "AI will not replace actuaries, for a structural rather than a predictive reason: insurance regulation requires a named, qualified individual to sign actuarial opinions, and no algorithm can bear professional liability or be called before a tribunal under oath.",
-  "Hallucination is a structural property of large language models, not a bug awaiting a patch: the training objective optimises for plausibility, not truth.",
-  "The professional judgment required to validate AI outputs is itself a new actuarial skill, and it is the central subject of the book.",
-  "Agents earn their cost where inputs are heterogeneous and the response depends on judgment; uniform inputs with fixed responses are better served by deterministic pipelines.",
-  "Tool descriptions and tool engineering determine agent reliability more than prompt engineering does.",
-  "For actuarial work under regulatory scrutiny, start with workflows — fixed sequences of agent calls — rather than autonomous teams, because workflows are predictable, debuggable, and governable.",
-  "Most actuarial tasks do not need fine-tuning; prompting and retrieval handle the bulk of practical applications.",
-  "The gap between a pilot and a production system is architecture, monitoring, and governance — not technical sophistication — and it is responsible for most agentic AI projects that work in demos and fail in operations.",
-  "Agentic AI is governed under the existing actuarial framework rather than a new one, with rigour proportionate to the materiality of the application.",
-  "The profession is not at risk from agentic AI; it is at risk only from the failure to adapt to it.",
-];

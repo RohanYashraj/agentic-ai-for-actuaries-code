@@ -1,20 +1,29 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
+import { ArrowUpRight } from "@phosphor-icons/react/dist/ssr";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Button } from "@/components/ui/button";
 import { JsonLd } from "@/components/json-ld";
-import { chapterPath, BOOK_PROMISE, OUTLINE, TARGET_READERS, joinReaders } from "@/lib/outline";
+import { ACTEX_BOOK_URL } from "@/lib/links";
+import {
+  BOOK_PROMISE,
+  OUTLINE,
+  TARGET_READERS,
+  joinReaders,
+} from "@/lib/outline";
 import { absolute, breadcrumbList, graph, ID, pageMetadata } from "@/lib/seo";
-import { SITE_NAME } from "@/lib/site";
+import { AUTHORS, BOOK_SUBTITLE, SITE_NAME } from "@/lib/site";
 import { cn, CONTAINER } from "@/lib/utils";
 
 const DESCRIPTION =
-  "All eighteen chapters of Agentic AI for Actuaries, across five parts: AI foundations, working with large language models, agentic architecture, the four actuarial practice domains, and production governance.";
+  "Agentic AI for Actuaries: eighteen chapters in five parts, published by ACTEX Learning and free to read. What it covers, where to get it, and who wrote it.";
 
 export const metadata: Metadata = pageMetadata({
   title: "The book",
   description: DESCRIPTION,
   path: "/book",
+  ogType: "book",
 });
 
 const TRAIL = [
@@ -22,111 +31,171 @@ const TRAIL = [
   { name: "The book", path: "/book" },
 ];
 
+const LINK =
+  "text-ink underline decoration-line underline-offset-4 hover:decoration-gold";
+
 export default function BookPage() {
-  const structuredData = graph(
-    breadcrumbList(TRAIL),
-    {
-      "@type": "CollectionPage",
-      "@id": absolute("/book"),
-      name: `The book · ${SITE_NAME}`,
-      description: DESCRIPTION,
-      url: absolute("/book"),
-      isPartOf: { "@id": ID.website },
-      about: { "@id": ID.book },
-      mainEntity: {
-        "@type": "ItemList",
-        numberOfItems: 18,
-        itemListElement: OUTLINE.flatMap((part) =>
-          part.chapters.map((ch) => ({
-            "@type": "ListItem",
-            position: ch.number,
-            url: absolute(chapterPath(ch.number)),
-            name: `Chapter ${ch.number}: ${ch.title}`,
-          }))
-        ),
-      },
-    }
-  );
+  const structuredData = graph(breadcrumbList(TRAIL), {
+    "@type": "WebPage",
+    "@id": absolute("/book"),
+    name: `The book · ${SITE_NAME}`,
+    description: DESCRIPTION,
+    url: absolute("/book"),
+    isPartOf: { "@id": ID.website },
+    about: { "@id": ID.book },
+  });
 
   return (
     <div className={cn(CONTAINER, "py-10")}>
       <JsonLd data={structuredData} />
       <Breadcrumbs trail={TRAIL} />
 
-      <header className="mt-6 max-w-3xl">
-        <h1 className="text-3xl leading-tight sm:text-4xl">
-          The book, chapter by chapter
-        </h1>
-        <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-          {BOOK_PROMISE}
-        </p>
-        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-          Written for {joinReaders(TARGET_READERS)}.
-        </p>
-        <div className="mt-6 flex flex-wrap gap-3">
-          <Button asChild size="sm">
-            <Link href={chapterPath(1)}>Start with Chapter 1</Link>
-          </Button>
-          <Button asChild size="sm" variant="outline">
-            <Link href="/book/primer">Read the primer</Link>
-          </Button>
+      <header className="mt-6 grid items-start gap-10 lg:grid-cols-[1fr_300px]">
+        <div className="max-w-3xl">
+          <p className="label-mono">First edition · 2026 · ACTEX Learning</p>
+          <h1 className="mt-2 text-3xl leading-tight sm:text-4xl">
+            Agentic AI for Actuaries
+          </h1>
+          <p className="mt-2 font-serif text-lg text-slate">{BOOK_SUBTITLE}</p>
+          <p className="mt-5 text-base leading-relaxed text-slate">
+            {BOOK_PROMISE}
+          </p>
+          <p className="mt-3 text-sm leading-relaxed text-slate">
+            Written for {joinReaders(TARGET_READERS)}.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Button asChild className="bg-gold text-ink-2 hover:bg-gold-deep">
+              <a href={ACTEX_BOOK_URL} target="_blank" rel="noreferrer">
+                Get the book, free
+                <ArrowUpRight size={14} weight="bold" aria-hidden="true" />
+              </a>
+            </Button>
+            <Button asChild variant="outline">
+              <Link href="/code">Run the code</Link>
+            </Button>
+          </div>
         </div>
+        <a
+          href={ACTEX_BOOK_URL}
+          target="_blank"
+          rel="noreferrer"
+          className="book-cover mx-auto block w-[220px] lg:w-full"
+        >
+          <Image
+            src="/book-cover-photo.png"
+            alt="Cover of Agentic AI for Actuaries"
+            width={520}
+            height={716}
+            className="h-auto w-full rounded-sm"
+          />
+        </a>
       </header>
 
-      <div className="mt-12 space-y-14">
-        {OUTLINE.map((part) => (
-          <section key={part.roman}>
-            <div className="max-w-3xl">
-              <h2>
-                Part {part.roman}. {part.title}
-              </h2>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                {part.blurb}
-              </p>
-            </div>
-
-            <ul className="mt-6 max-w-3xl divide-y divide-border/60 border-t border-border/60">
-              {part.chapters.map((ch) => (
-                <li key={ch.number}>
-                  <Link
-                    href={chapterPath(ch.number)}
-                    className="grid grid-cols-[44px_1fr] gap-x-3 py-4 transition-colors hover:bg-navy-800/40"
+      <section className="mt-14">
+        <h2>What&rsquo;s inside</h2>
+        <div className="mt-6 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {OUTLINE.map((part) => (
+            <div key={part.roman} className="border-t-2 border-gold pt-4">
+              <p className="label-mono">Part {part.roman}</p>
+              <h3 className="mt-1 font-serif text-lg text-ink">{part.title}</h3>
+              <ol className="mt-3 space-y-1.5 text-sm">
+                {part.chapters.map((ch) => (
+                  <li
+                    key={ch.number}
+                    className="grid grid-cols-[28px_1fr] gap-x-2 leading-snug"
                   >
-                    <span className="font-serif text-xl leading-6 text-cream-400">
+                    <span className="font-mono text-xs text-slate">
                       {ch.number}
                     </span>
-                    <span>
-                      <span className="flex flex-wrap items-baseline gap-x-2 leading-6">
-                        <span className="text-[15px] text-cream-100">{ch.title}</span>
-                        {ch.slug && (
-                          <span className="font-mono text-xs text-gold-300">
-                            runnable code
-                          </span>
-                        )}
-                      </span>
-                      <span className="mt-1 block text-sm leading-relaxed text-muted-foreground">
-                        {ch.oneLiner}
-                      </span>
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
-        ))}
-      </div>
+                    {ch.slug ? (
+                      <Link href={`/code/${ch.slug}`} className={LINK}>
+                        {ch.title}
+                        <span className="ml-1.5 rounded-sm bg-gold-tint px-1 font-mono text-[10px] text-gold-ink">
+                          code
+                        </span>
+                      </Link>
+                    ) : (
+                      <span className="text-slate">{ch.title}</span>
+                    )}
+                  </li>
+                ))}
+              </ol>
+            </div>
+          ))}
+        </div>
+      </section>
 
-      <p className="mt-14 max-w-3xl text-sm leading-relaxed text-muted-foreground">
-        Nine chapters ship companion code you can{" "}
-        <Link href="/code" className="text-cream-200 underline decoration-border underline-offset-4 hover:decoration-gold-400">
-          run without installing anything
-        </Link>
-        . Prefer the short version? The{" "}
-        <Link href="/book/primer" className="text-cream-200 underline decoration-border underline-offset-4 hover:decoration-gold-400">
-          primer
-        </Link>{" "}
-        covers the argument in an afternoon.
-      </p>
+      <section id="authors" className="mt-14 scroll-mt-24">
+        <h2>The authors</h2>
+        <div className="mt-6 grid gap-8 md:grid-cols-2">
+          {AUTHORS.map((author) => (
+            <article key={author.slug} className="flex gap-4">
+              {author.image && (
+                <Image
+                  src={author.image}
+                  alt={`Portrait of ${author.name}`}
+                  width={96}
+                  height={96}
+                  className="size-24 shrink-0 rounded-sm border border-line object-cover"
+                />
+              )}
+              <div>
+                <h3 className="font-serif text-lg text-ink">
+                  {[author.honorificPrefix, author.name]
+                    .filter(Boolean)
+                    .join(" ")}
+                </h3>
+                {author.honorificSuffix && (
+                  <p className="font-mono text-[11px] text-gold-ink">
+                    {author.honorificSuffix}
+                  </p>
+                )}
+                {author.jobTitle && (
+                  <p className="mt-1 text-sm text-slate">
+                    {author.jobTitle}
+                    {author.affiliation ? `, ${author.affiliation}` : ""}
+                  </p>
+                )}
+                {(author.biography ?? [author.cardBio])
+                  .filter(Boolean)
+                  .slice(0, 2)
+                  .map((para, i) => (
+                    <p
+                      key={i}
+                      className="mt-2 text-sm leading-relaxed text-slate"
+                    >
+                      {para}
+                    </p>
+                  ))}
+                {author.links?.map((link) => (
+                  <a
+                    key={link.url}
+                    href={link.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-2 inline-flex items-center gap-1 text-xs text-slate hover:text-ink"
+                  >
+                    {link.label}
+                    <ArrowUpRight size={12} aria-hidden="true" />
+                  </a>
+                ))}
+              </div>
+            </article>
+          ))}
+        </div>
+        <p className="mt-8 text-sm text-slate">
+          Foreword by, and in collaboration with, the{" "}
+          <a
+            href="https://sssia.org"
+            target="_blank"
+            rel="noreferrer"
+            className="text-ink underline underline-offset-2"
+          >
+            Sri Sathya Sai Institute of Actuaries
+          </a>
+          .
+        </p>
+      </section>
     </div>
   );
 }
