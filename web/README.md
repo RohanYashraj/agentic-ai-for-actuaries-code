@@ -7,9 +7,14 @@ calls streamed to the page, and every chapter opens in Google Colab.
 
 ## How it fits together
 
-- `app/` — routes: `/` (landing: book overview, outline, authors,
-  launch notify), `/code` (chapter explorer), `/code/[chapter]` (one
-  page per chapter, ch09-ch17).
+- `app/` — routes: `/` (landing: the launch, the nine code chapters,
+  three ways to run, a live agent), `/code` (chapter explorer),
+  `/code/[chapter]` (one page per chapter, ch09-ch17), `/setup` (Colab,
+  local install, runner limits), `/data` (the synthetic datasets),
+  `/book` (about the book and its authors). Retired book-prose routes
+  (`/book/chapters/*`, `/book/primer`, `/concepts*`, `/actuarial-ai*`,
+  `/glossary`, `/resources`, `/faq`, `/authors*`) redirect permanently
+  from `next.config.ts`; `../scripts/check_redirects.mjs` guards them.
 - `components/` — `demo-runner` (editable CodeMirror + Run against the
   Pyodide worker), `agent-runner` (SSE stream of a server-side agno run),
   `script-card`, `code-view`, `run-output`, shadcn/ui primitives.

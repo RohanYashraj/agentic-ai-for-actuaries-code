@@ -66,7 +66,7 @@ export type Author = {
   image?: string;
   /** Short label for the homepage card. */
   cardBio?: string;
-  /** Full biography for /authors/[slug]. */
+  /** Full biography, shown on /book. */
   biography?: string[];
   roles?: { title: string; org: string }[];
   research?: string;

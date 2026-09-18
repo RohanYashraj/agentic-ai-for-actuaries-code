@@ -18,7 +18,7 @@ export default function NotFound() {
           Go to the homepage
         </Link>
         <Link href="/book" className="text-gold-ink underline-offset-4 hover:underline">
-          All chapters
+          About the book
         </Link>
         <Link href="/code" className="text-gold-ink underline-offset-4 hover:underline">
           Browse the code chapters

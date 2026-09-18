@@ -51,7 +51,7 @@ begins. Chapter 18 contains no code by design.
 
 | | Where | Install needed | Best for |
 |---|---|---|---|
-| **Website** | The book's site, built from [`web/`](web/README.md) | None | Trying tool scripts in the browser (Python in WebAssembly) and watching agent runs streamed live |
+| **Website** | The code companion, built from [`web/`](web/README.md) | None | Running chapters 9 to 17 in the browser (Python in WebAssembly) or live on the server, with setup and data pages |
 | **Colab** | One notebook per chapter in [`notebooks/`](notebooks/README.md) | None — just a Google account and an API key | Running every chapter top-to-bottom with zero local setup |
 | **Local** | This repository | uv (or venv + pip) and an API key | Following along with the book, editing and extending the examples |
 
