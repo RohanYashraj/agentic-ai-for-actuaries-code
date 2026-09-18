@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight } from "@phosphor-icons/react/dist/ssr";
+import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpenText, GithubLogo, Terminal } from "@phosphor-icons/react/dist/ssr";
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { JsonLd } from "@/components/json-ld";
@@ -104,67 +104,90 @@ export default async function ChapterPage({
   });
 
   return (
-    <div className={cn(CONTAINER, "py-10")}>
+    <div className={cn(CONTAINER, "py-12")}>
       <JsonLd data={structuredData} />
       <Breadcrumbs trail={trail} />
 
-      <header className="mt-6 max-w-3xl">
-        <p className="flex flex-wrap items-center gap-2">
-          <span className="label-mono">Chapter {chapter.number}</span>
-          <span className="text-muted-foreground" aria-hidden="true">
-            ·
+      <header className="mt-8 max-w-3xl">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="inline-flex items-center gap-1 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 font-mono text-xs font-semibold text-amber-300">
+            <BookOpenText size={13} weight="bold" />
+            <span>Chapter {chapter.number}</span>
           </span>
-          <span className="label-mono">Part {chapter.part}</span>
-          <span className="rounded-sm bg-gold-400/10 px-1.5 py-0.5 font-mono text-[11px] text-gold-300">
+          <span className="text-slate-500">·</span>
+          <span className="font-mono text-xs text-slate-400">
+            Part {chapter.part}
+          </span>
+          <span className="rounded-full border border-amber-400/20 bg-amber-400/10 px-2.5 py-0.5 font-mono text-[11px] text-amber-300 font-medium">
             {chapter.domain}
           </span>
-        </p>
-        <h1 className="mt-2 text-3xl leading-tight sm:text-4xl">
+        </div>
+
+        <h1 className="mt-4 text-3xl sm:text-5xl font-serif text-white font-bold tracking-tight leading-[1.1]">
           {chapter.title}
         </h1>
-        <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+
+        <p className="mt-4 text-base sm:text-lg leading-relaxed text-slate-300">
           {chapter.blurb}
         </p>
+
         {part && (
-          <p className="mt-2 text-sm text-muted-foreground">
-            In the book: Part {part.roman}, {part.title}.
+          <p className="mt-2 text-xs sm:text-sm text-slate-400">
+            In the published book: <strong className="text-slate-200">Part {part.roman} ({part.title})</strong>.
           </p>
         )}
-        <div className="mt-5 flex flex-wrap gap-3">
-          <Button asChild size="sm" className="bg-gold-400 text-navy-950 hover:bg-gold-300">
-            <a href="#listings">Run it here</a>
-          </Button>
-          <Button asChild size="sm" variant="outline">
-            <a href={colabUrl(chapter.slug)} target="_blank" rel="noreferrer">
-              Open in Colab
+
+        <div className="mt-7 flex flex-wrap gap-3">
+          <Button asChild size="default" className="launch-cta h-10 px-4 text-xs sm:text-sm font-semibold">
+            <a href="#listings">
+              <Terminal size={16} />
+              <span>Run listings below</span>
             </a>
           </Button>
-          <Button asChild size="sm" variant="outline">
+          <Button
+            asChild
+            size="default"
+            variant="outline"
+            className="h-10 px-4 text-xs sm:text-sm border-white/15 bg-white/5 text-white hover:bg-white/10"
+          >
+            <a href={colabUrl(chapter.slug)} target="_blank" rel="noreferrer">
+              <span>Open in Colab</span>
+              <ArrowUpRight size={13} />
+            </a>
+          </Button>
+          <Button
+            asChild
+            size="default"
+            variant="outline"
+            className="h-10 px-4 text-xs sm:text-sm border-white/15 bg-white/5 text-white hover:bg-white/10"
+          >
             <a
               href={`${GITHUB_REPO}/tree/main/${chapter.folder}`}
               target="_blank"
               rel="noreferrer"
             >
-              GitHub
+              <GithubLogo size={15} />
+              <span>GitHub</span>
             </a>
           </Button>
         </div>
       </header>
 
       {concepts.length > 0 && (
-        <section className="mt-8 max-w-3xl rounded-md border border-border bg-card px-5 py-4">
-          <h3 className="text-base font-semibold">What you&rsquo;ll build</h3>
-          <ul className="mt-3 space-y-1.5 text-sm text-muted-foreground">
+        <section className="mt-10 card-glass p-5 sm:p-6 max-w-3xl border-l-4 border-l-amber-400">
+          <h3 className="text-base font-semibold text-white">What you&rsquo;ll build</h3>
+          <ul className="mt-3 space-y-2 text-xs sm:text-sm text-slate-300">
             {concepts.map((c) => (
-              <li key={c} className="list-disc marker:text-gold-400 ml-4">
-                {c}
+              <li key={c} className="flex items-start gap-2">
+                <span className="text-amber-400 mt-0.5 select-none">✦</span>
+                <span>{c}</span>
               </li>
             ))}
           </ul>
         </section>
       )}
 
-      <section id="listings" className="mt-10 scroll-mt-24 space-y-6">
+      <section id="listings" className="mt-12 scroll-mt-24 space-y-8">
         {chapter.scripts.map((script) => {
           const demoSpec = script.demoId ? manifest[script.demoId] : undefined;
           const agentEntry = script.agentId
@@ -189,8 +212,8 @@ export default async function ChapterPage({
       </section>
 
       {chapter.extras && chapter.extras.length > 0 && (
-        <p className="mt-6 text-sm text-muted-foreground">
-          Shared helpers for this chapter live in{" "}
+        <div className="mt-8 rounded-xl border border-white/10 bg-white/5 p-4 text-xs sm:text-sm text-slate-400">
+          Shared helper modules for this chapter live in{" "}
           {chapter.extras.map((f, i) => (
             <span key={f}>
               {i > 0 && ", "}
@@ -198,26 +221,26 @@ export default async function ChapterPage({
                 href={`${GITHUB_REPO}/blob/main/${chapter.folder}/${f}`}
                 target="_blank"
                 rel="noreferrer"
-                className="font-mono text-cream-100 underline underline-offset-2"
+                className="font-mono text-amber-300 underline underline-offset-2 hover:text-white"
               >
                 {f}
               </a>
             </span>
           ))}
           .
-        </p>
+        </div>
       )}
 
       <RelatedLinks groups={relatedForCodeChapter(chapter.slug)} />
 
-      <nav className="mt-12 flex justify-between border-t border-border pt-6 text-sm">
+      <nav className="mt-14 flex justify-between border-t border-white/10 pt-6 text-sm">
         {prev ? (
           <Link
             href={`/code/${prev.slug}`}
-            className="inline-flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-cream-100"
+            className="inline-flex items-center gap-2 text-slate-400 transition-colors hover:text-amber-300 font-medium"
           >
-            <ArrowLeft size={14} aria-hidden="true" />
-            Chapter {prev.number}: {prev.title}
+            <ArrowLeft size={16} aria-hidden="true" />
+            <span>Chapter {prev.number}: {prev.title}</span>
           </Link>
         ) : (
           <span />
@@ -225,10 +248,10 @@ export default async function ChapterPage({
         {next ? (
           <Link
             href={`/code/${next.slug}`}
-            className="inline-flex items-center gap-1.5 text-right text-muted-foreground transition-colors hover:text-cream-100"
+            className="inline-flex items-center gap-2 text-right text-slate-400 transition-colors hover:text-amber-300 font-medium ml-auto"
           >
-            Chapter {next.number}: {next.title}
-            <ArrowRight size={14} aria-hidden="true" />
+            <span>Chapter {next.number}: {next.title}</span>
+            <ArrowRight size={16} aria-hidden="true" />
           </Link>
         ) : (
           <span />

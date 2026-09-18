@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowUpRight } from "@phosphor-icons/react/dist/ssr";
+import { ArrowUpRight, Database, FileText, Table } from "@phosphor-icons/react/dist/ssr";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { JsonLd } from "@/components/json-ld";
 import { RelatedLinks } from "@/components/related-links";
@@ -26,16 +26,19 @@ const TRAIL = [
 ];
 
 const LINK =
-  "text-cream-100 underline decoration-border underline-offset-4 hover:decoration-gold-400";
+  "text-amber-400 underline decoration-amber-400/40 underline-offset-4 hover:decoration-amber-400 hover:text-white transition-colors";
 
 function ChapterLink({ n }: { n: number }) {
   const ch = CHAPTERS.find((c) => c.number === n);
   return ch ? (
-    <Link href={`/code/${ch.slug}`} className={LINK}>
-      Chapter {n}
+    <Link
+      href={`/code/${ch.slug}`}
+      className="inline-flex items-center gap-1 rounded-full border border-amber-500/20 bg-amber-500/10 px-2.5 py-0.5 font-mono text-[11px] text-amber-300 hover:border-amber-400 hover:text-white transition-colors"
+    >
+      <span>Chapter {n}</span>
     </Link>
   ) : (
-    <span>Chapter {n}</span>
+    <span className="font-mono text-[11px] text-slate-400">Chapter {n}</span>
   );
 }
 
@@ -65,20 +68,18 @@ export default function DataPage() {
   });
 
   return (
-    <div className={cn(CONTAINER, "py-10")}>
+    <div className={cn(CONTAINER, "py-12")}>
       <JsonLd data={structuredData} />
       <Breadcrumbs trail={TRAIL} />
-      <header className="mt-6 max-w-3xl">
-        <h1 className="text-3xl leading-tight sm:text-4xl">The data</h1>
-        <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+
+      <header className="mt-8 max-w-3xl">
+        <p className="label-mono">Synthetic Data Catalog</p>
+        <h1 className="mt-2 text-3xl sm:text-5xl font-serif text-white font-bold tracking-tight">The data</h1>
+        <p className="mt-4 text-base sm:text-lg leading-relaxed text-slate-300">
           {DESCRIPTION}
         </p>
-        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-          Everything in{" "}
-          <code className="rounded bg-navy-800 px-1 font-mono text-[13px] text-cream-100">
-            data/
-          </code>{" "}
-          is written by{" "}
+        <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-4 text-xs sm:text-sm leading-relaxed text-slate-400">
+          Everything in <code className="rounded bg-black/40 px-1.5 py-0.5 font-mono text-amber-300 border border-white/10">data/</code> is generated deterministically by{" "}
           <a
             href={githubFileUrl("data/generate_data.py")}
             target="_blank"
@@ -87,65 +88,77 @@ export default function DataPage() {
           >
             generate_data.py
           </a>{" "}
-          from a fixed seed, so a fresh clone reproduces the shipped files
-          byte for byte. No real company data and no real mortality table
-          appears anywhere in the repository.
-        </p>
+          from a fixed seed, ensuring byte-for-byte reproducibility on any fresh clone. No proprietary company data or real mortality tables appear anywhere in this work.
+        </div>
       </header>
 
-      <ul className="mt-12 divide-y divide-border border-t border-border">
+      <div className="mt-12 space-y-5">
         {DATASETS.map((d) => (
-          <li
+          <article
             key={d.file}
-            className="grid gap-3 py-6 lg:grid-cols-[minmax(0,1fr)_220px]"
+            className="card-glass p-5 sm:p-6 flex flex-col lg:flex-row lg:items-start lg:justify-between gap-5"
           >
-            <div className="min-w-0">
-              <h2 className="flex flex-wrap items-baseline gap-x-3 text-lg">
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-center gap-2.5">
                 <a
                   href={githubFileUrl(`data/${d.file}`)}
                   target="_blank"
                   rel="noreferrer"
-                  className="break-all font-mono text-base text-cream-100 hover:underline"
+                  className="flex items-center gap-1.5 font-mono text-base font-semibold text-white hover:text-amber-300 transition-colors break-all"
                 >
-                  {d.file}
-                  <ArrowUpRight
-                    size={12}
-                    className="ml-1 inline"
-                    aria-hidden="true"
-                  />
+                  <Database size={16} className="text-amber-400 shrink-0" />
+                  <span>{d.file}</span>
+                  <ArrowUpRight size={13} className="shrink-0" />
                 </a>
-                <span className="rounded-sm bg-gold-400/10 px-1.5 py-0.5 font-mono text-[11px] uppercase text-gold-300">
+
+                <span className="rounded-full bg-amber-400/10 border border-amber-400/25 px-2.5 py-0.5 font-mono text-[10px] uppercase font-bold text-amber-300">
                   {d.kind}
                 </span>
+
                 {d.rows && (
-                  <span className="font-mono text-xs text-muted-foreground">
+                  <span className="rounded-full bg-white/5 border border-white/10 px-2.5 py-0.5 font-mono text-[11px] text-slate-400">
                     {d.rows} rows
                   </span>
                 )}
-              </h2>
-              <p className="mt-2 text-base leading-relaxed text-muted-foreground">
+              </div>
+
+              <p className="mt-3 text-sm leading-relaxed text-slate-300">
                 {d.summary}
               </p>
+
               {d.columns && (
-                <p className="mt-2 break-words font-mono text-xs leading-relaxed text-muted-foreground">
-                  {d.columns.join(" · ")}
+                <div className="mt-3 flex flex-wrap gap-1.5 pt-1">
+                  {d.columns.map((col) => (
+                    <span
+                      key={col}
+                      className="rounded bg-white/5 border border-white/5 px-2 py-0.5 font-mono text-[11px] text-slate-400"
+                    >
+                      {col}
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {d.note && (
+                <p className="mt-3 text-xs text-amber-300/80 italic">
+                  Note: {d.note}
                 </p>
               )}
-              {d.note && <p className="mt-2 text-sm text-muted-foreground">{d.note}</p>}
             </div>
-            <p className="text-sm text-muted-foreground lg:text-right">
-              {d.usedBy.length
-                ? d.usedBy.map((n, i) => (
-                    <span key={n}>
-                      {i > 0 && ", "}
-                      <ChapterLink n={n} />
-                    </span>
-                  ))
-                : "Not read by any script"}
-            </p>
-          </li>
+
+            <div className="border-t border-white/10 pt-4 lg:border-t-0 lg:pt-0 lg:border-l lg:border-white/10 lg:pl-6 lg:text-right shrink-0">
+              <p className="label-mono text-[10px] text-slate-400">Used by</p>
+              <div className="mt-2 flex flex-wrap gap-1.5 lg:justify-end">
+                {d.usedBy.length ? (
+                  d.usedBy.map((n) => <ChapterLink key={n} n={n} />)
+                ) : (
+                  <span className="text-xs text-slate-500 italic">Reference dataset</span>
+                )}
+              </div>
+            </div>
+          </article>
         ))}
-      </ul>
+      </div>
 
       <RelatedLinks
         groups={[

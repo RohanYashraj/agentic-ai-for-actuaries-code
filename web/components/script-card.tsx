@@ -1,4 +1,4 @@
-import { FileCode, GithubLogo } from "@phosphor-icons/react/dist/ssr";
+import { FileCode, GithubLogo, Play, Sparkle } from "@phosphor-icons/react/dist/ssr";
 import { AgentRunner } from "@/components/agent-runner";
 import { CodeView } from "@/components/code-view";
 import { DemoRunner } from "@/components/demo-runner";
@@ -28,55 +28,66 @@ export function ScriptCard({
   const hasAgent = Boolean(agentEntry?.runnable);
 
   return (
-    <article className="rounded-md border border-border bg-card">
-      <header className="flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b border-border px-4 py-3 sm:px-5">
-        {/* break-all: filenames like 02_pricing_reconciliation_tool.py
-            are wider than a 320px phone and have no break opportunity. */}
-        <h3 className="flex min-w-0 items-baseline gap-1.5 font-mono text-sm font-medium text-cream-100">
+    <article className="card-glass overflow-hidden">
+      <header className="flex flex-wrap items-baseline gap-x-3 gap-y-2 border-b border-white/10 bg-white/[0.02] px-4 py-3.5 sm:px-6">
+        <h3 className="flex min-w-0 items-baseline gap-2 font-mono text-sm font-semibold text-white">
           <FileCode
-            size={16}
-            className="shrink-0 translate-y-0.5 text-gold-300"
+            size={18}
+            className="shrink-0 translate-y-0.5 text-amber-400"
             aria-hidden="true"
           />
           <span className="break-all">{script.file}</span>
         </h3>
+
         {hasDemo && (
-          <Badge className="bg-run-ok/15 text-run-ok border-transparent font-mono text-[10px]">
-            runs in your browser
+          <Badge className="bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-mono text-[11px] gap-1 px-2.5 py-0.5">
+            <Play size={10} weight="fill" />
+            <span>runs in your browser</span>
           </Badge>
         )}
+
         {hasAgent && (
-          <Badge className="bg-gold-400/10 text-gold-300 border-transparent font-mono text-[10px]">
-            live agent
+          <Badge className="bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 font-mono text-[11px] gap-1 px-2.5 py-0.5">
+            <Sparkle size={10} weight="fill" />
+            <span>live agent</span>
           </Badge>
         )}
+
         {!hasDemo && !hasAgent && (
-          <Badge className="bg-navy-800 text-muted-foreground border-transparent font-mono text-[10px]">
+          <Badge className="bg-amber-500/10 text-amber-300 border border-amber-500/25 font-mono text-[11px] px-2.5 py-0.5">
             run in Colab
           </Badge>
         )}
+
         <a
           href={githubFileUrl(`${chapter.folder}/${script.file}`)}
           target="_blank"
           rel="noreferrer"
-          className="ml-auto inline-flex items-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-cream-100"
+          className="ml-auto inline-flex items-center gap-1.5 text-xs text-slate-400 transition-colors hover:text-white"
         >
-          <GithubLogo size={14} aria-hidden="true" />
-          Source on GitHub
+          <GithubLogo size={15} aria-hidden="true" />
+          <span>Source on GitHub</span>
         </a>
-        <p className="w-full text-sm text-muted-foreground">
+
+        <p className="w-full text-xs sm:text-sm text-slate-300 leading-relaxed">
           {script.description}
         </p>
       </header>
 
-      <div className="p-3 sm:p-4">
+      <div className="p-4 sm:p-5">
         {hasDemo && hasAgent && agentEntry ? (
           <Tabs defaultValue="demo">
-            <TabsList className="mb-3 bg-navy-800/70">
-              <TabsTrigger value="demo" className="text-xs">
+            <TabsList className="mb-4 bg-white/5 border border-white/10 p-1 rounded-lg">
+              <TabsTrigger
+                value="demo"
+                className="text-xs data-[state=active]:bg-emerald-500 data-[state=active]:text-navy-950 font-medium transition-all"
+              >
                 Tool, in your browser
               </TabsTrigger>
-              <TabsTrigger value="agent" className="text-xs">
+              <TabsTrigger
+                value="agent"
+                className="text-xs data-[state=active]:bg-cyan-500 data-[state=active]:text-navy-950 font-medium transition-all"
+              >
                 Agent, on the server
               </TabsTrigger>
             </TabsList>
@@ -102,7 +113,7 @@ export function ScriptCard({
             title={`${chapter.folder}/${script.file}`}
           />
         ) : (
-          <div className="overflow-hidden rounded-md border border-border">
+          <div className="overflow-hidden rounded-lg border border-white/10">
             {originalSource !== undefined && (
               <CodeView
                 source={originalSource}
@@ -110,14 +121,14 @@ export function ScriptCard({
                 title={`${chapter.folder}/${script.file}`}
               />
             )}
-            <p className="border-t border-border bg-navy-950/60 px-4 py-2.5 text-xs text-muted-foreground">
+            <p className="border-t border-white/10 bg-[#060913]/80 px-4 py-3 text-xs text-slate-400 leading-relaxed">
               {agentEntry?.reason ??
                 "This script needs packages beyond the browser runtime."}{" "}
               <a
                 href={colabUrl(chapter.slug)}
                 target="_blank"
                 rel="noreferrer"
-                className="text-gold-300 underline underline-offset-2"
+                className="text-amber-400 underline underline-offset-2 hover:text-white"
               >
                 Open the chapter in Colab
               </a>{" "}

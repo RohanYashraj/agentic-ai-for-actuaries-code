@@ -1,15 +1,10 @@
 import Link from "next/link";
+import { ArrowUpRight } from "@phosphor-icons/react/dist/ssr";
 import { hasRoute } from "@/lib/routes";
 
 export type RelatedLink = { label: string; href: string; note?: string };
 export type RelatedGroup = { title: string; links: RelatedLink[] };
 
-/** The rail that turns the site from a set of pages into a connected graph.
- *
- * Links whose target is not in the route registry are dropped rather than
- * rendered dead, so a page can declare its relationships before the pages
- * on the other end have been built. External links (http, mailto) pass
- * through untouched. */
 function isLive(href: string): boolean {
   if (/^[a-z]+:/i.test(href) || href.startsWith("//")) return true;
   return hasRoute(href);
@@ -23,34 +18,45 @@ export function RelatedLinks({ groups }: { groups: RelatedGroup[] }) {
   if (live.length === 0) return null;
 
   return (
-    <aside className="mt-12 border-t border-border pt-8">
-      <h2 className="label-mono">
-        Keep reading
-      </h2>
-      <div className="mt-5 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <aside className="mt-14 border-t border-white/10 pt-10">
+      <p className="label-mono">Keep Exploring</p>
+      <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {live.map((group) => (
-          <div key={group.title}>
-            <h3 className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
+          <div key={group.title} className="card-glass p-5">
+            <h3 className="font-mono text-xs font-semibold uppercase tracking-wider text-amber-400">
               {group.title}
             </h3>
-            {/* Looser on a phone: these are thumb targets there, not
-                a dense reference rail. */}
-            <ul className="mt-2.5 space-y-3 text-sm sm:space-y-2">
-              {group.links.map((link) => (
-                <li key={`${group.title}-${link.href}-${link.label}`}>
-                  <Link
-                    href={link.href}
-                    className="text-cream-100 underline decoration-border underline-offset-4 transition-colors hover:decoration-gold-400"
-                  >
-                    {link.label}
-                  </Link>
-                  {link.note && (
-                    <span className="block text-xs text-muted-foreground">
-                      {link.note}
-                    </span>
-                  )}
-                </li>
-              ))}
+            <ul className="mt-3 space-y-2.5 text-sm">
+              {group.links.map((link) => {
+                const isExternal = link.href.startsWith("http");
+                return (
+                  <li key={`${group.title}-${link.href}-${link.label}`}>
+                    {isExternal ? (
+                      <a
+                        href={link.href}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1 font-medium text-slate-200 hover:text-amber-300 transition-colors"
+                      >
+                        <span>{link.label}</span>
+                        <ArrowUpRight size={12} />
+                      </a>
+                    ) : (
+                      <Link
+                        href={link.href}
+                        className="font-medium text-slate-200 hover:text-amber-300 transition-colors"
+                      >
+                        {link.label}
+                      </Link>
+                    )}
+                    {link.note && (
+                      <span className="block text-xs text-slate-400 mt-0.5">
+                        {link.note}
+                      </span>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </div>
         ))}

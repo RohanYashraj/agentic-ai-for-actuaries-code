@@ -5,6 +5,8 @@ import Link from "next/link";
 import {
   ArrowUpRight,
   BookOpenText,
+  Play,
+  Sparkle,
   Terminal,
 } from "@phosphor-icons/react/dist/ssr";
 import { JsonLd } from "@/components/json-ld";
@@ -77,7 +79,6 @@ const STRUCTURED_DATA = {
       image: `${SITE_URL}/book-cover-photo.png`,
       url: SITE_URL,
       author: AUTHOR_NODES.map((a) => ({ "@id": a["@id"] })),
-      // Chapters with code point at their /code page; the rest at /book.
       hasPart: OUTLINE.flatMap((part) =>
         part.chapters.map((ch) => {
           const url = ch.slug
@@ -112,15 +113,24 @@ export const metadata = { alternates: { canonical: "/" } };
 const WAYS = [
   {
     title: "In your browser",
-    body: "Tool scripts run on a Python runtime loaded into the page. Edit them and run again; nothing leaves your machine.",
+    tag: "Instant & Local",
+    color: "from-emerald-400 to-teal-500",
+    badge: "border-emerald-500/30 text-emerald-400 bg-emerald-500/10",
+    body: "Tool scripts run on a full CPython runtime loaded into the page via WebAssembly. Edit parameters and run immediately; nothing leaves your machine.",
   },
   {
     title: "Live on our server",
-    body: "Agent scripts run against Gemini with every tool call streamed as it happens. A shared key and modest limits.",
+    tag: "Gemini 2.5 + Agno",
+    color: "from-cyan-400 to-blue-500",
+    badge: "border-cyan-500/30 text-cyan-400 bg-cyan-500/10",
+    body: "Watch autonomous agents execute against Gemini with every tool call, reasoning step, and structured output streamed live.",
   },
   {
-    title: "In Colab",
-    body: "Every chapter opens as a notebook. Bring your own free Google AI Studio key and run without limits.",
+    title: "In Google Colab",
+    tag: "Full Freedom",
+    color: "from-amber-400 to-orange-500",
+    badge: "border-amber-500/30 text-amber-400 bg-amber-500/10",
+    body: "Every chapter opens as an interactive notebook. Bring your own free Google AI Studio key and experiment without shared server limits.",
   },
 ];
 
@@ -136,7 +146,7 @@ const FACTS: [string, string, string][] = [
 ];
 
 const LINK =
-  "text-cream-100 underline decoration-border underline-offset-4 hover:decoration-gold-400";
+  "text-white underline decoration-amber-400/50 underline-offset-4 hover:decoration-amber-400 hover:text-amber-300 transition-colors";
 
 function readOriginal(folder: string, file: string): string | undefined {
   try {
@@ -157,14 +167,11 @@ export default function LandingPage() {
     : undefined;
 
   return (
-    <div>
+    <div className="relative">
       <JsonLd data={STRUCTURED_DATA} />
 
-      {/* Hero: the launch. The strip runs edge to edge above it and is one
-          big link to the book's page; the same run repeats six times and the
-          track slides by exactly one run, so the loop is seamless. Only the
-          first run is read out. */}
-      <section className="overflow-x-clip border-b border-border">
+      {/* Hero: Celebratory Launch Strip */}
+      <section className="overflow-x-clip border-b border-white/10">
         <a
           href={ACTEX_BOOK_URL}
           target="_blank"
@@ -179,134 +186,190 @@ export default function LandingPage() {
                 className="launch-strip-run"
                 aria-hidden={run > 0 ? "true" : undefined}
               >
-                <span>Book launch</span>
+                <span>Official Book Launch</span>
                 <span className="launch-star">★</span>
-                <span>Out now</span>
+                <span>Out Now · First Edition 2026</span>
                 <span className="launch-star">★</span>
                 <span>Agentic AI for Actuaries</span>
                 <span className="launch-star">★</span>
                 <span>Free from ACTEX Learning</span>
                 <span className="launch-star">★</span>
-                <span>Get your copy</span>
+                <span>Get Your Copy</span>
                 <span className="launch-star">★</span>
               </div>
             ))}
           </div>
         </a>
-        <HeroIntro
-          className={cn(
-            CONTAINER,
-            "grid items-center gap-12 pb-20 pt-14 lg:grid-cols-[1fr_1.05fr] lg:gap-8"
-          )}
-        >
-          <div>
-            <p data-hero-item className="label-mono">
-              Book launch · First edition 2026
-            </p>
-            <h1
-              data-hero-item
-              className="mt-4 text-5xl leading-[1.02] sm:text-7xl"
-            >
-              The book
-              <br />
-              is <span className="launch-word">out.</span>
-            </h1>
-            <p
-              data-hero-item
-              className="mt-5 font-serif text-xl leading-snug text-cream-200 sm:text-2xl"
-            >
-              Agentic AI for Actuaries, free from ACTEX Learning.
-            </p>
-            <p
-              data-hero-item
-              className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground"
-            >
-              This site is its code companion: every listing from chapters 9
-              to 17, runnable in your browser, live on our server, or in
-              Colab.
-            </p>
-            <div
-              data-hero-item
-              className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap"
-            >
-              <Button asChild size="lg" className="launch-cta w-full sm:w-auto">
-                <a href={ACTEX_BOOK_URL} target="_blank" rel="noreferrer">
-                  <BookOpenText size={16} weight="bold" aria-hidden="true" />
-                  Get the book, free
-                  <ArrowUpRight size={14} weight="bold" aria-hidden="true" />
-                </a>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
-                <Link href="/code">
-                  <Terminal size={16} aria-hidden="true" />
-                  Run the code
-                </Link>
-              </Button>
-            </div>
-            {/* The publisher's mark and the address in plain sight, for
-                readers who want to see where the button goes before they
-                press it. One link, so the logo and the URL act as one. */}
-            <a
-              data-hero-item
-              href={ACTEX_BOOK_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="launch-publisher mt-5"
-            >
-              <span className="label-mono launch-publisher-label">
-                Published by
-              </span>
-              <Image
-                src="/actex-learning-logo.svg"
-                alt="ACTEX Learning"
-                width={200}
-                height={29}
-                className="launch-publisher-logo"
-              />
-              <span className="launch-url">
-                actexlearning.com/textbooks/agentic-ai-for-actuaries
-                <ArrowUpRight size={14} weight="bold" aria-hidden="true" />
-              </span>
-            </a>
-          </div>
-          {/* On a phone the cover leads and the words follow; from lg
-              the words sit left and the cover right. */}
+
+        {/* Hero Section */}
+        <div className="relative">
+          {/* Subtle luminous ambient background glows */}
           <div
-            data-hero-cover
-            className="relative order-first flex justify-center lg:order-none lg:justify-end"
+            className="pointer-events-none absolute -left-20 top-1/4 h-96 w-96 rounded-full bg-amber-500/10 blur-3xl"
+            aria-hidden="true"
+          />
+          <div
+            className="pointer-events-none absolute right-1/4 top-10 h-[30rem] w-[30rem] rounded-full bg-orange-600/15 blur-3xl"
+            aria-hidden="true"
+          />
+
+          <HeroIntro
+            className={cn(
+              CONTAINER,
+              "grid items-center gap-12 pb-20 pt-12 lg:grid-cols-[1.1fr_1fr] lg:gap-12"
+            )}
           >
-            <div className="book-glow" aria-hidden="true" />
-            {/* The seal sits on the wrapper, not inside .book-cover, so the
-                cover's perspective tilt does not skew it. */}
-            <div className="relative">
-              <div className="book-cover">
-                <Image
-                  src="/book-cover-photo.png"
-                  alt="Cover of Agentic AI for Actuaries"
-                  width={520}
-                  height={716}
-                  priority
-                  className="h-auto w-[300px] rounded-sm sm:w-[400px] lg:w-[480px] xl:w-[520px]"
-                />
+            <div>
+              {/* Celebratory Pill */}
+              <div data-hero-item className="mb-4">
+                <span className="launch-pill">
+                  <Sparkle size={13} weight="fill" className="text-amber-300" />
+                  <span>First Edition 2026 · Published by ACTEX Learning</span>
+                </span>
               </div>
-              <LaunchSeal />
+
+              {/* Bold Title */}
+              <h1
+                data-hero-item
+                className="text-4xl sm:text-6xl lg:text-7xl font-serif font-bold tracking-tight text-white leading-[1.04]"
+              >
+                The book is{" "}
+                <span className="launch-word">launched.</span>
+              </h1>
+
+              {/* Sub-headline */}
+              <p
+                data-hero-item
+                className="mt-4 font-serif text-xl sm:text-2xl text-slate-100 font-medium leading-snug"
+              >
+                Agentic AI for Actuaries{" "}
+                <span className="text-amber-400 font-sans text-sm sm:text-base font-normal block sm:inline">
+                  — Free to Read & Download
+                </span>
+              </p>
+
+              {/* Body explanation */}
+              <p
+                data-hero-item
+                className="mt-4 max-w-lg text-base sm:text-lg leading-relaxed text-slate-300"
+              >
+                A hands-on, practitioner guide taking actuaries from zero AI
+                background to designing, deploying, and governing autonomous
+                systems. This site is its runnable companion.
+              </p>
+
+              {/* Dual Action CTAs */}
+              <div
+                data-hero-item
+                className="mt-8 flex flex-col gap-3.5 sm:flex-row sm:items-center sm:flex-wrap"
+              >
+                <Button asChild size="lg" className="launch-cta w-full sm:w-auto h-12 px-6 text-sm sm:text-base">
+                  <a href={ACTEX_BOOK_URL} target="_blank" rel="noreferrer">
+                    <BookOpenText size={20} weight="bold" aria-hidden="true" />
+                    <span>Get the book, free</span>
+                    <ArrowUpRight size={16} weight="bold" aria-hidden="true" />
+                  </a>
+                </Button>
+                <Button
+                  asChild
+                  size="lg"
+                  variant="outline"
+                  className="w-full sm:w-auto h-12 px-6 text-sm sm:text-base border-white/15 bg-white/5 text-white hover:bg-white/10 hover:border-white/30"
+                >
+                  <Link href="/code">
+                    <Terminal size={18} aria-hidden="true" />
+                    <span>Run the code</span>
+                  </Link>
+                </Button>
+              </div>
+
+              {/* Publisher lockup card */}
+              <a
+                data-hero-item
+                href={ACTEX_BOOK_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="launch-publisher mt-7"
+              >
+                <span className="launch-publisher-label">
+                  OFFICIAL PUBLISHER
+                </span>
+                <Image
+                  src="/actex-learning-logo.svg"
+                  alt="ACTEX Learning"
+                  width={210}
+                  height={31}
+                  className="launch-publisher-logo"
+                />
+                <span className="launch-url">
+                  actexlearning.com/textbooks/agentic-ai-for-actuaries
+                  <ArrowUpRight size={14} weight="bold" aria-hidden="true" />
+                </span>
+              </a>
             </div>
-          </div>
-        </HeroIntro>
+
+            {/* 3D Book Cover Staging */}
+            <div
+              data-hero-cover
+              className="relative order-first flex justify-center lg:order-none lg:justify-end"
+            >
+              <div className="book-glow" aria-hidden="true" />
+              <div className="relative">
+                <div className="book-cover">
+                  <Image
+                    src="/book-cover-photo.png"
+                    alt="Cover of Agentic AI for Actuaries"
+                    width={520}
+                    height={716}
+                    priority
+                    className="h-auto w-[290px] rounded-[0.35rem] sm:w-[390px] lg:w-[460px] xl:w-[500px]"
+                  />
+                </div>
+                <LaunchSeal />
+              </div>
+            </div>
+          </HeroIntro>
+        </div>
       </section>
 
-      {/* The nine code chapters */}
-      <section className="border-b border-border">
-        <RevealOnScroll className={cn(CONTAINER, "py-16")}>
+      {/* Stats Ribbon */}
+      <div className="border-b border-white/10 bg-[#060913]/70 backdrop-blur-xl py-6">
+        <div className={cn(CONTAINER, "grid grid-cols-2 gap-6 sm:grid-cols-4")}>
+          {[
+            { n: "18", label: "Chapters", desc: "Five parts: literacy to governance" },
+            { n: "9", label: "Runnable Labs", desc: "Chapters 9 to 17 with working code" },
+            { n: "4", label: "Practice Domains", desc: "Pricing, reserving, life, risk" },
+            { n: "100%", label: "Free & Open", desc: "Book at ACTEX, code on GitHub" },
+          ].map((stat) => (
+            <div key={stat.label} className="border-l-2 border-amber-500/70 pl-3.5">
+              <div className="flex items-baseline gap-1.5">
+                <span className="font-serif text-2xl sm:text-3xl font-bold text-white">{stat.n}</span>
+                <span className="font-mono text-xs font-semibold uppercase tracking-wider text-amber-400">{stat.label}</span>
+              </div>
+              <p className="mt-0.5 text-xs text-slate-400">{stat.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* The Nine Code Chapters Section */}
+      <section className="border-b border-white/10 py-16">
+        <RevealOnScroll className={CONTAINER}>
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className="label-mono">Parts III to V</p>
-              <h2 className="mt-2">Nine chapters of runnable code</h2>
+              <h2 className="mt-2 text-2xl sm:text-3xl font-serif text-white">
+                Nine chapters of runnable code
+              </h2>
+              <p className="mt-2 text-sm text-slate-400">
+                Explore real actuarial use cases with interactive tools and autonomous agents.
+              </p>
             </div>
-            <Button asChild variant="outline">
-              <Link href="/code">Run the code</Link>
+            <Button asChild variant="outline" className="border-white/15 bg-white/5 text-white hover:bg-white/10">
+              <Link href="/code">View all listings →</Link>
             </Button>
           </div>
+
           <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {CHAPTERS.map((chapter) => {
               const demos = chapter.scripts.filter((s) => s.demoId).length;
@@ -319,22 +382,42 @@ export default function LandingPage() {
                 <li key={chapter.slug}>
                   <Link
                     href={`/code/${chapter.slug}`}
-                    className="group flex h-full flex-col rounded-md border border-border bg-card p-5 transition-colors hover:border-gold-400"
+                    className="group card-glass flex h-full flex-col p-5.5 transition-all duration-300 hover:border-amber-400/40 hover:-translate-y-1"
                   >
-                    <span className="inline-flex size-9 items-center justify-center rounded-sm bg-gold-400 font-mono text-sm font-medium text-navy-950">
-                      {chapter.number}
-                    </span>
-                    <span className="mt-3 font-serif text-lg leading-snug text-cream-100 group-hover:underline">
+                    <div className="flex items-center justify-between">
+                      <span className="inline-flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 font-mono text-sm font-bold text-navy-950 shadow-sm shadow-amber-500/20">
+                        {chapter.number}
+                      </span>
+                      <span className="rounded-full bg-amber-400/10 border border-amber-400/20 px-2.5 py-0.5 font-mono text-[11px] text-amber-300 font-medium">
+                        {chapter.domain}
+                      </span>
+                    </div>
+
+                    <span className="mt-3.5 font-serif text-lg leading-snug text-white group-hover:text-amber-300 transition-colors">
                       {chapter.title}
                     </span>
-                    <span className="mt-1.5 text-xs text-muted-foreground">
-                      {chapter.domain}
+
+                    <span className="mt-2 text-xs leading-relaxed text-slate-400 line-clamp-2">
+                      {chapter.blurb}
                     </span>
-                    <span className="mt-auto flex flex-wrap gap-x-3 pt-4 font-mono text-[11px] text-muted-foreground">
-                      {demos > 0 && <span>{demos} in the browser</span>}
-                      {agents > 0 && <span>{agents} live</span>}
-                      <span>Colab</span>
-                    </span>
+
+                    <div className="mt-auto flex flex-wrap items-center gap-2 pt-4 font-mono text-[11px]">
+                      {demos > 0 && (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 text-emerald-400">
+                          <Play size={10} weight="fill" />
+                          {demos} browser demo{demos > 1 ? "s" : ""}
+                        </span>
+                      )}
+                      {agents > 0 && (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 text-cyan-400">
+                          <Sparkle size={10} weight="fill" />
+                          {agents} live agent{agents > 1 ? "s" : ""}
+                        </span>
+                      )}
+                      <span className="text-slate-500 ml-auto group-hover:text-amber-400 transition-colors font-medium">
+                        Run →
+                      </span>
+                    </div>
                   </Link>
                 </li>
               );
@@ -343,44 +426,75 @@ export default function LandingPage() {
         </RevealOnScroll>
       </section>
 
-      {/* Three ways to run */}
-      <section className="border-b border-border bg-navy-800">
-        <RevealOnScroll className={cn(CONTAINER, "py-16")}>
-          <h2>Three ways to run it</h2>
-          <div className="mt-8 grid gap-8 lg:grid-cols-3">
+      {/* Three Ways to Run */}
+      <section className="border-b border-white/10 bg-[#060913]/60 py-16">
+        <RevealOnScroll className={CONTAINER}>
+          <p className="label-mono">Execution Modes</p>
+          <h2 className="mt-2 text-2xl sm:text-3xl font-serif text-white">Three ways to run the companion code</h2>
+          <p className="mt-2 text-sm text-slate-400">
+            Choose the execution environment that best fits your workflow.
+          </p>
+
+          <div className="mt-8 grid gap-6 lg:grid-cols-3">
             {WAYS.map((mode) => (
-              <div key={mode.title} className="border-t-2 border-gold-400 pt-4">
-                <h3 className="text-base font-semibold">{mode.title}</h3>
-                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+              <div
+                key={mode.title}
+                className="card-glass p-6 relative overflow-hidden"
+              >
+                <div
+                  className={cn(
+                    "absolute top-0 inset-x-0 h-1 bg-gradient-to-r",
+                    mode.color
+                  )}
+                />
+                <div className="flex items-center justify-between">
+                  <h3 className="text-base font-semibold text-white">{mode.title}</h3>
+                  <span className={cn("text-[11px] font-mono px-2 py-0.5 rounded-full border", mode.badge)}>
+                    {mode.tag}
+                  </span>
+                </div>
+                <p className="mt-3 text-sm leading-relaxed text-slate-400">
                   {mode.body}
                 </p>
               </div>
             ))}
           </div>
-          <p className="mt-8 text-sm text-muted-foreground">
-            Everything you need is on the{" "}
+
+          <p className="mt-8 text-sm text-slate-400">
+            For API keys, Colab instructions, and local setup, see the{" "}
             <Link href="/setup" className={LINK}>
               setup page
             </Link>
-            . All datasets are synthetic; see{" "}
+            . All datasets are synthetic and regenerable; see{" "}
             <Link href="/data" className={LINK}>
-              the data
+              the data catalog
             </Link>
             .
           </p>
         </RevealOnScroll>
       </section>
 
-      {/* Featured live agent */}
+      {/* Featured Live Agent Showcase */}
       {ch09 && featuredScript && featuredAgent && (
-        <section className="border-b border-border">
-          <div className={cn(CONTAINER, "py-16")}>
-            <p className="label-mono">Chapter 9</p>
-            <h2 className="mt-2">Watch an agent work</h2>
-            <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted-foreground">
-              The book&rsquo;s first agent, run on our server with every tool
-              call streamed as it happens.
-            </p>
+        <section className="border-b border-white/10 py-16">
+          <div className={CONTAINER}>
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <p className="label-mono">Chapter 9 · Live Showcase</p>
+                <h2 className="mt-2 text-2xl sm:text-3xl font-serif text-white">
+                  Watch an agent work live
+                </h2>
+                <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-400">
+                  The book&rsquo;s first autonomous agent, executing live on our server with
+                  every tool call and reasoning cycle streamed in real time.
+                </p>
+              </div>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 font-mono text-xs text-cyan-300">
+                <span className="size-2 rounded-full bg-cyan-400 animate-ping" />
+                Live Agent Server Active
+              </span>
+            </div>
+
             <div className="mt-8">
               <ScriptCard
                 script={featuredScript}
@@ -395,36 +509,44 @@ export default function LandingPage() {
         </section>
       )}
 
-      {/* About the book */}
-      <section className="border-b border-border">
+      {/* About the Book & Facts */}
+      <section className="border-b border-white/10 py-16">
         <RevealOnScroll
-          className={cn(CONTAINER, "grid gap-10 py-16 lg:grid-cols-[1fr_1.4fr]")}
+          className={cn(CONTAINER, "grid gap-12 lg:grid-cols-[1.1fr_1.3fr] items-center")}
         >
           <div>
-            <h2>About the book</h2>
-            <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+            <p className="label-mono">The Book Overview</p>
+            <h2 className="mt-2 text-2xl sm:text-3xl font-serif text-white">
+              Why this book matters
+            </h2>
+            <p className="mt-4 text-base leading-relaxed text-slate-300">
               {BOOK_PROMISE}
             </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Button asChild className="bg-gold-400 text-navy-950 hover:bg-gold-300">
+            <div className="mt-7 flex flex-wrap gap-3">
+              <Button asChild className="launch-cta">
                 <a href={ACTEX_BOOK_URL} target="_blank" rel="noreferrer">
+                  <BookOpenText size={16} weight="bold" aria-hidden="true" />
                   Get the book, free
                   <ArrowUpRight size={14} weight="bold" aria-hidden="true" />
                 </a>
               </Button>
-              <Button asChild variant="outline">
-                <Link href="/book">What&rsquo;s inside</Link>
+              <Button asChild variant="outline" className="border-white/15 bg-white/5 text-white hover:bg-white/10">
+                <Link href="/book">Explore table of contents →</Link>
               </Button>
             </div>
           </div>
-          <dl className="grid gap-6 sm:grid-cols-2">
+
+          <dl className="grid gap-5 sm:grid-cols-2">
             {FACTS.map(([n, label, note]) => (
-              <div key={label} className="border-l-2 border-gold-400 pl-4">
+              <div
+                key={label}
+                className="card-glass p-5 border-l-4 border-l-amber-400"
+              >
                 <dt className="sr-only">{label}</dt>
                 <dd>
-                  <span className="font-serif text-3xl text-cream-100">{n}</span>
-                  <span className="label-mono ml-2">{label}</span>
-                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                  <span className="font-serif text-3xl font-bold text-white">{n}</span>
+                  <span className="label-mono ml-2.5 text-amber-400">{label}</span>
+                  <p className="mt-1.5 text-xs sm:text-sm leading-relaxed text-slate-400">
                     {note}
                   </p>
                 </dd>
@@ -434,49 +556,68 @@ export default function LandingPage() {
         </RevealOnScroll>
       </section>
 
-      {/* Authors, in brief */}
-      <section>
-        <RevealOnScroll className={cn(CONTAINER, "py-16")}>
-          <h2>The authors</h2>
-          <div className="mt-8 grid gap-8 sm:grid-cols-2">
+      {/* Authors in Brief */}
+      <section className="py-16">
+        <RevealOnScroll className={CONTAINER}>
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="label-mono">Authors</p>
+              <h2 className="mt-2 text-2xl sm:text-3xl font-serif text-white">The authors</h2>
+              <p className="mt-2 text-sm text-slate-400">
+                Combining three decades of global actuarial leadership with cutting-edge agentic AI engineering.
+              </p>
+            </div>
+            <Link
+              href="/book#authors"
+              className="text-sm text-amber-400 hover:text-amber-300 underline underline-offset-4"
+            >
+              Full biographies & publications →
+            </Link>
+          </div>
+
+          <div className="mt-8 grid gap-6 sm:grid-cols-2">
             {AUTHORS.map((author) => (
-              <div key={author.slug} className="flex gap-4">
+              <div
+                key={author.slug}
+                className="card-glass flex gap-4 p-5 sm:p-6"
+              >
                 {author.image && (
                   <Image
                     src={author.image}
                     alt={`Portrait of ${author.name}`}
-                    width={72}
-                    height={72}
-                    className="size-18 shrink-0 rounded-sm border border-border object-cover"
+                    width={80}
+                    height={80}
+                    className="size-20 shrink-0 rounded-xl border border-white/15 object-cover shadow-md"
                   />
                 )}
                 <div>
-                  <h3 className="font-serif text-lg text-cream-100">
-                    <Link href="/book#authors" className="hover:underline">
+                  <h3 className="font-serif text-lg text-white font-semibold">
+                    <Link href="/book#authors" className="hover:text-amber-300 transition-colors">
                       {[author.honorificPrefix, author.name]
                         .filter(Boolean)
                         .join(" ")}
                     </Link>
                   </h3>
                   {author.honorificSuffix && (
-                    <p className="font-mono text-[11px] text-gold-300">
+                    <span className="mt-0.5 inline-block font-mono text-[11px] text-amber-400 font-medium">
                       {author.honorificSuffix}
-                    </p>
+                    </span>
                   )}
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  <p className="mt-2 text-xs sm:text-sm leading-relaxed text-slate-300">
                     {author.cardBio}
                   </p>
                 </div>
               </div>
             ))}
           </div>
-          <p className="mt-8 text-sm text-muted-foreground">
-            In collaboration with the{" "}
+
+          <p className="mt-8 text-xs sm:text-sm text-slate-500">
+            Published in collaboration with the{" "}
             <a
               href="https://sssia.org"
               target="_blank"
               rel="noreferrer"
-              className="text-cream-100 underline underline-offset-2"
+              className="text-amber-400 underline underline-offset-2 hover:text-amber-300"
             >
               Sri Sathya Sai Institute of Actuaries
             </a>

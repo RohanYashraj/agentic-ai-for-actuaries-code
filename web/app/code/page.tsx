@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Play, Sparkle } from "@phosphor-icons/react/dist/ssr";
+import { ArrowUpRight, Play, Sparkle, Terminal } from "@phosphor-icons/react/dist/ssr";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { JsonLd } from "@/components/json-ld";
 import { RelatedLinks } from "@/components/related-links";
@@ -51,39 +51,59 @@ export default function CodeIndexPage() {
     <div className={cn(CONTAINER, "py-12")}>
       <JsonLd data={structuredData} />
       <Breadcrumbs trail={TRAIL} />
-      <header className="mt-6 max-w-3xl">
-        <h1 className="text-3xl leading-tight sm:text-4xl">
+
+      <header className="mt-8 max-w-3xl">
+        <p className="label-mono">The Runnable Companion</p>
+        <h1 className="mt-2 text-3xl sm:text-5xl font-serif text-white font-bold tracking-tight">
           Every listing, runnable
         </h1>
-        <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
-          The companion code for Parts III to V, three ways.
+        <p className="mt-4 text-base sm:text-lg leading-relaxed text-slate-300">
+          The companion code for Parts III to V of{" "}
+          <span className="text-white font-medium">Agentic AI for Actuaries</span>:
+          nine chapters of working code across pricing, reserving, life, and risk.
         </p>
-        <div className="mt-6 grid max-w-3xl gap-6 sm:grid-cols-3">
+
+        <div className="mt-8 grid gap-4 sm:grid-cols-3">
           {[
             {
               title: "In your browser",
-              body: "Tool scripts run editable on a Python runtime inside the page.",
+              tag: "WebAssembly",
+              desc: "Tool scripts run on Pyodide. Edit code and execute entirely locally.",
+              color: "border-emerald-500/30 text-emerald-400 bg-emerald-500/10",
             },
             {
-              title: "Live agents",
-              body: "Agent scripts run on our server against Gemini, tool calls streamed.",
+              title: "Live on server",
+              tag: "Agno + Gemini",
+              desc: "Autonomous agents stream tool calls and reasoning in real time.",
+              color: "border-cyan-500/30 text-cyan-400 bg-cyan-500/10",
             },
             {
-              title: "In Colab",
-              body: "Every chapter opens as a notebook with your own free Gemini key.",
+              title: "In Google Colab",
+              tag: "Cloud Notebook",
+              desc: "Open any chapter with your free key to run full-fidelity pipelines.",
+              color: "border-amber-500/30 text-amber-400 bg-amber-500/10",
             },
           ].map((mode) => (
-            <div key={mode.title}>
-              <h3 className="text-base font-semibold">{mode.title}</h3>
-              <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-                {mode.body}
+            <div
+              key={mode.title}
+              className="card-glass p-4 sm:p-5"
+            >
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-semibold text-white">{mode.title}</h3>
+                <span className={cn("rounded-full border px-2 py-0.5 font-mono text-[10px]", mode.color)}>
+                  {mode.tag}
+                </span>
+              </div>
+              <p className="mt-2 text-xs leading-relaxed text-slate-400">
+                {mode.desc}
               </p>
             </div>
           ))}
         </div>
       </header>
 
-      <section className="mt-10 grid gap-4 sm:grid-cols-2">
+      {/* Chapters Grid */}
+      <section className="mt-12 grid gap-5 sm:grid-cols-2">
         {CHAPTERS.map((chapter) => {
           const demoCount = chapter.scripts.filter((s) => s.demoId).length;
           const agentCount = chapter.scripts.filter(
@@ -92,94 +112,92 @@ export default function CodeIndexPage() {
               AGENT_SCRIPTS.find((a) => a.id === s.agentId)?.runnable
           ).length;
           const outline = getOutlineChapter(chapter.number);
+
           return (
             <article
               key={chapter.slug}
-              className="group flex flex-col rounded-md border border-border bg-card p-5 transition-colors hover:border-gold-400"
+              className="group card-glass flex flex-col p-6 transition-all duration-300 hover:border-amber-400/40 hover:-translate-y-1"
             >
-              <p className="flex items-center gap-3">
-                <span className="inline-flex size-8 items-center justify-center rounded-sm bg-gold-400 font-mono text-sm font-medium text-navy-950">
-                  {chapter.number}
-                </span>
-                <span className="rounded-sm bg-gold-400/10 px-1.5 py-0.5 font-mono text-[11px] text-gold-300">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <span className="inline-flex size-8.5 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 font-mono text-sm font-bold text-navy-950 shadow-sm shadow-amber-500/20">
+                    {chapter.number}
+                  </span>
+                  <span className="font-mono text-xs text-slate-400">
+                    Chapter {chapter.number}
+                  </span>
+                </div>
+                <span className="rounded-full bg-amber-400/10 border border-amber-400/20 px-2.5 py-0.5 font-mono text-[11px] text-amber-300 font-medium">
                   {chapter.domain}
                 </span>
-              </p>
-              <h2 className="mt-3 text-lg leading-snug text-cream-100">
-                <Link href={`/code/${chapter.slug}`} className="hover:underline">
+              </div>
+
+              <h2 className="mt-4 font-serif text-xl leading-snug text-white group-hover:text-amber-300 transition-colors">
+                <Link href={`/code/${chapter.slug}`}>
                   {chapter.title}
                 </Link>
               </h2>
-              <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted-foreground">
+
+              <p className="mt-2 text-xs sm:text-sm leading-relaxed text-slate-300 line-clamp-3">
                 {chapter.blurb}
               </p>
+
               {outline && (
-                <p className="mt-2.5 text-xs leading-relaxed text-muted-foreground">
-                  <span className="text-cream-100">Case study.</span>{" "}
+                <div className="mt-3 rounded-lg border border-white/5 bg-white/5 p-2.5 text-xs text-slate-400">
+                  <span className="font-semibold text-amber-400">Case Study:</span>{" "}
                   {outline.caseStudy}
-                </p>
+                </div>
               )}
-              <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] text-muted-foreground">
+
+              <div className="mt-4 flex flex-wrap items-center gap-2 font-mono text-[11px]">
                 {demoCount > 0 && (
-                  <span className="inline-flex items-center gap-1">
-                    <Play size={11} className="text-run-ok" aria-hidden="true" />
+                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 text-emerald-400 font-medium">
+                    <Play size={10} weight="fill" />
                     {demoCount} browser demo{demoCount > 1 ? "s" : ""}
                   </span>
                 )}
                 {agentCount > 0 && (
-                  <span className="inline-flex items-center gap-1">
-                    <Sparkle
-                      size={11}
-                      className="text-gold-300"
-                      aria-hidden="true"
-                    />
+                  <span className="inline-flex items-center gap-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 px-2.5 py-0.5 text-cyan-400 font-medium">
+                    <Sparkle size={10} weight="fill" />
                     {agentCount} live agent{agentCount > 1 ? "s" : ""}
                   </span>
                 )}
-              </p>
-              {/* py-1 on each action: at 11px these are otherwise a
-                  16px-tall thumb target. */}
-              <p className="mt-auto flex flex-wrap gap-x-4 pt-3 font-mono text-[11px]">
+              </div>
+
+              <div className="mt-auto flex items-center justify-between border-t border-white/10 pt-4 font-mono text-xs">
                 <Link
                   href={`/code/${chapter.slug}`}
-                  className="py-1 text-gold-300 transition-colors hover:text-gold-300 hover:underline"
+                  className="inline-flex items-center gap-1 font-semibold text-amber-400 hover:text-amber-300 transition-colors"
                 >
-                  Run it
+                  <Terminal size={14} />
+                  <span>Run Chapter Lab →</span>
                 </Link>
                 <a
                   href={colabUrl(chapter.slug)}
                   target="_blank"
                   rel="noreferrer"
-                  className="py-1 text-muted-foreground transition-colors hover:text-cream-100"
+                  className="inline-flex items-center gap-1 text-slate-400 hover:text-white transition-colors"
                 >
-                  Colab
+                  <span>Colab</span>
+                  <ArrowUpRight size={12} />
                 </a>
-              </p>
+              </div>
             </article>
           );
         })}
       </section>
 
-      <section className="mt-12 max-w-3xl text-sm leading-relaxed text-muted-foreground">
-        <h2 className="text-xl text-cream-100">Before you run</h2>
-        <p className="mt-3">
-          Browser demos run on Pyodide, a full CPython compiled to WebAssembly.
-          The first run downloads the runtime (about 10 MB, more with pandas);
-          after that, runs are instant and entirely local. The demo sources are
-          generated from the repository scripts at build time, so what you run
-          here is what is in the book.
-        </p>
-        <p className="mt-3">
-          Live agent runs execute the unmodified chapter scripts on the server
-          with a shared Gemini key and modest rate limits. When the shared
-          limit runs out, the Colab notebooks take over: they are the
-          full-fidelity path and always available. Limits and install steps
-          are on the{" "}
-          <Link href="/setup" className="text-cream-100 underline decoration-border underline-offset-4 hover:decoration-gold-400">
-            setup page
-          </Link>
-          .
-        </p>
+      {/* Before You Run Advice */}
+      <section className="mt-14 card-glass p-6 sm:p-7 max-w-3xl">
+        <h2 className="text-xl font-serif text-white font-semibold">Before you run</h2>
+        <div className="mt-3 space-y-3 text-sm leading-relaxed text-slate-300">
+          <p>
+            <strong className="text-white">Browser demos:</strong> Run on Pyodide, a full CPython compiled to WebAssembly. The first execution downloads the runtime (approx. 10 MB); subsequent runs are instant and completely local. The demo scripts match the book code line for line.
+          </p>
+          <p>
+            <strong className="text-white">Live server agents:</strong> Execute on our server using Google Gemini and Agno with tool calls streamed in real time. Shared daily rate limits apply; when reached, the Colab notebooks provide the unlimited path.
+          </p>
+        </div>
       </section>
 
       <RelatedLinks
