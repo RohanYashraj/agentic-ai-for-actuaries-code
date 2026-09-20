@@ -230,7 +230,7 @@ export default function LandingPage() {
           <HeroIntro
             className={cn(
               CONTAINER,
-              "grid items-center gap-8 pb-12 pt-8 sm:pt-10 lg:grid-cols-[1.1fr_1fr] lg:gap-10 lg:pb-14"
+              "grid items-center gap-10 pb-12 pt-8 sm:pt-10 lg:grid-cols-[1fr_1.15fr] lg:gap-12 lg:pb-16"
             )}
           >
             <div>
@@ -335,7 +335,7 @@ export default function LandingPage() {
                     width={520}
                     height={716}
                     priority
-                    className="h-auto w-[260px] rounded-[0.35rem] sm:w-[340px] lg:w-[420px] xl:w-[460px]"
+                    className="h-auto w-[min(320px,82vw)] rounded-[0.35rem] sm:w-[420px] md:w-[460px] lg:w-[480px] xl:w-[540px]"
                   />
                 </div>
                 <LaunchSeal />
