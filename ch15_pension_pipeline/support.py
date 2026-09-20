@@ -128,10 +128,16 @@ def fetch_member_record(member_id: str, valuation_date: str) -> dict:
 def generate_statement_prose(member_record: dict, pension_next_year: float,
                              escalation_index: float) -> str:
     """Assemble the statement text deterministically from named inputs."""
+    paid = f"GBP {member_record['pension_paid_year_gbp']:,.2f}"
+    if escalation_index == 0.0:
+        return (
+            f"Your pension of {paid} was paid this scheme year. It is a "
+            f"level pension, so from the next scheme year it will remain "
+            f"at GBP {pension_next_year:,.2f}."
+        )
     return (
-        f"Your pension of GBP {member_record['pension_paid_year_gbp']:,.2f} "
-        f"was paid this scheme year. From the next scheme year it will "
-        f"increase by {escalation_index:.1%} to "
+        f"Your pension of {paid} was paid this scheme year. From the next "
+        f"scheme year it will increase by {escalation_index:.1%} to "
         f"GBP {pension_next_year:,.2f}, in line with the scheme's "
         f"escalation basis."
     )

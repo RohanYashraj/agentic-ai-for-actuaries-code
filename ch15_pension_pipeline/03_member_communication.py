@@ -27,7 +27,10 @@ def draft_annual_statement(member_id: str, valuation_date: str, valuation_output
     scheme_basis  = valuation_output["assumption_basis"]
 
     pension_paid_in_year = member_record["pension_paid_year_gbp"]
-    escalation_index     = scheme_basis["inflation_assumption"]
+    # Only escalating pensions move with the scheme basis; a level pension
+    # is paid at the same amount every year (same rule as _annuity_value).
+    is_escalating        = member_record["pension_type"] == "escalating"
+    escalation_index     = scheme_basis["inflation_assumption"] if is_escalating else 0.0
     pension_next_year    = pension_paid_in_year * (1 + escalation_index)
 
     statement_text = generate_statement_prose(member_record, pension_next_year, escalation_index)
@@ -35,7 +38,8 @@ def draft_annual_statement(member_id: str, valuation_date: str, valuation_output
     # Citations — every numerical claim back-traces to a named source.
     citations = {
         "pension_paid_in_year_gbp": "member_record.pension_paid_year_gbp",
-        "escalation_index":         f"scheme_basis.inflation_assumption ({scheme_basis['inflation_basis']})",
+        "escalation_index":         (f"scheme_basis.inflation_assumption ({scheme_basis['inflation_basis']})"
+                                     if is_escalating else "member_record.pension_type = level (no escalation)"),
         "pension_next_year_gbp":    "computed: pension_paid_in_year * (1 + escalation_index)",
         "mortality_table":          scheme_basis["mortality_table_version"],
     }

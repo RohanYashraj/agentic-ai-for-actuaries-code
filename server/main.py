@@ -9,7 +9,9 @@ from __future__ import annotations
 
 import asyncio
 import json
+import logging
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -23,9 +25,45 @@ from .sandbox import cleanup_workspace, prepare_workspace
 
 load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
+_log = logging.getLogger("server.main")
+
 RUNNER = Path(__file__).resolve().parent / "runner.py"
 RUN_TIMEOUT_SECONDS = 240
 KEEPALIVE_SECONDS = 15
+_STDERR_TAIL_BYTES = 2000
+
+# Secrets never reach the browser: any configured credential value is
+# redacted from text bound for the SSE stream, as is anything shaped
+# like `key=...` / `token: ...` (provider client errors often echo the
+# request URL, and Google's passes the API key as a query parameter).
+_SECRET_ENV_NAMES = (
+    "GOOGLE_API_KEY", "ANTHROPIC_API_KEY", "OPENAI_API_KEY",
+    "UPSTASH_REDIS_REST_TOKEN", "KV_REST_API_TOKEN",
+)
+_SECRET_RE = re.compile(r"(?i)(\b(?:api[_-]?key|key|token|secret)[=:]\s*|\bauthorization[=:]\s*(?:bearer\s+)?|\bbearer\s+)\S+")
+
+
+def _scrub(text: str) -> str:
+    for name in _SECRET_ENV_NAMES:
+        value = os.environ.get(name)
+        if value and len(value) >= 8:
+            text = text.replace(value, "[redacted]")
+    return _SECRET_RE.sub(r"\1[redacted]", text)
+
+
+async def _drain_stderr(stream: asyncio.StreamReader) -> bytes:
+    """Read stderr to EOF, keeping only the tail.
+
+    Both pipes must be drained concurrently: a child that writes more
+    than the OS pipe buffer to stderr blocks on write() until something
+    reads it, and the run would otherwise hang until the timeout.
+    """
+    tail = b""
+    while True:
+        chunk = await stream.read(65536)
+        if not chunk:
+            return tail
+        tail = (tail + chunk)[-_STDERR_TAIL_BYTES:]
 
 
 def _abs_pythonpath() -> str:
@@ -138,7 +176,9 @@ async def agents() -> list[dict]:
 
 @app.get("/api/py/limits")
 async def limits(request: Request) -> dict:
-    quota = ratelimit.peek(_client_ip(request))
+    # The Upstash client is synchronous HTTP; keep it off the event loop
+    # so a slow Redis round-trip cannot stall every in-flight SSE stream.
+    quota = await asyncio.to_thread(ratelimit.peek, _client_ip(request))
     return {
         "allowed": quota.allowed,
         "perIpRemaining": quota.per_ip_remaining,
@@ -176,7 +216,7 @@ async def run_agent(agent_id: str, request: Request):
             {"error": "no_api_key", "detail": f"{key_name} is not configured on the server."},
             status_code=503,
         )
-    quota = ratelimit.check_and_increment(_client_ip(request))
+    quota = await asyncio.to_thread(ratelimit.check_and_increment, _client_ip(request))
     if not quota.allowed:
         details = {
             "minute": "A few runs in under a minute — give it a moment and try again.",
@@ -192,8 +232,11 @@ async def run_agent(agent_id: str, request: Request):
     async def stream():
         run_root = None
         proc = None
+        stderr_task = None
         try:
-            run_root, cwd = prepare_workspace(spec.chapter_dir)
+            # copytree/rmtree are blocking filesystem work; run them in a
+            # worker thread so concurrent streams keep flushing.
+            run_root, cwd = await asyncio.to_thread(prepare_workspace, spec.chapter_dir)
             proc = await asyncio.create_subprocess_exec(
                 sys.executable, "-u", str(RUNNER), spec.script,
                 cwd=str(cwd),
@@ -201,6 +244,7 @@ async def run_agent(agent_id: str, request: Request):
                 stderr=asyncio.subprocess.PIPE,
                 env=_subprocess_env(),
             )
+            stderr_task = asyncio.create_task(_drain_stderr(proc.stderr))
             yield _sse({"type": "Accepted", "id": spec.id, "estSeconds": spec.est_seconds})
             deadline = asyncio.get_event_loop().time() + RUN_TIMEOUT_SECONDS
             child_reported_failure = False
@@ -238,24 +282,27 @@ async def run_agent(agent_id: str, request: Request):
             # excerpt and empty stderr; a second Fatal here would clobber
             # that excerpt with a useless "exit code N".
             if rc != 0 and not child_reported_failure:
-                stderr_tail = (await proc.stderr.read())[-2000:].decode("utf-8", "replace")
+                stderr_tail = (await stderr_task).decode("utf-8", "replace")
                 lines = [ln.strip() for ln in stderr_tail.splitlines() if ln.strip()]
                 yield _sse({
                     "type": "Fatal",
                     "detail": "The run failed on the server. Try again, or open the chapter in Colab.",
-                    "excerpt": " · ".join(lines[-3:])[:300] or f"exit code {rc}",
+                    "excerpt": _scrub(" · ".join(lines[-3:]))[:300] or f"exit code {rc}",
                 })
         except Exception as e:  # noqa: BLE001
+            _log.exception("agent run %s failed", spec.id)
             yield _sse({
                 "type": "Fatal",
                 "detail": "The run failed on the server. Try again, or open the chapter in Colab.",
-                "excerpt": f"{type(e).__name__}: {e}"[:300],
+                "excerpt": _scrub(f"{type(e).__name__}: {e}")[:300],
             })
         finally:
             if proc is not None and proc.returncode is None:
                 proc.kill()
+            if stderr_task is not None and not stderr_task.done():
+                stderr_task.cancel()
             if run_root is not None:
-                cleanup_workspace(run_root)
+                await asyncio.to_thread(cleanup_workspace, run_root)
 
     return StreamingResponse(
         stream(),

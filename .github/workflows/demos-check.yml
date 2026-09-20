@@ -13,6 +13,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      # Node 24+: check_redirects.mjs imports next.config.ts directly and
+      # relies on the runtime's native type stripping.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
       # Fails if any chapter script can no longer be transformed into its
       # browser demo (e.g. a new decorator shape) or a config/data file
       # referenced by scripts/demos.config.json is missing.
@@ -24,3 +29,8 @@ jobs:
       # not exist. The pages cross-link by hand, so a renamed route would
       # otherwise turn a dozen links into 404s with a green build.
       - run: node scripts/check_site_graph.mjs
+      # Fails if a route retired in the rebrand no longer redirects to a
+      # page that exists. check_site_graph only knows the live route tree,
+      # so without this a deleted redirect would 404 old inbound links.
+      # Mirrors web/package.json's prebuild, which runs the same checks.
+      - run: node scripts/check_redirects.mjs

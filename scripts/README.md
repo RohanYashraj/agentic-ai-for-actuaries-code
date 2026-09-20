@@ -1,5 +1,17 @@
 # scripts/ — Build and maintenance tooling
 
+Five scripts run on every website build (`web/package.json`'s
+`prebuild`) and, apart from `bundle_backend.py`, on every PR via
+`.github/workflows/demos-check.yml`:
+
+| Script | Generates / checks |
+| --- | --- |
+| `build_demos.py` | Browser (Pyodide) demo bundles from the chapter scripts |
+| `export_registry.py` | `web/lib/agents.generated.json` from `server/registry.py` |
+| `bundle_backend.py` | `web/_backend/` staging copy of the FastAPI backend for Vercel |
+| `check_site_graph.mjs` | Every internal link targets a route that exists |
+| `check_redirects.mjs` | Every retired route redirects to a page that exists |
+
 ## `build_demos.py` — drift-proof browser demos
 
 The website runs the book's deterministic tool scripts directly in the
@@ -36,4 +48,41 @@ files, data files, Pyodide packages, title/description). If the
 original's `__main__` block runs an agent, add a
 `overrides/<id>_main.py` with a plain-Python equivalent and reference
 it as `main_override`.
+
+## `export_registry.py` — the site's agent list
+
+`server/registry.py` is the single source of truth for which scripts
+the backend may run. This exports it to `web/lib/agents.generated.json`
+so the website's agent cards cannot drift from the server's allowlist.
+
+```bash
+python3 scripts/export_registry.py           # write the JSON
+python3 scripts/export_registry.py --check   # CI: every registered script exists, JSON is current
+```
+
+After adding or renaming an entry in `server/registry.py`, rerun the
+export (or let `predev`/`prebuild` do it) and commit the JSON.
+
+## `bundle_backend.py` — stage the backend for Vercel
+
+Vercel's bundler cannot include files above the project root (`web/`),
+so this copies `server/`, the chapter folders, `common/` and `data/`
+into `web/_backend/` (gitignored) at build time.
+
+```bash
+python3 scripts/bundle_backend.py --out web/_backend
+```
+
+## `check_site_graph.mjs` and `check_redirects.mjs` — link integrity
+
+The pages cross-link by hand. `check_site_graph.mjs` fails if any
+internal link points at a route missing from the App Router tree;
+`check_redirects.mjs` fails if a route retired in the 2026-09 rebrand
+no longer redirects permanently to a page that exists. The redirect
+check imports `web/next.config.ts` directly, so it needs Node 24+.
+
+```bash
+node scripts/check_site_graph.mjs
+node scripts/check_redirects.mjs
+```
 

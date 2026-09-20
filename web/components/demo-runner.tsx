@@ -41,6 +41,10 @@ export function DemoRunner({
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   const cancelRef = useRef<(() => void) | null>(null);
+  // The Pyodide worker is a shared singleton that serialises runs; an
+  // abandoned run would otherwise block the next page's Run button and
+  // keep calling setState on this unmounted component.
+  useEffect(() => () => cancelRef.current?.(), []);
 
   const append = useCallback((line: OutputLine) => {
     setLines((prev) => [...prev, line]);

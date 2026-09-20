@@ -62,14 +62,21 @@ def _attribute_impact_by_business_line(snapshot: dict,
     return attribution
 
 
-def _generate_paragraph(impact_assessment: dict,
-                        prior_cycle_orsa_excerpt_id: str) -> str:
-    """Assemble the ORSA risk-profile paragraph from named inputs."""
+def _non_life_movement(impact_assessment: dict) -> tuple[float, float]:
+    """(impact in USD m, percent of the non-life module) for the paragraph
+    and its citation, computed once so the two can never disagree."""
     breakdown = impact_assessment["scr_module_breakdown_usd_m"]
     attribution = impact_assessment["impact_attribution_by_module_usd_m"]
     nl_impact = attribution.get("non_life_underwriting_risk", 0.0)
     nl_base = breakdown["non_life_underwriting_risk"]
     pct = nl_impact / nl_base * 100 if nl_base else 0.0
+    return nl_impact, pct
+
+
+def _generate_paragraph(impact_assessment: dict,
+                        prior_cycle_orsa_excerpt_id: str) -> str:
+    """Assemble the ORSA risk-profile paragraph from named inputs."""
+    nl_impact, pct = _non_life_movement(impact_assessment)
     return (
         f"Non-life underwriting risk capital increased by USD {nl_impact}m "
         f"({pct:.1f} percent of the module) against snapshot "

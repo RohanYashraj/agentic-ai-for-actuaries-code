@@ -8,7 +8,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))) 
 from common.config import get_model
 from agno.tools import tool
 
-from support import _generate_paragraph
+from support import _generate_paragraph, _non_life_movement
 
 
 @tool
@@ -22,10 +22,13 @@ def draft_risk_profile_section(
     parameter version, and prior-period precedent for material change assertions.
     """
     paragraph = _generate_paragraph(impact_assessment, prior_cycle_orsa_excerpt_id)
+    # The cited figure is derived from the same computation as the
+    # paragraph, so the audit record and the drafted text cannot diverge.
+    _, nl_pct = _non_life_movement(impact_assessment)
 
     citations = [
         {
-            "claim": "non-life underwriting risk increased 8.4 percent",
+            "claim": f"non-life underwriting risk increased {nl_pct:.1f} percent",
             "capital_model_output_id": impact_assessment["snapshot_id"],
             "parameter_version": impact_assessment["diagnostic_surface"]
                                                 ["snapshot_parameter_versions"]["non_life"],

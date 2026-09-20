@@ -60,9 +60,15 @@ underwriting_workflow = Workflow(
 )
 
 if __name__ == "__main__":
-    # Run the workflow on a single submission
+    # Run the workflow on a single submission. The path is resolved from
+    # this file, not the working directory, so the script runs the same
+    # from the repo root as from the chapter folder.
+    submission_pdf = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "..", "data", "submissions", "MR-CHI-2025-Q3-018.pdf",
+    )
     underwriting_workflow.print_response(
-        "Process submission ../data/submissions/MR-CHI-2025-Q3-018.pdf "
+        f"Process submission {submission_pdf} "
         "(reference MR-CHI-2025-Q3-018) and produce a draft recommendation.",
         markdown=True,
         stream=True,

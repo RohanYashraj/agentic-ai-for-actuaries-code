@@ -10,8 +10,24 @@ and emits one JSON object per stdout line for the API to relay as SSE.
 from __future__ import annotations
 
 import json
+import os
+import re
 import runpy
 import sys
+
+# Mirrors main.py's _scrub: this file runs as a standalone script, so it
+# cannot import the server package. Any configured credential value and
+# anything shaped like `key=...` is redacted before it leaves the child.
+_SECRET_ENV_NAMES = ("GOOGLE_API_KEY", "ANTHROPIC_API_KEY", "OPENAI_API_KEY")
+_SECRET_RE = re.compile(r"(?i)(\b(?:api[_-]?key|key|token|secret)[=:]\s*|\bauthorization[=:]\s*(?:bearer\s+)?|\bbearer\s+)\S+")
+
+
+def _scrub(text: str) -> str:
+    for name in _SECRET_ENV_NAMES:
+        value = os.environ.get(name)
+        if value and len(value) >= 8:
+            text = text.replace(value, "[redacted]")
+    return _SECRET_RE.sub(r"\1[redacted]", text)
 
 
 def emit(obj: dict) -> None:
@@ -158,11 +174,11 @@ def main() -> int:
     except BaseException as e:  # noqa: BLE001 — report anything to the stream
         sys.stdout.flush()
         # Same shape as main.py's sanitized Fatal: friendly message plus a
-        # short excerpt — raw exception text never reaches the browser.
+        # short, secret-scrubbed excerpt.
         emit({
             "type": "Fatal",
             "detail": "The run failed on the server. Try again, or open the chapter in Colab.",
-            "excerpt": _truncate(f"{type(e).__name__}: {e}", 300),
+            "excerpt": _truncate(_scrub(f"{type(e).__name__}: {e}"), 300),
         })
         return 1
 
