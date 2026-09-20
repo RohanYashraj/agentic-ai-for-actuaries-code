@@ -133,7 +133,6 @@
       radial-gradient(at 15% 10%, rgba(251, 191, 36, 0.07) 0px, transparent 45%),
       radial-gradient(at 85% 15%, rgba(255, 87, 34, 0.08) 0px, transparent 50%),
       radial-gradient(at 50% 85%, rgba(6, 182, 212, 0.05) 0px, transparent 60%);
-    background-attachment: fixed;
   }
   
   /* Modern sleek scrollbars */
