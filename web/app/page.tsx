@@ -200,17 +200,7 @@ export default function LandingPage() {
         </a>
 
         {/* Hero Section */}
-        <div className="relative">
-          {/* Subtle luminous ambient background glows */}
-          <div
-            className="pointer-events-none absolute -left-20 top-1/4 h-96 w-96 rounded-full bg-amber-500/10 blur-3xl"
-            aria-hidden="true"
-          />
-          <div
-            className="pointer-events-none absolute right-1/4 top-10 h-[30rem] w-[30rem] rounded-full bg-orange-600/15 blur-3xl"
-            aria-hidden="true"
-          />
-
+        <div className="hero-wash relative">
           <HeroIntro
             className={cn(
               CONTAINER,
@@ -331,7 +321,7 @@ export default function LandingPage() {
       </section>
 
       {/* Stats Ribbon */}
-      <div className="border-b border-white/10 bg-[#060913]/70 backdrop-blur-xl py-6">
+      <div className="border-b border-white/10 bg-[#060913]/70 py-6">
         <div className={cn(CONTAINER, "grid grid-cols-2 gap-6 sm:grid-cols-4")}>
           {[
             { n: "18", label: "Chapters", desc: "Five parts, from first principles to governance" },

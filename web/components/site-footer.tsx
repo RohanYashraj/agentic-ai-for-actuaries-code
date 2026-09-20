@@ -33,11 +33,6 @@ const FOOTER_LINKS: {
 export function SiteFooter() {
   return (
     <footer className="relative border-t border-white/10 bg-[#060913] text-slate-400 overflow-hidden">
-      {/* Ambient background glow */}
-      <div
-        className="pointer-events-none absolute -top-24 right-1/4 h-48 w-96 rounded-full bg-amber-500/5 blur-3xl"
-        aria-hidden="true"
-      />
 
       <div className={cn(CONTAINER, "relative py-14")}>
         <nav
