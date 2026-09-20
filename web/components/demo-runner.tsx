@@ -7,6 +7,7 @@ import {
   ArrowCounterClockwise,
   ArrowsInSimple,
   ArrowsOutSimple,
+  Browser,
   Play,
   Spinner,
 } from "@phosphor-icons/react";
@@ -135,6 +136,13 @@ export function DemoRunner({
           <ArrowCounterClockwise className="size-3.5" />
           Reset
         </Button>
+        <span
+          className="hidden items-center gap-1.5 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-2 py-0.5 font-mono text-[10px] text-emerald-300 sm:inline-flex"
+          title="Python compiled to WebAssembly, running in this tab"
+        >
+          <Browser size={12} weight="duotone" aria-hidden="true" />
+          your browser
+        </span>
         <span
           className="order-last w-full truncate font-mono text-[11px] text-muted-foreground sm:order-none sm:ml-auto sm:w-auto"
           aria-live="polite"

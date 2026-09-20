@@ -13,6 +13,7 @@ import {
 } from "@phosphor-icons/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Markdown from "react-markdown";
+import { GeminiLogo } from "@/components/brand-logos";
 import remarkGfm from "remark-gfm";
 import { Button } from "@/components/ui/button";
 import {
@@ -429,6 +430,13 @@ export function AgentRunner({
             Stop
           </Button>
         )}
+        <span
+          className="hidden items-center gap-1.5 rounded-full border border-cyan-500/25 bg-cyan-500/10 px-2 py-0.5 font-mono text-[10px] text-cyan-300 sm:inline-flex"
+          title="Runs on our server against Google Gemini"
+        >
+          <GeminiLogo size={12} />
+          Gemini
+        </span>
         <span
           aria-live="polite"
           className="order-last w-full truncate font-mono text-[11px] text-muted-foreground sm:order-none sm:w-auto"

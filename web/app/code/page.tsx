@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowUpRight, Play, Sparkle, Terminal } from "@phosphor-icons/react/dist/ssr";
+import { ArrowUpRight, Browser, Sparkle, Terminal } from "@phosphor-icons/react/dist/ssr";
+import { GeminiLogo } from "@/components/brand-logos";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { JsonLd } from "@/components/json-ld";
 import { RelatedLinks } from "@/components/related-links";
@@ -151,14 +152,14 @@ export default function CodeIndexPage() {
 
               <div className="mt-4 flex flex-wrap items-center gap-2 font-mono text-[11px]">
                 {demoCount > 0 && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 text-emerald-400 font-medium">
-                    <Play size={10} weight="fill" />
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 text-emerald-400 font-medium">
+                    <Browser size={12} weight="duotone" aria-hidden="true" />
                     {demoCount} browser demo{demoCount > 1 ? "s" : ""}
                   </span>
                 )}
                 {agentCount > 0 && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 px-2.5 py-0.5 text-cyan-400 font-medium">
-                    <Sparkle size={10} weight="fill" />
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 px-2.5 py-0.5 text-cyan-400 font-medium">
+                    <GeminiLogo size={12} />
                     {agentCount} live agent{agentCount > 1 ? "s" : ""}
                   </span>
                 )}

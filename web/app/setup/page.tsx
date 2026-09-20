@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowUpRight, Play, Sparkle, Terminal } from "@phosphor-icons/react/dist/ssr";
+import { ArrowUpRight, Browser, Play, Sparkle, Terminal } from "@phosphor-icons/react/dist/ssr";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { JsonLd } from "@/components/json-ld";
 import { RelatedLinks } from "@/components/related-links";
@@ -108,7 +108,7 @@ export default function SetupPage() {
             <div className="flex items-center justify-between">
               <span className="label-mono text-emerald-400">Option 1</span>
               <span className="rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 font-mono text-[11px] text-emerald-400 font-medium flex items-center gap-1">
-                <Play size={10} weight="fill" /> No setup
+                <Browser size={12} weight="duotone" aria-hidden="true" /> No setup
               </span>
             </div>
             <h2 className="mt-2 text-xl font-serif text-white font-semibold">On this site, no setup</h2>

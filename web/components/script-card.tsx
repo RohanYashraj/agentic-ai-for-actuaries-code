@@ -1,5 +1,6 @@
-import { FileCode, GithubLogo, Play, Sparkle } from "@phosphor-icons/react/dist/ssr";
+import { Browser, FileCode, GithubLogo } from "@phosphor-icons/react/dist/ssr";
 import { AgentRunner } from "@/components/agent-runner";
+import { GeminiLogo } from "@/components/brand-logos";
 import { CodeView } from "@/components/code-view";
 import { DemoRunner } from "@/components/demo-runner";
 import { Badge } from "@/components/ui/badge";
@@ -40,16 +41,16 @@ export function ScriptCard({
         </h3>
 
         {hasDemo && (
-          <Badge className="bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-mono text-[11px] gap-1 px-2.5 py-0.5">
-            <Play size={10} weight="fill" />
+          <Badge className="bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-mono text-[11px] gap-1.5 px-2.5 py-0.5">
+            <Browser size={12} weight="duotone" aria-hidden="true" />
             <span>runs in your browser</span>
           </Badge>
         )}
 
         {hasAgent && (
-          <Badge className="bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 font-mono text-[11px] gap-1 px-2.5 py-0.5">
-            <Sparkle size={10} weight="fill" />
-            <span>live agent</span>
+          <Badge className="bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 font-mono text-[11px] gap-1.5 px-2.5 py-0.5">
+            <GeminiLogo size={12} />
+            <span>live agent on Gemini</span>
           </Badge>
         )}
 
@@ -80,14 +81,16 @@ export function ScriptCard({
             <TabsList className="mb-4 bg-white/5 border border-white/10 p-1 rounded-lg">
               <TabsTrigger
                 value="demo"
-                className="text-xs data-[state=active]:bg-emerald-500 data-[state=active]:text-navy-950 font-medium transition-all"
+                className="gap-1.5 text-xs data-[state=active]:bg-emerald-500 data-[state=active]:text-navy-950 font-medium transition-all"
               >
+                <Browser size={14} weight="duotone" aria-hidden="true" />
                 Tool, in your browser
               </TabsTrigger>
               <TabsTrigger
                 value="agent"
-                className="text-xs data-[state=active]:bg-cyan-500 data-[state=active]:text-navy-950 font-medium transition-all"
+                className="gap-1.5 text-xs data-[state=active]:bg-cyan-500 data-[state=active]:text-navy-950 font-medium transition-all"
               >
+                <GeminiLogo size={14} />
                 Agent, on the server
               </TabsTrigger>
             </TabsList>

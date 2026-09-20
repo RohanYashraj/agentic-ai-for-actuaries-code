@@ -2,13 +2,24 @@ import fs from "node:fs";
 import path from "node:path";
 import Image from "next/image";
 import Link from "next/link";
+import type { Icon } from "@phosphor-icons/react";
 import {
   ArrowUpRight,
   BookOpenText,
-  Play,
+  Books,
+  Browser,
+  Buildings,
+  ChartLineUp,
+  Coins,
+  Gavel,
+  Heartbeat,
+  ShieldCheck,
   Sparkle,
   Terminal,
+  TreeStructure,
+  UsersThree,
 } from "@phosphor-icons/react/dist/ssr";
+import { ColabLogo, GeminiLogo } from "@/components/brand-logos";
 import { JsonLd } from "@/components/json-ld";
 import { LaunchSeal } from "@/components/launch-seal";
 import { HeroIntro } from "@/components/motion/hero-intro";
@@ -110,10 +121,22 @@ const STRUCTURED_DATA = {
 
 export const metadata = { alternates: { canonical: "/" } };
 
+/** One icon per practice domain, so a chapter card says what kind of
+ * actuarial work it does before the title is read. */
+const DOMAIN_ICON: Record<string, Icon> = {
+  "Agentic architecture": TreeStructure,
+  "Pricing and underwriting": Coins,
+  "Reserving and claims": ChartLineUp,
+  "Life, health and pensions": Heartbeat,
+  "Risk and compliance": ShieldCheck,
+  "Production and governance": Gavel,
+};
+
 const WAYS = [
   {
     title: "In your browser",
     tag: "No setup",
+    logo: <Browser size={22} weight="duotone" className="text-emerald-400" />,
     color: "from-emerald-400 to-teal-500",
     badge: "border-emerald-500/30 text-emerald-400 bg-emerald-500/10",
     body: "The tool scripts run on Python compiled to WebAssembly, right in the page. Change a number, run it again. Nothing leaves your machine.",
@@ -121,6 +144,7 @@ const WAYS = [
   {
     title: "Live on our server",
     tag: "Gemini + Agno",
+    logo: <GeminiLogo size={22} />,
     color: "from-cyan-400 to-blue-500",
     badge: "border-cyan-500/30 text-cyan-400 bg-cyan-500/10",
     body: "The agent scripts need a model, so they run on our server against Gemini. You see each tool call and the reply as they happen.",
@@ -128,20 +152,22 @@ const WAYS = [
   {
     title: "In Google Colab",
     tag: "Your own key",
+    logo: <ColabLogo size={22} />,
     color: "from-amber-400 to-orange-500",
     badge: "border-amber-500/30 text-amber-400 bg-amber-500/10",
     body: "Every chapter opens as a notebook. Add a free Google AI Studio key and run the whole thing, with no shared limits.",
   },
 ];
 
-const FACTS: [string, string, string][] = [
-  ["18", "chapters", "in five parts, from AI literacy to production governance"],
-  ["9", "with code", "chapters 9 to 17, every listing runnable"],
-  ["4", "practice domains", "pricing, reserving, life and pensions, risk"],
+const FACTS: [string, string, string, Icon][] = [
+  ["18", "chapters", "in five parts, from AI literacy to production governance", Books],
+  ["9", "with code", "chapters 9 to 17, every listing runnable", Terminal],
+  ["4", "practice domains", "pricing, reserving, life and pensions, risk", UsersThree],
   [
     "1",
     "fictional reinsurer",
     "Meridian Re, whose synthetic data every example uses",
+    Buildings,
   ],
 ];
 
@@ -359,6 +385,7 @@ export default function LandingPage() {
 
           <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {CHAPTERS.map((chapter) => {
+              const DomainIcon = DOMAIN_ICON[chapter.domain] ?? Sparkle;
               const demos = chapter.scripts.filter((s) => s.demoId).length;
               const agents = chapter.scripts.filter(
                 (s) =>
@@ -375,7 +402,8 @@ export default function LandingPage() {
                       <span className="inline-flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 font-mono text-sm font-bold text-navy-950 shadow-sm shadow-amber-500/20">
                         {chapter.number}
                       </span>
-                      <span className="rounded-full bg-amber-400/10 border border-amber-400/20 px-2.5 py-0.5 font-mono text-[11px] text-amber-300 font-medium">
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-400/10 border border-amber-400/20 px-2.5 py-0.5 font-mono text-[11px] text-amber-300 font-medium">
+                        <DomainIcon size={13} weight="duotone" aria-hidden="true" />
                         {chapter.domain}
                       </span>
                     </div>
@@ -390,14 +418,14 @@ export default function LandingPage() {
 
                     <div className="mt-auto flex flex-wrap items-center gap-2 pt-4 font-mono text-[11px]">
                       {demos > 0 && (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 text-emerald-400">
-                          <Play size={10} weight="fill" />
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 text-emerald-400">
+                          <Browser size={12} weight="duotone" aria-hidden="true" />
                           {demos} browser demo{demos > 1 ? "s" : ""}
                         </span>
                       )}
                       {agents > 0 && (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 text-cyan-400">
-                          <Sparkle size={10} weight="fill" />
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 text-cyan-400">
+                          <GeminiLogo size={12} />
                           {agents} live agent{agents > 1 ? "s" : ""}
                         </span>
                       )}
@@ -434,9 +462,14 @@ export default function LandingPage() {
                     mode.color
                   )}
                 />
-                <div className="flex items-center justify-between">
-                  <h3 className="text-base font-semibold text-white">{mode.title}</h3>
-                  <span className={cn("text-[11px] font-mono px-2 py-0.5 rounded-full border", mode.badge)}>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="flex items-center gap-3">
+                    <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5">
+                      {mode.logo}
+                    </span>
+                    <h3 className="text-base font-semibold text-white">{mode.title}</h3>
+                  </span>
+                  <span className={cn("shrink-0 text-[11px] font-mono px-2 py-0.5 rounded-full border", mode.badge)}>
                     {mode.tag}
                   </span>
                 </div>
@@ -524,11 +557,17 @@ export default function LandingPage() {
           </div>
 
           <dl className="grid gap-5 sm:grid-cols-2">
-            {FACTS.map(([n, label, note]) => (
+            {FACTS.map(([n, label, note, FactIcon]) => (
               <div
                 key={label}
-                className="card-glass p-5 border-l-4 border-l-amber-400"
+                className="card-glass relative p-5 border-l-4 border-l-amber-400"
               >
+                <FactIcon
+                  size={22}
+                  weight="duotone"
+                  aria-hidden="true"
+                  className="absolute right-4 top-4 text-amber-400/70"
+                />
                 <dt className="sr-only">{label}</dt>
                 <dd>
                   <span className="font-serif text-3xl font-bold text-white">{n}</span>
