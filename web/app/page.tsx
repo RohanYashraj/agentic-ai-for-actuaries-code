@@ -301,7 +301,6 @@ export default function LandingPage() {
               data-hero-cover
               className="relative order-first flex justify-center lg:order-none lg:justify-end"
             >
-              <div className="book-glow" aria-hidden="true" />
               <div className="relative">
                 <div className="book-cover">
                   <Image

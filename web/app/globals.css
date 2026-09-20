@@ -350,21 +350,6 @@
     0 0 60px rgba(245, 158, 11, 0.4);
 }
 
-/* Warm spotlight behind the hero cover */
-.book-glow {
-  position: absolute;
-  inset: -16% -12%;
-  border-radius: 50%;
-  background: radial-gradient(
-    ellipse at 55% 45%,
-    rgba(255, 110, 50, 0.26) 0%,
-    rgba(251, 191, 36, 0.14) 32%,
-    rgba(251, 191, 36, 0.04) 55%,
-    transparent 70%
-  );
-  pointer-events: none;
-}
-
 /* The publisher lockup card */
 .launch-publisher {
   display: flex;

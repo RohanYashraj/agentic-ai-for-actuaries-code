@@ -7,7 +7,7 @@ import { useGSAP } from "@gsap/react";
 gsap.registerPlugin(useGSAP);
 
 /** Homepage hero entrance. Staggers [data-hero-item] elements, then
- * brings in [data-hero-cover], its glow, and [data-hero-seal]. Clears
+ * brings in [data-hero-cover] and [data-hero-seal]. Clears
  * inline properties on completion to avoid trapped states. */
 export function HeroIntro({
   children,
@@ -37,11 +37,6 @@ export function HeroIntro({
             "[data-hero-cover]",
             { opacity: 0, y: 10, duration: 0.6, clearProps: "transform,opacity" },
             coverFirst ? undefined : "-=0.3"
-          );
-          tl.from(
-            "[data-hero-cover] .book-glow",
-            { opacity: 0, scale: 0.7, duration: 1.2, ease: "power2.out", clearProps: "transform,opacity" },
-            "<"
           );
           tl.from(
             "[data-hero-seal]",

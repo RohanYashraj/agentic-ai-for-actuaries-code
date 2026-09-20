@@ -99,7 +99,6 @@ export default function BookPage() {
 
         {/* Book Cover Staging */}
         <div className="relative mx-auto flex justify-center">
-          <div className="book-glow opacity-80" aria-hidden="true" />
           <a
             href={ACTEX_BOOK_URL}
             target="_blank"
