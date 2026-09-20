@@ -15,6 +15,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Markdown from "react-markdown";
 import { GeminiLogo } from "@/components/brand-logos";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
+import { prepareMathMarkdown } from "@/lib/markdown-math";
 import { Button } from "@/components/ui/button";
 import {
   Collapsible,
@@ -586,8 +590,11 @@ export function AgentRunner({
               case "markdown":
                 return (
                   <div key={i} className="agent-prose">
-                    <Markdown remarkPlugins={[remarkGfm]}>
-                      {block.text}
+                    <Markdown
+                      remarkPlugins={[remarkGfm, remarkMath]}
+                      rehypePlugins={[[rehypeKatex, { throwOnError: false, strict: false }]]}
+                    >
+                      {prepareMathMarkdown(block.text)}
                     </Markdown>
                   </div>
                 );

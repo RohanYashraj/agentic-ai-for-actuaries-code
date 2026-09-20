@@ -198,6 +198,14 @@
 .agent-prose ol {
   @apply list-decimal;
 }
+/* LaTeX from the model (remark-math + KaTeX). Display equations can run
+   wider than the panel; scroll them instead of breaking the layout. */
+.agent-prose .katex-display {
+  @apply my-3 overflow-x-auto overflow-y-hidden py-1;
+}
+.agent-prose .katex {
+  font-size: 1.05em;
+}
 .agent-prose code {
   @apply font-mono text-[0.85em] text-amber-200 bg-navy-950/80 px-1.5 py-0.5 rounded border border-white/5;
 }
