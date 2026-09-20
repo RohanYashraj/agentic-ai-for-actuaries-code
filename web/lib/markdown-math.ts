@@ -11,8 +11,9 @@
  *  2. A single `$` opens inline math only when the closing `$` satisfies
  *     Pandoc's rules: no whitespace right after the opening, none right
  *     before the closing, no digit right after the closing, and both on
- *     the same paragraph. Any `$` that cannot pair up this way is
- *     escaped so it renders as a literal dollar sign.
+ *     the same paragraph. A `$` followed by a plain number and a word
+ *     boundary ("$63,790.59 and") is always currency. Any `$` that
+ *     cannot pair up is escaped so it renders as a literal dollar sign.
  *
  * Fenced and inline code are never touched. `$$ ... $$` spans are left
  * as written, since models only use them deliberately.
@@ -66,9 +67,15 @@ function escapeUnpairedDollars(text: string): string {
   return result;
 }
 
+// "$63,790.59 and", "$5." — a plain number followed by a word boundary is
+// money, never an opener, even when a real formula closes later in the
+// same paragraph.
+const CURRENCY_RE = /^\$(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?(?=[\s*),.;:!?]|$)/;
+
 function findInlineClose(text: string, open: number): number {
   const first = text[open + 1];
   if (first === undefined || /\s/.test(first)) return -1;
+  if (CURRENCY_RE.test(text.slice(open))) return -1;
   for (let j = open + 1; j < text.length; j++) {
     const c = text[j];
     if (c === "\\") {

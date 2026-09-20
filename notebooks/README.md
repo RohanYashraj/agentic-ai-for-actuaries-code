@@ -11,6 +11,12 @@ matching chapter README (or upload it to Colab), add your Google AI
 Studio key as a Colab secret named `GOOGLE_API_KEY` (🔑 sidebar), and
 run the cells top to bottom.
 
+Each notebook installs `common/notebook_display.py` right after
+changing into the chapter folder. It routes `print_response` through
+Colab's Markdown output, so agent answers render with headings,
+tables and LaTeX (currency amounts stay as text) instead of raw
+terminal markup. The scripts themselves are still run unmodified.
+
 The website's "Open in Colab" links point at these notebooks too —
 they are the unlimited-runs path when the site's shared run budget is
 spent.
