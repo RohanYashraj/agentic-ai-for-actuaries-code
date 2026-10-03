@@ -8,7 +8,9 @@
 Runnable code for every listing in Parts III–V of *Agentic AI for
 Actuaries: From AI Foundations to Autonomous Actuarial Systems* by
 Satya Sai Mudigonda and Dr Rohan Yashraj Gupta (FIA, FIAI), published by
-the Sri Sathya Sai Institute of Actuaries ([sssia.org](https://sssia.org)).
+[ACTEX Learning](https://www.actexlearning.com/textbooks/agentic-ai-for-actuaries)
+in collaboration with the Sri Sathya Sai Institute of Actuaries
+([sssia.org](https://sssia.org)).
 
 The examples build actuarial agents with the [Agno](https://docs.agno.com)
 framework on Google Gemini: tool-using premium calculators, multi-agent

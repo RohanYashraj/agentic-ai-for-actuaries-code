@@ -22,7 +22,7 @@ const FOOTER_LINKS: {
       { label: "About the book", href: "/book" },
       { label: "Free on ACTEX Learning", href: ACTEX_BOOK_URL, external: true },
       {
-        label: "Sri Sathya Sai Institute of Actuaries",
+        label: "In collaboration with SSSIA",
         href: "https://sssia.org",
         external: true,
       },
@@ -98,7 +98,10 @@ export function SiteFooter() {
             Code is MIT licensed. The book text is © 2026 Satya Sai
             Mudigonda and Rohan Yashraj Gupta.
           </p>
-          <p className="text-slate-400">Published by ACTEX Learning, first edition 2026.</p>
+          <p className="text-slate-400">
+            Published by ACTEX Learning in collaboration with the Sri Sathya
+            Sai Institute of Actuaries (SSSIA), first edition 2026.
+          </p>
         </div>
       </div>
     </footer>

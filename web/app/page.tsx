@@ -29,6 +29,7 @@ import { Button } from "@/components/ui/button";
 import { AGENT_SCRIPTS } from "@/lib/agents";
 import { CHAPTERS, getChapter } from "@/lib/chapters";
 import { ACTEX_BOOK_URL } from "@/lib/links";
+import { ID } from "@/lib/seo";
 import { BOOK_PROMISE, OUTLINE } from "@/lib/outline";
 import {
   AUTHORS,
@@ -70,6 +71,12 @@ const STRUCTURED_DATA = {
       abstract: BOOK_PROMISE,
       bookFormat: "https://schema.org/Hardcover",
       publisher: { "@type": "Organization", name: "ACTEX Learning" },
+      contributor: {
+        "@type": "Organization",
+        "@id": ID.organization,
+        name: "Sri Sathya Sai Institute of Actuaries",
+        url: "https://sssia.org",
+      },
       datePublished: "2026",
       sameAs: ACTEX_BOOK_URL,
       offers: {
@@ -315,6 +322,9 @@ export default function LandingPage() {
                   height={31}
                   className="launch-publisher-logo"
                 />
+                <span className="launch-publisher-label">
+                  In collaboration with SSSIA
+                </span>
                 <span className="launch-url">
                   actexlearning.com/textbooks/agentic-ai-for-actuaries
                   <ArrowUpRight size={14} weight="bold" aria-hidden="true" />
@@ -638,7 +648,7 @@ export default function LandingPage() {
           </div>
 
           <p className="mt-8 text-xs sm:text-sm text-slate-500">
-            Written with the{" "}
+            Published by ACTEX Learning in collaboration with the{" "}
             <a
               href="https://sssia.org"
               target="_blank"
@@ -646,8 +656,8 @@ export default function LandingPage() {
               className="text-amber-400 underline underline-offset-2 hover:text-amber-300"
             >
               Sri Sathya Sai Institute of Actuaries
-            </a>
-            .
+            </a>{" "}
+            (SSSIA).
           </p>
         </RevealOnScroll>
       </section>
