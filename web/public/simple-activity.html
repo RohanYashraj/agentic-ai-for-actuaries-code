@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simple Activity: Build the Agent Loop</title>
+<style>
+/* VOICE: workshop table-top exercise, friendly but exact; the board is the whole page.
+   IDEA: printed cards laid on a dotted mat, arrows drawn by hand, then the story played through the finished loop.
+   PICTURE: 13 jumbled cards on a full-width board; on reveal it becomes the answer and a step-by-step story player.
+   COLOUR and TYPE: white, ink #0b0b10, signal green for correct, red for wrong; pastel cards; rose LLM, green tools, navy human. System fonts (the site's CSP allows only self-hosted fonts).
+   LAYOUT: story and toolbox up top, board below at full width, answer key and story player under it on reveal. */
+:root{color-scheme:light dark;--disp:"Segoe UI Variable Display","Segoe UI",ui-sans-serif,system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;--body:"Segoe UI",ui-sans-serif,system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  --bg:light-dark(#ffffff,#0d1110);--ink:light-dark(#0b0b10,#eef2f0);--mute:light-dark(#5a606a,#9aa3a0);
+  --board:light-dark(#eafaf2,#0f1a15);--dot:light-dark(#c4e6d4,#22362c);--line:light-dark(#d6e2dc,#26332d);
+  --ok:light-dark(#00a862,#2fd08a);--bad:light-dark(#d93a3a,#ff6b6b);--acc:#00a862;--navy:#17294d;--rose:#8e2b4d}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--body);overflow-x:clip}
+.site{background:#0b1120;color:#fff;padding:12px max(4vw,16px)}
+.site .in{max-width:1240px;margin:0 auto;display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline;justify-content:space-between}
+.site .brand{font:700 18px/1.3 var(--disp);letter-spacing:-.01em}
+.site .brand em{font-style:normal;color:#f5b942}
+.site .brand span{font-weight:500;color:#cbd5e1}
+.site a{color:#cbd5e1;font-size:15px;text-decoration:none;border-bottom:1px solid #475569}
+.site a:hover{color:#fff;border-color:#fff}
+.site a:focus-visible{outline:3px solid #f5b942;outline-offset:3px}
+.band{padding:clamp(18px,3vw,32px) max(4vw,16px)}
+h1,h2{font-family:var(--disp);font-weight:700;line-height:1.05;margin:0;text-wrap:balance}
+h1{font-size:clamp(28px,4vw,42px)}h2{font-size:28px;margin-bottom:10px}
+.top{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:18px 32px;max-width:1240px;margin:0 auto;align-items:start}
+.story{margin:12px 0 0;padding:14px 16px;border-radius:12px;background:var(--board);border:1.5px solid var(--line)}
+.story .msg{font:600 17px/1.4 var(--disp);margin:4px 0 0}
+.story small{color:var(--mute);font-size:14px}
+.mission{margin:0;padding-left:1.2em;color:var(--mute)}.mission b{color:var(--ink)}
+.tbx{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px}
+.tbx code{font:600 13px/1 ui-monospace,Consolas,monospace;padding:6px 9px;border-radius:8px;background:light-dark(#e2f3ea,#163024);color:light-dark(#1d5d3d,#bff0d6);border:1.5px solid #2f7d56}
+.qs{display:grid;gap:6px;margin-top:10px}.qs span{padding:8px 12px;border-radius:10px;border:1.5px dashed var(--line);font-weight:600}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;max-width:1240px;margin:14px auto 0}
+input,button{font:inherit;font-size:16px}
+input{height:44px;border:1.5px solid var(--line);border-radius:10px;padding:0 12px;background:var(--bg);color:var(--ink);width:170px}
+input:focus-visible,button:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.btn{height:44px;padding:0 16px;border-radius:10px;border:1.5px solid var(--ink);background:var(--bg);color:var(--ink);font-weight:600;cursor:pointer;white-space:nowrap}
+.btn:hover{background:var(--board)}.btn.pri{background:var(--ink);color:var(--bg)}
+.btn.go{background:var(--acc);border-color:var(--acc);color:#fff}.btn:disabled{opacity:.4;cursor:default}
+#revealBtn{display:none}body.fac #revealBtn{display:inline-block}
+.stage{max-width:1240px;margin:0 auto}
+#result{display:none;align-items:center;gap:18px;margin:0 0 14px;padding:14px 18px;border-radius:12px;background:var(--board);border:1.5px solid var(--line)}
+#result.on{display:flex}
+#result .big{font:700 clamp(32px,5vw,46px)/1 var(--disp);white-space:nowrap}
+#result .big small{font-size:.5em;color:var(--mute)}
+#result.win{border-color:var(--ok)}#result.win .big{color:var(--ok)}
+#wrap{position:relative;overflow:hidden;border-radius:16px;background:var(--board);background-image:radial-gradient(var(--dot) 1.4px,transparent 1.5px);background-size:22px 22px;border:1.5px solid var(--line)}
+#board{position:absolute;left:0;top:0;width:1200px;height:780px;transform-origin:0 0}
+#board.anim .card{transition:left .7s cubic-bezier(.3,.7,.2,1),top .7s cubic-bezier(.3,.7,.2,1)}
+svg.layer{position:absolute;inset:0;width:1200px;height:780px;pointer-events:none;z-index:1;overflow:visible}
+#tmp{z-index:6}
+.card{position:absolute;width:220px;height:78px;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 26px 0 20px;border-radius:12px;z-index:2;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;
+  font:600 17px/1.15 var(--disp);color:var(--ink);
+  background:light-dark(hsl(var(--h) 80% 94%),hsl(var(--h) 28% 19%));border:1.5px solid hsl(var(--h) 50% 52%);border-left:7px solid hsl(var(--h) 55% 45%);
+  box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 8px 16px -10px rgba(0,0,0,.45);transition:box-shadow .25s}
+.card.drag{cursor:grabbing;z-index:5;box-shadow:0 16px 28px -12px rgba(0,0,0,.5);transform:rotate(-1deg)}
+.card.src{outline:3px solid var(--acc);outline-offset:3px}
+.card.hot{box-shadow:0 0 0 5px var(--acc),0 12px 26px -8px rgba(0,168,98,.6);z-index:4}
+.hd{position:absolute;right:-13px;top:50%;margin-top:-13px;width:26px;height:26px;border-radius:50%;border:2px solid var(--ink);background:var(--bg);cursor:crosshair;padding:0;touch-action:none}
+.hd::before{content:"";position:absolute;inset:-10px}
+.hd::after{content:"";position:absolute;inset:6px;border-radius:50%;background:var(--ink)}
+.card.dec{justify-content:flex-start;padding:0 8px 0 12px;gap:8px;font-size:15px;text-align:left}
+.dia{width:22px;height:22px;flex:none;margin-left:6px;transform:rotate(45deg);border:2px solid var(--ink);background:var(--bg)}
+.dt{flex:1;line-height:1.1}
+.pills{display:grid;gap:3px;margin-left:auto;flex:none}
+.pill{font:700 11.5px/1 var(--body);padding:5px 8px;border-radius:999px;border:1.5px solid var(--ink);background:var(--bg);color:var(--ink);cursor:crosshair;white-space:nowrap;touch-action:none}
+.pill:hover,.hd:hover{background:var(--board)}
+.vis{stroke:var(--ink);stroke-width:2.2;fill:none}
+.ok .vis{stroke:var(--ok);stroke-width:2.8}
+.bad .vis{stroke:var(--bad);stroke-dasharray:7 5}
+.hot .vis{stroke:var(--acc);stroke-width:4.5}
+.hit{stroke:transparent;stroke-width:18;fill:none;pointer-events:stroke;cursor:pointer}
+.edge:hover .vis{stroke-width:3.6}
+.rv .hit{cursor:default}
+.lbl{font:700 12px var(--body);fill:var(--ink);paint-order:stroke;stroke:var(--board);stroke-width:6px;stroke-linejoin:round;text-anchor:middle;dominant-baseline:middle}
+#tmp line{stroke:var(--acc);stroke-width:2.5;stroke-dasharray:6 5}
+#edges{transition:opacity .3s}
+.rv .card[data-r=in],.rv .card[data-r=dec]{background:var(--bg);border-color:var(--line);border-left-color:light-dark(#9aa6a0,#53605a)}
+.rv .card[data-r=llm]{background:light-dark(#f8e6ec,#3a1d27);border-color:var(--rose);border-left-color:var(--rose);color:light-dark(#6d1a37,#ffd3e0)}
+.rv .card[data-r=tool]{background:light-dark(#e2f3ea,#163024);border-color:#2f7d56;border-left-color:#2f7d56;color:light-dark(#1d5d3d,#bff0d6)}
+.rv .card[data-r=human]{background:var(--navy);border-color:var(--navy);color:#fff}
+.rv .hd{display:none}.rv .pill{pointer-events:none}
+#status{min-height:1.6em;margin:10px 2px 0;color:var(--mute);font-size:15px}
+#explain{display:none;max-width:1240px;margin:0 auto}
+body.revealed #explain{display:block}
+.player{margin:0 0 22px;padding:16px 18px;border-radius:14px;border:2px solid var(--acc);background:var(--board)}
+.player .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn.sel{background:var(--acc);border-color:var(--acc);color:#fff}
+#cap{font:600 19px/1.4 var(--disp);margin:12px 0 4px;min-height:2.8em}
+#capMeta{color:var(--mute);font-size:14px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 22px;margin:0 0 16px;color:var(--mute)}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.legend i{width:22px;height:14px;border-radius:4px;border:1.5px solid}
+table{border-collapse:collapse;width:100%}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600;color:var(--mute);font-size:14px}
+td:first-child{font-weight:600;white-space:nowrap}
+td code{font-size:13px}
+.note{margin-top:14px;color:var(--mute);max-width:70ch}
+pre,.scroll{overflow-x:auto}
+@media(max-width:860px){.top{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:600px){input{flex:1}table{font-size:13px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px}.stack td{display:flow-root;border:0;padding:3px 0;padding-inline-start:8em;text-align:start;white-space:normal}.stack td::before{content:attr(data-l);float:inline-start;width:7.5em;margin-inline-start:-8em;white-space:normal;color:var(--mute);font-weight:500}.stack td:empty{display:none}}
+@media(prefers-reduced-motion:reduce){#board.anim .card{transition:none}.card.drag{transform:none}}
+</style><script>new MutationObserver(()=>{for(const c of document.querySelectorAll('.stack td:not([data-l])')){let i=0,p=c;while(p=p.previousElementSibling)i+=p.colSpan;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}}).observe(document,{childList:true,subtree:true})</script></head>
+<body>
+<div class="site"><div class="in">
+  <div class="brand">Agentic AI <em>for Actuaries</em> <span>— Demo to understand the workflow</span></div>
+  <a href="/">← Back to the site</a>
+</div></div>
+<header class="band">
+  <div class="top">
+    <div>
+      <h1>Build the agent loop</h1>
+      <div class="story">
+        <small>31 March, 9:10 pm · WhatsApp from a bank relationship manager</small>
+        <p class="msg">"My customer Ravi is 38, non-smoker, wants ₹1.5 crore for 30 years, preferred class. What's his premium, and why? He's sitting with me."</p>
+      </div>
+      <p style="margin:10px 0 0;color:var(--mute)">You have <b style="color:var(--ink)">one LLM</b>, a few Python tools, and one rule: <b style="color:var(--ink)">the LLM never computes a number itself.</b> Build the loop that answers Ravi.</p>
+    </div>
+    <div>
+      <ol class="mission">
+        <li><b>Lay out the 13 cards</b> so the work flows. Drag a card to move it.</li>
+        <li><b>Draw the arrows.</b> Drag from a card's ● handle, or a decision's labelled exit, onto the next card (or tap, then tap). Click an arrow to delete it.</li>
+        <li><b>Check your loop</b>, fix the red ones, and answer:</li>
+      </ol>
+      <div class="qs"><span>Where can the loop end?</span><span>What stops it running forever?</span></div>
+      <p style="margin:12px 0 0;font-size:14px;color:var(--mute)">The toolbox (example tool names):</p>
+      <div class="tbx"><code>get_term_rate</code><code>get_uw_class_factor</code><code>get_high_sa_rebate</code><code>calculate_term_premium</code></div>
+    </div>
+  </div>
+  <div class="bar">
+    <input id="team" placeholder="Team name" aria-label="Team name" maxlength="40">
+    <button class="btn" id="hintBtn">Hint</button>
+    <button class="btn" id="undoBtn" disabled>Undo</button>
+    <button class="btn" id="resetBtn">Start over</button>
+    <button class="btn go" id="checkBtn">Check our loop</button>
+    <button class="btn pri" id="revealBtn">Reveal answer</button>
+  </div>
+</header>
+
+<main class="band" style="padding-top:0">
+  <div class="stage">
+    <div id="result" role="status"><div class="big" id="score"></div><div id="verdict"></div></div>
+    <div id="wrap">
+      <div id="board">
+        <svg class="layer" id="edges" viewBox="0 0 1200 780" aria-label="Arrows"></svg>
+        <svg class="layer" id="tmp" viewBox="0 0 1200 780"><line x1="0" y1="0" x2="0" y2="0" visibility="hidden"/></svg>
+      </div>
+    </div>
+    <p id="status" aria-live="polite">Cards are shuffled. Start with Ravi's question: where does it go first?</p>
+  </div>
+</main>
+
+<section class="band" id="explain" style="padding-top:0">
+  <div class="player">
+    <h2>Play the story through the loop</h2>
+    <div class="row" id="stories"></div>
+    <p id="cap" aria-live="polite">Pick a story, then step through it. The cards and arrows light up as the work moves.</p>
+    <div class="row"><button class="btn" id="prevBtn" disabled>← Back</button><button class="btn pri" id="nextBtn" disabled>Next →</button><span id="capMeta"></span></div>
+  </div>
+  <h2>The answer: one LLM, a loop, and a person at the end</h2>
+  <div class="legend">
+    <span><i style="background:var(--bg);border-color:#9aa6a0"></i>Inputs, decisions and hand-offs</span>
+    <span><i style="background:#f8e6ec;border-color:#8e2b4d"></i>Language model</span>
+    <span><i style="background:#e2f3ea;border-color:#2f7d56"></i>Tool: Python, not the model</span>
+    <span><i style="background:#17294d;border-color:#17294d"></i>Human gate</span>
+  </div>
+  <table class="stack"><thead><tr><th>Card</th><th>Role</th><th>In Ravi's story</th></tr></thead><tbody id="keyRows"></tbody></table>
+  <p class="note">The loop can end two ways: the LLM is ready to answer, or it runs out of steps. Either way the answer goes to a person before it goes to the bank. The step limit is what stops it running forever; the guardrail is what stops it pricing a case it should not.</p>
+</section>
+
+<script>
+{
+const W=1200,H=780,CW=220,CH=78,KEY='agentloop-life-1llm-v1';
+const C=[
+ {id:'send',t:'Answer to the bank',h:270,r:'in',d:'The reply Ravi’s relationship manager receives'},
+ {id:'q',t:'Question from the bank',h:100,r:'in',d:'Ravi, 38, non-smoker, ₹1.5 crore, 30 years, preferred: premium, and why?'},
+ {id:'run',t:'Run the tool (Python)',h:35,r:'tool',d:'Reads the approved rate table: 1.62 × 0.85 × 0.92'},
+ {id:'rules',t:'Instructions',h:212,r:'in',d:'Never compute a number yourself. Refer anything outside the basis. Explain each factor.'},
+ {id:'dec',t:'What next?',dec:['USE A TOOL','READY','OUT OF STEPS'],h:198,r:'dec',d:'The LLM’s choice each time round: call a tool, answer, or stop at the step limit'},
+ {id:'max',t:'Step limit',h:345,r:'in',d:'At most 10 tool calls, then stop'},
+ {id:'tres',t:'Tool result',h:45,r:'tool',d:'₹19,003 a year, ₹5,297 below the base-rate premium; or, if refused, the reason'},
+ {id:'human',t:'Pricing actuary',h:235,r:'human',d:'Checks the build-up and signs, or takes over the case'},
+ {id:'tools',t:'Tool list',h:120,r:'in',d:'get_term_rate, get_uw_class_factor, get_high_sa_rebate, calculate_term_premium'},
+ {id:'llm',t:'LLM',h:20,r:'llm',d:'Term Pricing Agent: reads, decides the next step, writes the answer'},
+ {id:'draft',t:'Draft answer',h:160,r:'in',d:'₹19,003: base rate, class factor, rebate, and the difference from the base rate'},
+ {id:'guard',t:'Guardrail check',dec:['PASS','REFUSE'],h:285,r:'dec',d:'Python, before any table is read: entry age 18–65, maturity age at most 85, smoker or non-smoker'},
+ {id:'treq',t:'Tool request',h:170,r:'tool',d:'calculate_term_premium(38, M, NS, ₹1.5 crore, 30, preferred)'}
+];
+const byId=Object.fromEntries(C.map(c=>[c.id,c]));
+const ANS=[['q','llm'],['tools','llm'],['rules','llm'],['max','llm'],['llm','dec'],['dec','treq',0],['treq','guard'],
+ ['guard','run',0],['run','tres'],['guard','tres',1],['tres','llm'],['dec','draft',1],['draft','human'],['dec','human',2],['human','send']];
+const POS={q:[20,150],tools:[20,265],rules:[20,380],max:[20,495],llm:[320,335],dec:[620,335],treq:[620,185],guard:[910,185],
+ run:[910,35],tres:[620,35],draft:[620,520],human:[910,520],send:[910,670]};
+const HINTS=['Four cards only feed the LLM. Which are they?','The LLM never runs a tool itself: its request goes through a check first.','A refusal is still a tool result: the LLM gets the reason back, not a number.','Two exits of "What next?" lead to the same card. Which one, and why?'];
+const STORIES=[
+ {n:'Ravi: priced',s:[
+  ['q',null,'9:10 pm. The RM asks: Ravi, 38, non-smoker, ₹1.5 crore, 30 years, preferred class. Premium, and why?'],
+  ['llm',null,'The LLM reads the question, the tool list, its instructions and the step limit. It may not compute anything itself.'],
+  ['dec',0,'It needs a number, so it chooses USE A TOOL. Step 1 of 10.'],
+  ['treq',null,'Tool request: calculate_term_premium(38, M, NS, ₹1.5 crore, 30, preferred).'],
+  ['guard',0,'Guardrail: age 38 is within 18–65, maturity at 68 is within 85, non-smoker is a rated status. PASS.'],
+  ['run',null,'Python reads the approved tables: base rate 1.62 per ₹1,000, preferred 0.85, high sum assured rebate 0.92.'],
+  ['tres',null,'Result: ₹19,003 a year, ₹5,297 below the base-rate premium of ₹24,300.'],
+  ['llm',null,'Back to the LLM. Does it need anything else? No: every number it needs came back from a tool.'],
+  ['dec',1,'It chooses READY.'],
+  ['draft',null,'"₹19,003 a year. Preferred class saves ₹3,645 and the high sum assured rebate saves ₹1,652 on the base-rate premium of ₹24,300."'],
+  ['human',null,'The pricing actuary checks the build-up against the table and signs.'],
+  ['send',null,'Ravi gets an answer while he is still at the branch, and every number traces to a table row.']]},
+ {n:'Mohan: refused',s:[
+  ['q',null,'9:25 pm. Next message: Mohan, 58, ₹1 crore for 30 years, standard class. "Quick, he’s waiting."'],
+  ['llm',null,'Same loop, same rules. The LLM still may not compute anything itself.'],
+  ['dec',0,'USE A TOOL. Step 1 of 10.'],
+  ['treq',null,'Tool request: calculate_term_premium(58, M, NS, ₹1 crore, 30, standard).'],
+  ['guard',1,'Guardrail: maturity age 58 + 30 = 88, above the limit of 85. REFUSE, before any table is read.'],
+  ['tres',null,'The result is a reason, not a number: "maturity age 88 is above the limit of 85; refer."'],
+  ['llm',null,'The LLM cannot price it, and its instructions say it must not guess.'],
+  ['dec',1,'READY: it has a complete answer, which is a referral.'],
+  ['draft',null,'"Mohan can’t be priced on the approved basis: maturity age 88 is above 85. Referred to underwriting; a shorter term may work."'],
+  ['human',null,'The actuary confirms the referral.'],
+  ['send',null,'The RM gets a clear no, with the reason. No made-up premium reached a customer.']]},
+ {n:'The runaway: out of steps',s:[
+  ['q',null,'11:50 pm. Another quote, and the rate-table server is struggling under the year-end load.'],
+  ['llm',null,'The LLM starts as usual.'],
+  ['dec',0,'USE A TOOL. Step 1 of 10.'],
+  ['treq',null,'Tool request sent.'],
+  ['guard',0,'The inputs pass the guardrail.'],
+  ['run',null,'Python tries to read the rate table…'],
+  ['tres',null,'…and gets a timeout.'],
+  ['llm',null,'The LLM tries again. And again. Steps 2, 3, 4…'],
+  ['dec',2,'Step 10 used: OUT OF STEPS. The limit stops the loop; the agent does not decide to keep going.'],
+  ['human',null,'The case goes to the pricing actuary with the trail of what was tried.'],
+  ['send',null,'The bank hears "we’re on it" from a person, not a guess from a machine.']]}
+];
+const k=e=>e[0]+'>'+e[1]+':'+(e[2]??'');
+const ansKeys=new Set(ANS.map(k));
+const $=s=>document.querySelector(s);
+const board=$('#board'),wrap=$('#wrap'),edgesSvg=$('#edges'),tmp=$('#tmp line'),status=$('#status');
+let state={pos:{},edges:[],team:''},undo=[],pending=null,checked=false,revealed=false,scale=1,hint=0,story=null,stepI=0;
+
+const rand=n=>Math.floor(Math.random()*n);
+function jumble(){
+  const slots=[];for(let r=0;r<4;r++)for(let c=0;c<4;c++)slots.push([c,r]);
+  for(let i=slots.length-1;i>0;i--){const j=rand(i+1);[slots[i],slots[j]]=[slots[j],slots[i]]}
+  C.forEach((c,i)=>{const [sc,sr]=slots[i];state.pos[c.id]={x:sc*300+20+rand(300-CW-40),y:sr*195+12+rand(195-CH-24)}});
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.pos&&C.every(c=>s.pos[c.id]))state=s;else jumble()}catch(e){jumble()}}
+const posOf=id=>revealed?{x:POS[id][0],y:POS[id][1]}:state.pos[id];
+
+function renderCards(){
+  board.querySelectorAll('.card').forEach(n=>n.remove());
+  board.insertAdjacentHTML('beforeend',C.map(c=>c.dec
+    ?`<div class="card dec" data-id="${c.id}" data-r="${c.r}" style="--h:${c.h}" aria-label="${c.t}"><span class="dia"></span><span class="dt">${c.t}</span><span class="pills">${c.dec.map((l,i)=>`<button class="pill" data-b="${i}" aria-label="Draw ${l} arrow">${l} →</button>`).join('')}</span></div>`
+    :`<div class="card" data-id="${c.id}" data-r="${c.r}" style="--h:${c.h}"><span>${c.t}</span><button class="hd" aria-label="Draw arrow from ${c.t}"></button></div>`).join(''));
+  place();
+}
+function place(){board.querySelectorAll('.card').forEach(el=>{const p=posOf(el.dataset.id);el.style.left=p.x+'px';el.style.top=p.y+'px'})}
+
+function clip(cx,cy,dx,dy,pad){const hw=CW/2+pad,hh=CH/2+pad;const t=Math.min(dx?hw/Math.abs(dx):1e9,dy?hh/Math.abs(dy):1e9);return [cx+dx*t,cy+dy*t]}
+function drawEdges(){
+  const list=revealed?ANS:state.edges;
+  const keys=new Set(list.map(e=>e[0]+'>'+e[1]));
+  const marker=(id,col)=>`<marker id="${id}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="11" markerHeight="11" markerUnits="userSpaceOnUse" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:${col}"/></marker>`;
+  let out=`<defs>${marker('m','var(--ink)')}${marker('m-ok','var(--ok)')}${marker('m-bad','var(--bad)')}</defs>`;
+  list.forEach((e,i)=>{
+    const a=posOf(e[0]),b=posOf(e[1]);
+    const ax=a.x+CW/2,ay=a.y+CH/2,bx=b.x+CW/2,by=b.y+CH/2,dx=bx-ax,dy=by-ay,len=Math.hypot(dx,dy)||1;
+    const off=keys.has(e[1]+'>'+e[0])?9:0,nx=-dy/len*off,ny=dx/len*off;
+    const s=clip(ax,ay,dx,dy,3),t=clip(bx,by,-dx,-dy,7);
+    const x1=s[0]+nx,y1=s[1]+ny,x2=t[0]+nx,y2=t[1]+ny,d=`M${x1.toFixed(1)},${y1.toFixed(1)} L${x2.toFixed(1)},${y2.toFixed(1)}`;
+    const cls=revealed?'':checked?(ansKeys.has(k(e))?'ok':'bad'):'';
+    const lbl=e[2]!=null?`<text class="lbl" x="${x1+(x2-x1)*.45}" y="${y1+(y2-y1)*.45}">${byId[e[0]].dec[e[2]]}</text>`:'';
+    out+=`<g class="edge ${cls}" data-i="${i}" data-k="${k(e)}"><path class="hit" d="${d}"/><path class="vis" d="${d}" marker-end="url(#${cls==='ok'?'m-ok':cls==='bad'?'m-bad':'m'})"/>${lbl}</g>`;
+  });
+  edgesSvg.innerHTML=out;
+}
+
+function snapshot(){undo.push(JSON.stringify({pos:state.pos,edges:state.edges}));if(undo.length>60)undo.shift();$('#undoBtn').disabled=false}
+function changed(){if(checked){checked=false;$('#result').className=''}drawEdges();save()}
+function say(t){status.textContent=t}
+
+function connect(from,to,b){
+  if(from===to)return say('An arrow needs two different cards.');
+  if(state.edges.some(e=>k(e)===k([from,to,b])))return say('That arrow is already there.');
+  snapshot();
+  if(b!=null)state.edges=state.edges.filter(e=>!(e[0]===from&&e[2]===b));
+  state.edges.push(b!=null?[from,to,b]:[from,to]);
+  changed();
+  say(`Arrow added: ${b!=null?byId[from].dec[b]:byId[from].t} → ${byId[to].t}.`);
+}
+function clearPending(){pending=null;board.querySelectorAll('.src').forEach(n=>n.classList.remove('src'))}
+function pt(e){const r=board.getBoundingClientRect();return [(e.clientX-r.left)/scale,(e.clientY-r.top)/scale]}
+
+function startDrag(e,el){
+  const id=el.dataset.id,p=state.pos[id],[mx,my]=pt(e),ox=mx-p.x,oy=my-p.y;let moved=false;
+  el.setPointerCapture(e.pointerId);
+  const move=ev=>{const [x,y]=pt(ev);
+    if(!moved){if(Math.hypot(x-mx,y-my)<4)return;moved=true;snapshot();el.classList.add('drag')}
+    p.x=Math.max(0,Math.min(W-CW,x-ox));p.y=Math.max(0,Math.min(H-CH,y-oy));
+    el.style.left=p.x+'px';el.style.top=p.y+'px';drawEdges()};
+  const up=()=>{el.removeEventListener('pointermove',move);el.removeEventListener('pointerup',up);el.removeEventListener('pointercancel',up);el.classList.remove('drag');if(moved)save()};
+  el.addEventListener('pointermove',move);el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);
+}
+function startConnect(e,from,b,h){
+  const hr=h.getBoundingClientRect(),br=board.getBoundingClientRect();
+  const sx=(hr.left+hr.width/2-br.left)/scale,sy=(hr.top+hr.height/2-br.top)/scale,[mx,my]=pt(e);let moved=false;
+  h.setPointerCapture(e.pointerId);
+  tmp.setAttribute('x1',sx);tmp.setAttribute('y1',sy);
+  const move=ev=>{const [x,y]=pt(ev);if(!moved&&Math.hypot(x-mx,y-my)<6)return;moved=true;
+    tmp.setAttribute('x2',x);tmp.setAttribute('y2',y);tmp.setAttribute('visibility','visible')};
+  const up=ev=>{h.removeEventListener('pointermove',move);h.removeEventListener('pointerup',up);h.removeEventListener('pointercancel',up);
+    tmp.setAttribute('visibility','hidden');
+    if(!moved){pending={from,b};h.closest('.card').classList.add('src');return say('Now tap the card this arrow leads to. Esc or tap the board to cancel.')}
+    const tgt=document.elementFromPoint(ev.clientX,ev.clientY)?.closest('.card');
+    if(tgt)connect(from,tgt.dataset.id,b);else say('Drop the arrow on a card to connect it.')};
+  h.addEventListener('pointermove',move);h.addEventListener('pointerup',up);h.addEventListener('pointercancel',up);
+}
+
+board.addEventListener('pointerdown',e=>{
+  if(revealed||e.button>0)return;
+  const card=e.target.closest('.card'),h=e.target.closest('.hd,.pill');
+  if(pending){const p=pending;clearPending();if(card&&!h){e.preventDefault();return connect(p.from,card.dataset.id,p.b)}if(!h)return say('Arrow cancelled.')}
+  if(h){e.preventDefault();return startConnect(e,card.dataset.id,h.dataset.b!=null?+h.dataset.b:null,h)}
+  if(card){e.preventDefault();startDrag(e,card)}
+});
+edgesSvg.addEventListener('click',e=>{
+  const g=e.target.closest('.edge');if(!g||revealed)return;
+  const ed=state.edges[+g.dataset.i];snapshot();state.edges.splice(+g.dataset.i,1);changed();
+  say(`Arrow removed: ${ed[2]!=null?byId[ed[0]].dec[ed[2]]:byId[ed[0]].t} → ${byId[ed[1]].t}. Undo brings it back.`);
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&pending){clearPending();say('Arrow cancelled.')}
+  if(story&&revealed&&!/INPUT/.test(document.activeElement?.tagName||'')){if(e.key==='ArrowRight')step(1);if(e.key==='ArrowLeft')step(-1)}
+});
+
+$('#hintBtn').onclick=()=>{say('Hint: '+HINTS[hint%HINTS.length]);hint++};
+$('#undoBtn').onclick=()=>{const s=undo.pop();if(!s)return;const o=JSON.parse(s);state.pos=o.pos;state.edges=o.edges;place();changed();$('#undoBtn').disabled=!undo.length;say('Undone.')};
+let resetArm=0;
+$('#resetBtn').onclick=e=>{
+  if(!resetArm){resetArm=setTimeout(()=>{resetArm=0;e.target.textContent='Start over'},3000);e.target.textContent='Click again to confirm';return}
+  clearTimeout(resetArm);resetArm=0;e.target.textContent='Start over';
+  snapshot();state.edges=[];jumble();place();changed();say('Cards reshuffled and arrows cleared.');
+};
+$('#checkBtn').onclick=()=>{
+  if(revealed)return;
+  checked=true;drawEdges();
+  const right=state.edges.filter(e=>ansKeys.has(k(e))).length,wrong=state.edges.length-right,missing=ANS.length-right;
+  const team=state.team.trim().replace(/[<>&"']/g,'');
+  $('#score').innerHTML=`${right}<small> / ${ANS.length}</small>`;
+  $('#verdict').innerHTML=(team?`<b>${team}</b> · `:'')+
+    (missing===0&&wrong===0?'Every arrow is right. The loop runs, and Ravi gets his answer.':
+    `${right} arrow${right===1?'':'s'} right, ${wrong} wrong (dashed red), ${missing} still missing. Fix and check again.`);
+  $('#result').className='on'+(missing===0&&wrong===0?' win':'');
+  say('Green arrows are right; red dashed ones are not part of the loop.');
+};
+
+function highlight(){
+  board.querySelectorAll('.card.hot').forEach(n=>n.classList.remove('hot'));
+  edgesSvg.querySelectorAll('.edge.hot').forEach(n=>n.classList.remove('hot'));
+  if(!story){$('#prevBtn').disabled=$('#nextBtn').disabled=true;return}
+  const s=story.s,[id,,cap]=s[stepI];
+  board.querySelector(`.card[data-id="${id}"]`)?.classList.add('hot');
+  if(stepI>0){const [pid,pb]=s[stepI-1];edgesSvg.querySelector(`.edge[data-k="${k([pid,id,pb])}"]`)?.classList.add('hot')}
+  $('#cap').textContent=cap;
+  $('#capMeta').textContent=`${story.n} · step ${stepI+1} of ${s.length}`;
+  $('#prevBtn').disabled=stepI===0;$('#nextBtn').disabled=stepI===s.length-1;
+}
+function step(d){if(!story)return;stepI=Math.max(0,Math.min(story.s.length-1,stepI+d));highlight()}
+$('#stories').innerHTML=STORIES.map((s,i)=>`<button class="btn" data-s="${i}">${s.n}</button>`).join('');
+$('#stories').onclick=e=>{const b=e.target.closest('[data-s]');if(!b)return;story=STORIES[+b.dataset.s];stepI=0;
+  $('#stories').querySelectorAll('.btn').forEach(x=>x.classList.toggle('sel',x===b));highlight();wrap.scrollIntoView({behavior:'smooth',block:'center'})};
+$('#prevBtn').onclick=()=>step(-1);$('#nextBtn').onclick=()=>step(1);
+
+$('#revealBtn').onclick=()=>{
+  revealed=!revealed;clearPending();story=null;
+  document.body.classList.toggle('revealed',revealed);wrap.classList.toggle('rv',revealed);
+  $('#revealBtn').textContent=revealed?'Back to our attempt':'Reveal answer';
+  ['#checkBtn','#undoBtn','#resetBtn','#hintBtn'].forEach(s=>$(s).disabled=revealed||(s==='#undoBtn'&&!undo.length));
+  $('#result').className='';checked=false;
+  $('#stories').querySelectorAll('.btn').forEach(x=>x.classList.remove('sel'));
+  $('#cap').textContent='Pick a story, then step through it. The cards and arrows light up as the work moves.';$('#capMeta').textContent='';
+  edgesSvg.style.opacity=0;renderCards();
+  if(revealed){board.classList.add('anim');board.querySelectorAll('.card').forEach(el=>{const p=state.pos[el.dataset.id];el.style.left=p.x+'px';el.style.top=p.y+'px'});
+    requestAnimationFrame(()=>requestAnimationFrame(place))}
+  setTimeout(()=>{board.classList.remove('anim');drawEdges();edgesSvg.style.opacity=1;highlight()},revealed?750:0);
+  say(revealed?'This is the model answer. Play a story below, or press "Back to our attempt".':'Back to your team board.');
+};
+$('#team').addEventListener('input',e=>{state.team=e.target.value;save()});
+
+const ROLE={in:'Input / hand-off',dec:'Decision',llm:'Language model',tool:'Tool (Python)',human:'Human gate'};
+$('#keyRows').innerHTML=[...C].sort((a,b)=>(POS[a.id][1]-POS[b.id][1])||(POS[a.id][0]-POS[b.id][0]))
+  .map(c=>`<tr><td>${c.t}</td><td>${ROLE[c.r]}</td><td>${c.d}</td></tr>`).join('');
+
+function fit(){scale=Math.min(1,wrap.clientWidth/W);board.style.transform=`scale(${scale})`;wrap.style.height=H*scale+'px'}
+const ro=new ResizeObserver(fit);ro.observe(wrap);
+const fac=()=>document.body.classList.toggle('fac',location.hash==='#facilitator');
+window.addEventListener('hashchange',fac);fac();
+
+load();$('#team').value=state.team||'';fit();renderCards();drawEdges();
+}
+</script>
+</body>
+</html>
