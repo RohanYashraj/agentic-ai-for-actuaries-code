@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import {
   ArrowUpRight,
   BookOpenText,
+  FlowArrow,
   GithubLogo,
   List,
   Sparkle,
@@ -24,10 +25,13 @@ type NavItem = {
   icon: Icon;
   /** Shown in the mobile menu only; the bar has no room for it. */
   blurb: string;
+  /** A static file in public/, not an App Router page: rendered as a plain
+   * <a> so the browser loads it directly instead of a client-side route. */
+  isStatic?: boolean;
 };
 
-/** Every route the site has, all visible from lg up. Nothing hides in a
- * mobile-only list. */
+/** Every route the site has, plus the static Simple Activity page, all
+ * visible from lg up. Nothing hides in a mobile-only list. */
 const NAV: NavItem[] = [
   {
     href: "/code",
@@ -52,6 +56,13 @@ const NAV: NavItem[] = [
     label: "The book",
     icon: BookOpenText,
     blurb: "Free from ACTEX Learning",
+  },
+  {
+    href: "/simple-activity.html",
+    label: "Simple Activity",
+    icon: FlowArrow,
+    blurb: "Build the agent loop, card by card",
+    isStatic: true,
   },
 ];
 
@@ -120,17 +131,22 @@ export function SiteHeader() {
           <nav aria-label="Main" className="hidden items-center gap-1 lg:flex">
             {NAV.map((item) => {
               const active = isActive(pathname, item.href);
-              return (
+              const className = cn(
+                "rounded-full px-3.5 py-1.5 text-sm font-medium transition-all duration-200",
+                active
+                  ? "bg-white/10 text-white border border-white/15 shadow-sm shadow-black/20"
+                  : "text-slate-300 hover:bg-white/5 hover:text-white"
+              );
+              return item.isStatic ? (
+                <a key={item.href} href={item.href} className={className}>
+                  {item.label}
+                </a>
+              ) : (
                 <Link
                   key={item.href}
                   href={item.href}
                   aria-current={active ? "page" : undefined}
-                  className={cn(
-                    "rounded-full px-3.5 py-1.5 text-sm font-medium transition-all duration-200",
-                    active
-                      ? "bg-white/10 text-white border border-white/15 shadow-sm shadow-black/20"
-                      : "text-slate-300 hover:bg-white/5 hover:text-white"
-                  )}
+                  className={className}
                 >
                   {item.label}
                 </Link>
@@ -211,16 +227,12 @@ export function SiteHeader() {
               {NAV.map((item) => {
                 const active = isActive(pathname, item.href);
                 const Icon = item.icon;
-                return (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      aria-current={active ? "page" : undefined}
-                      className={cn(
-                        "flex items-center gap-3 rounded-xl px-3 py-2.5 transition-colors",
-                        active ? "bg-white/10 text-white border border-white/10" : "text-slate-300 hover:bg-white/5 hover:text-white"
-                      )}
-                    >
+                const className = cn(
+                  "flex items-center gap-3 rounded-xl px-3 py-2.5 transition-colors",
+                  active ? "bg-white/10 text-white border border-white/10" : "text-slate-300 hover:bg-white/5 hover:text-white"
+                );
+                const content = (
+                  <>
                       <Icon
                         size={20}
                         weight="duotone"
@@ -238,7 +250,23 @@ export function SiteHeader() {
                           {item.blurb}
                         </span>
                       </span>
-                    </Link>
+                  </>
+                );
+                return (
+                  <li key={item.href}>
+                    {item.isStatic ? (
+                      <a href={item.href} className={className}>
+                        {content}
+                      </a>
+                    ) : (
+                      <Link
+                        href={item.href}
+                        aria-current={active ? "page" : undefined}
+                        className={className}
+                      >
+                        {content}
+                      </Link>
+                    )}
                   </li>
                 );
               })}
