@@ -25,12 +25,16 @@ type NavItem = {
   icon: Icon;
   /** Shown in the mobile menu only; the bar has no room for it. */
   blurb: string;
+  /** Shown in the desktop bar instead of `label`, which would push the
+   * header past its max width; the full label becomes the hover title and
+   * still shows in the mobile menu. */
+  shortLabel?: string;
   /** A static file in public/, not an App Router page: rendered as a plain
    * <a> so the browser loads it directly instead of a client-side route. */
   isStatic?: boolean;
 };
 
-/** Every route the site has, plus the static Simple Activity page, all
+/** Every route the site has, plus the static CILA Activity page, all
  * visible from lg up. Nothing hides in a mobile-only list. */
 const NAV: NavItem[] = [
   {
@@ -59,7 +63,8 @@ const NAV: NavItem[] = [
   },
   {
     href: "/simple-activity.html",
-    label: "Simple Activity",
+    label: "CILA Activity- Build the agentic loop on your own",
+    shortLabel: "CILA Activity",
     icon: FlowArrow,
     blurb: "Build the agent loop, card by card",
     isStatic: true,
@@ -128,27 +133,35 @@ export function SiteHeader() {
             </span>
           </Link>
 
-          <nav aria-label="Main" className="hidden items-center gap-1 lg:flex">
+          <nav aria-label="Main" className="hidden items-center gap-0.5 lg:flex xl:gap-1">
             {NAV.map((item) => {
               const active = isActive(pathname, item.href);
               const className = cn(
-                "rounded-full px-3.5 py-1.5 text-sm font-medium transition-all duration-200",
+                "whitespace-nowrap rounded-full px-2.5 py-1.5 text-sm font-medium transition-all duration-200 xl:px-3.5",
                 active
                   ? "bg-white/10 text-white border border-white/15 shadow-sm shadow-black/20"
                   : "text-slate-300 hover:bg-white/5 hover:text-white"
               );
+              const label = item.shortLabel ?? item.label;
+              const title = item.shortLabel ? item.label : undefined;
               return item.isStatic ? (
-                <a key={item.href} href={item.href} className={className}>
-                  {item.label}
+                <a
+                  key={item.href}
+                  href={item.href}
+                  title={title}
+                  className={className}
+                >
+                  {label}
                 </a>
               ) : (
                 <Link
                   key={item.href}
                   href={item.href}
                   aria-current={active ? "page" : undefined}
+                  title={title}
                   className={className}
                 >
-                  {item.label}
+                  {label}
                 </Link>
               );
             })}
