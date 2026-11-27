@@ -23,6 +23,7 @@ import { fileURLToPath } from "node:url";
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const WEB = join(REPO, "web");
 const APP = join(WEB, "app");
+const PUBLIC = join(WEB, "public");
 
 /** Routes that exist but are not App Router pages. */
 const EXTRA_ROUTES = ["/llms.txt", "/robots.txt", "/sitemap.xml"];
@@ -54,6 +55,14 @@ function routePatterns() {
     patterns.push(new RegExp(`^/${source}$`.replace("^/$", "^/$")));
   }
   for (const route of EXTRA_ROUTES) patterns.push(new RegExp(`^${route}$`));
+  // Files in public/ are served at their own path (e.g. a static
+  // activity page). Only files that exist count, so a typo still fails.
+  for (const file of walk(PUBLIC)) {
+    const route = "/" + relative(PUBLIC, file).split(/[/\\]/).join("/");
+    patterns.push(
+      new RegExp(`^${route.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`)
+    );
+  }
   return patterns;
 }
 
