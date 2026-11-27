@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Icon } from "@phosphor-icons/react";
 import {
+  ArrowRight,
   ArrowUpRight,
   BookOpenText,
   Books,
@@ -11,6 +12,7 @@ import {
   Buildings,
   ChartLineUp,
   Coins,
+  FlowArrow,
   Gavel,
   Heartbeat,
   ShieldCheck,
@@ -337,18 +339,37 @@ export default function LandingPage() {
               data-hero-cover
               className="relative order-first flex justify-center lg:order-none lg:justify-end"
             >
-              <div className="relative">
-                <div className="book-cover">
-                  <Image
-                    src="/book-cover-photo.png"
-                    alt="Cover of Agentic AI for Actuaries"
-                    width={520}
-                    height={716}
-                    priority
-                    className="h-auto w-[min(320px,82vw)] rounded-[0.35rem] sm:w-[420px] md:w-[460px] lg:w-[480px] xl:w-[540px]"
+              {/* Button sits flush with the cover's left edge on desktop,
+               * clear of the launch seal that overhangs the top-right. */}
+              <div className="flex flex-col items-center gap-6 lg:items-start">
+                {/* The hands-on activity, a static page in public/, so a plain
+                 * <a> loads it directly rather than a client-side route. */}
+                <a
+                  href="/simple-activity.html"
+                  className="group inline-flex min-h-11 w-full max-w-[min(320px,82vw)] items-center justify-center gap-2 rounded-full border border-amber-400/40 bg-amber-400/10 px-5 py-2.5 text-sm font-semibold text-amber-200 shadow-[0_0_20px_rgba(245,158,11,0.15)] transition-all hover:-translate-y-0.5 hover:border-amber-300/70 hover:bg-amber-400/20 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400 sm:w-auto sm:max-w-none"
+                >
+                  <FlowArrow size={18} weight="bold" aria-hidden="true" />
+                  <span>CILA Activity- Build the agentic loop on your own</span>
+                  <ArrowRight
+                    size={16}
+                    weight="bold"
+                    aria-hidden="true"
+                    className="transition-transform group-hover:translate-x-0.5"
                   />
+                </a>
+                <div className="relative">
+                  <div className="book-cover">
+                    <Image
+                      src="/book-cover-photo.png"
+                      alt="Cover of Agentic AI for Actuaries"
+                      width={520}
+                      height={716}
+                      priority
+                      className="h-auto w-[min(320px,82vw)] rounded-[0.35rem] sm:w-[420px] md:w-[460px] lg:w-[480px] xl:w-[540px]"
+                    />
+                  </div>
+                  <LaunchSeal />
                 </div>
-                <LaunchSeal />
               </div>
             </div>
           </HeroIntro>
